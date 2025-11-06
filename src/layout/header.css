@@ -13,12 +13,12 @@
 }
 
 .header-logo{
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  border-radius: 6px;
-  background: var(--green-transparent);
-  padding: 6px;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%; /* round */
+  background: transparent; /* remove boxed background */
+  padding: 0;
 }
 
 .brand-text{

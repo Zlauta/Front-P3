@@ -23,11 +23,10 @@ const Header = () => {
               <Nav.Link as={Link} to="/carta">
                 Carta
               </Nav.Link>
-              <a href="#galeria" className="scroll">
+              <Nav.Link href="#galeria" className="scroll">
                 Galería
-              </a>
-              <Nav.Link href="#sobre-nosotros" className="scroll" >
-              
+              </Nav.Link>
+              <Nav.Link href="#sobre-nosotros" className="scroll">
                 Sobre Nosotros
               </Nav.Link>
               <Nav.Link
