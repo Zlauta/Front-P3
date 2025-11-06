@@ -1,5 +1,7 @@
+import FormCreateMenu from "../../components/MenuAdmin/FormCreateMenu.jsx";
+
 const Menu = () => {
-  return <div>Menu</div>;
+  return <><FormCreateMenu /></>;
 };
 
 export default Menu;
