@@ -15,7 +15,6 @@ const PreviewMenu = ({ nombre, descripcion, precio, categoria, imagen }) => {
       }}
     >
       <Row className="g-0 align-items-center">
-
         <Col xs={12} md={5}>
           {imagen ? (
             <Card.Img
@@ -23,10 +22,10 @@ const PreviewMenu = ({ nombre, descripcion, precio, categoria, imagen }) => {
               alt="Vista previa del menú"
               style={{
                 height: "100%",
-                width: "100%",
+                width: "94%",
                 objectFit: "cover",
-                borderRadius: "16px 0 0 16px",
-                margin: "5%",
+                borderRadius: "16px",
+                margin: "3%"
               }}
             />
           ) : (
@@ -49,7 +48,7 @@ const PreviewMenu = ({ nombre, descripcion, precio, categoria, imagen }) => {
 
         <Col xs={12} md={7}>
           <Card.Body>
-            <Card.Title style={{  fontSize: "1.3rem", fontWeight: "bold" }}>
+            <Card.Title style={{ fontSize: "1.3rem", fontWeight: "bold" }}>
               {nombre || "Nombre del menú"}
             </Card.Title>
             <Card.Subtitle
