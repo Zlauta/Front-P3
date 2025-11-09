@@ -5,31 +5,26 @@ import "./login.css";
 import { Link } from "react-router-dom";
 
 const Login = () => {
-  //return <div>Login nuevo</div>;
-
   return (
     <>
-      <h1 className="titulos-form">Iniciar Sesion</h1>
-      <Container className="custom-form border rounded p-4 w-50 mb-5">
-        <FormLogin></FormLogin>
-        <div className="mt-4 text-center">
-          <Link
-            to="/password"
-            className="fw-semibold"
-            style={{ color: "#8FB7CD" }}
-          >
-            Recuperar contraseña?
-          </Link>
-          <div className="mt-2">
-            <Link to="/" className="link-color text-decoration-none">
-              ← Volver al inicio
+      <div className="page-wrapper">
+        <h1 className="titulos-form">Iniciar Sesion</h1>
+        <Container className="custom-form border rounded p-4 w-50 mb-5">
+          <FormLogin></FormLogin>
+          <div className="mt-4 text-center">
+            <Link to="/password" className="link-color text-decoration-none">
+              Recuperar contraseña?
             </Link>
+            <div className="mt-2">
+              <Link to="/" className="link-color text-decoration-none">
+                ← Volver al inicio
+              </Link>
+            </div>
           </div>
-        </div>
-      </Container>
+        </Container>
+      </div>
     </>
   );
-
 };
 
 export default Login;

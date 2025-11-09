@@ -49,9 +49,9 @@ const FormRegister = () => {
         icon: "error",
         title: "Ingresá otro correo electronico ...",
         text: "El usuario ya existe en la base de datos",
-        iconColor: "#042550ff",
-        confirmButtonColor: "#042550ff",
-        cancelButtonColor: "#d33",
+        iconColor: "#1aaf4b",
+        confirmButtonColor: "#1aaf4b",
+        cancelButtonColor: "#254630",
         customClass: {
           popup: "small-alert",
         },
@@ -67,9 +67,9 @@ const FormRegister = () => {
           icon: "error",
           title: "Las contraseñas deben ser iguales!",
           text: "Intentá nuevamente",
-          iconColor: "#042550ff",
-          confirmButtonColor: "#042550ff",
-          cancelButtonColor: "#d33",
+          iconColor: "#1aaf4b",
+          confirmButtonColor: "#1aaf4b",
+          cancelButtonColor: "#254630",
           customClass: {
             popup: "small-alert",
           },
@@ -98,9 +98,9 @@ const FormRegister = () => {
         icon: "success",
         title: "El formulario ha sido enviado",
         showConfirmButton: false,
-        iconColor: "#042550ff",
-        confirmButtonColor: "#042550ff",
-        cancelButtonColor: "#d33",
+        iconColor: "#1aaf4b",
+        confirmButtonColor: "#1aaf4b",
+        cancelButtonColor: "#254630",
         customClass: {
           popup: "small-alert",
         },
@@ -112,9 +112,9 @@ const FormRegister = () => {
       Swal.fire({
         title: "Error al registrar usuario",
         icon: "error",
-        iconColor: "#042550ff",
-        confirmButtonColor: "#042550ff",
-        cancelButtonColor: "#d33",
+        iconColor: "##1aaf4b",
+        confirmButtonColor: "##1aaf4b",
+        cancelButtonColor: "#254630",
         customClass: {
           popup: "small-alert",
         },
@@ -122,7 +122,7 @@ const FormRegister = () => {
       console.error(error);
     }
 
-  /*   emailjs
+    /*   emailjs
       .send(
         import.meta.env.VITE_EMAILJS_SERVICE_ID, // SERVICE_ID
         import.meta.env.VITE_EMAILJS_TEMPLATE_REGISTER, // TEMPLATE_ID

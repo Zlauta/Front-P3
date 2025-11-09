@@ -29,14 +29,13 @@ const formLogin = () => {
   const handleNewPassword = () => {
     Swal.fire({
       icon: "success",
-      iconColor: "#042550ff",
+      iconColor: "#1aaf4b",
       title: "¡Listo!",
       text: "Tu contraseña está en proceso de ser recuperada",
-      confirmButtonColor: "#042550ff",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#1aaf4b",
+      cancelButtonColor: "#254630",
     });
     navegate("/");
-    // navegate("/reset");
   };
 
   function onSubmit(data) {
@@ -53,9 +52,9 @@ const formLogin = () => {
         icon: "error",
         title: "Resgistrate!",
         text: "El usuario no existe en la base de datos",
-        iconColor: "#042550ff",
-        confirmButtonColor: "#042550ff",
-        cancelButtonColor: "#d33",
+        iconColor: "##1aaf4b",
+        confirmButtonColor: "##1aaf4b",
+        cancelButtonColor: "#254630",
         customClass: {
           popup: "small-alert",
         },
@@ -68,9 +67,9 @@ const formLogin = () => {
         icon: "warning",
         title: "Contraseña incorrecta",
         text: "Después de tres intentos incorrectos se bloqueará el usuario",
-        iconColor: "#042550ff",
-        confirmButtonColor: "#042550ff",
-        cancelButtonColor: "#d33",
+        iconColor: "##1aaf4b",
+        confirmButtonColor: "##1aaf4b",
+        cancelButtonColor: "#254630",
         customClass: {
           popup: "small-alert",
         },
@@ -84,9 +83,9 @@ const formLogin = () => {
     //     icon: "warning",
     //     title: "Usuario pendiente",
     //     text: "El usuario todavía no ha sido aprobado",
-    //     iconColor: "#042550ff",
-    //     confirmButtonColor: "#042550ff",
-    //     cancelButtonColor: "#d33",
+    //     iconColor: "#1aaf4b",
+    //     confirmButtonColor: "#1aaf4b",
+    //     cancelButtonColor: "#254630",
     //     customClass: {
     //       popup: "small-alert",
     //     },
@@ -100,9 +99,9 @@ const formLogin = () => {
         icon: "warning",
         title: "Usuario Suspendido",
         text: "El usuario ha sido suspendido",
-        iconColor: "#042550ff",
-        confirmButtonColor: "#042550ff",
-        cancelButtonColor: "#d33",
+        iconColor: "#1aaf4b",
+        confirmButtonColor: "#1aaf4b",
+        cancelButtonColor: "#254630",
         customClass: {
           popup: "small-alert",
         },
@@ -120,9 +119,9 @@ const formLogin = () => {
       title: "Usuario Logueado",
       icon: "success",
       draggable: true,
-      iconColor: "#042550ff",
-      confirmButtonColor: "#042550ff",
-      cancelButtonColor: "#d33",
+      iconColor: "##1aaf4b",
+      confirmButtonColor: "##1aaf4b",
+      cancelButtonColor: "#254630",
       customClass: {
         popup: "small-alert",
       },

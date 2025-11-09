@@ -35,9 +35,9 @@ const FormNewPass = () => {
       Swal.fire({
         icon: "question",
         title: "El usuario no existe...",
-        iconColor: "#042550ff",
-        confirmButtonColor: "#042550ff",
-        cancelButtonColor: "#d33",
+        iconColor: "#1aaf4b ",
+        confirmButtonColor: "#1aaf4b ",
+        cancelButtonColor: "#1aaf4b ",
         customClass: {
           popup: "small-alert",
         },
@@ -46,15 +46,14 @@ const FormNewPass = () => {
       reset();
       return;
     }
-
     Swal.fire({
       position: "top-end",
       icon: "success",
       title: "El formulario ha sido enviado",
       showConfirmButton: false,
       timer: 1500,
-      iconColor: "#042550ff",
-      confirmButtonColor: "#042550ff",
+      iconColor: "#1aaf4b ",
+      confirmButtonColor: "#1aaf4b ",
       cancelButtonColor: "#d33",
       customClass: {
         popup: "small-alert",
@@ -66,8 +65,7 @@ const FormNewPass = () => {
   }
 
   return (
-    
-    <Form onSubmit={handleSubmit(onSubmit)} >
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <Form.Group className="label mb-3" controlId="formBasicEmail">
         <Form.Label>Correo electrónico</Form.Label>
         <Form.Control
