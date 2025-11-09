@@ -84,7 +84,7 @@ const FormRegister = () => {
         password: data.password,
         createdAt: new Date().toISOString(),
         estado: "pendiente",
-        rol: "usuario",
+        rol: "cliente",
       };
 
       console.log(nuevoUsuario);

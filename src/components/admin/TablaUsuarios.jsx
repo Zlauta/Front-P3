@@ -35,7 +35,7 @@ export default function TablaUsuarios() {
       ...prev,
       [id]: {
         ...prev[id],
-        estado: valor,
+        rol: valor,
       },
     }));
   };
@@ -60,8 +60,8 @@ export default function TablaUsuarios() {
     Swal.fire({
       title: "Cambios guardados",
       icon: "success",
-      iconColor: "#042550ff",
-      confirmButtonColor: "#042550ff",
+      iconColor: "#1aaf4b ",
+      confirmButtonColor: "#1aaf4b ",
       timer: 1200,
       showConfirmButton: false,
       customClass: {
@@ -81,7 +81,6 @@ export default function TablaUsuarios() {
             <th>Email</th>
             <th>Rol</th>
             <th>Estado</th>
-            <th>Creado</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -92,15 +91,14 @@ export default function TablaUsuarios() {
                 <td>{idx + 1}</td>
                 <td>{usuario.nombreUsuario}</td>
                 <td>{usuario.email}</td>
-                <td>{usuario.rol}</td>
+
                 <td>
                   <Form.Select
-                    value={ediciones[usuario.id]?.estado ?? usuario.estado}
+                    value={ediciones[usuario.id]?.rol ?? usuario.rol}
                     onChange={(e) => manejarCambio(usuario.id, e.target.value)}
                   >
-                    <option value="pendiente">pendiente</option>
-                    <option value="aprobado">aprobado</option>
-                    <option value="suspendido">suspendido</option>
+                    <option value="administrador">administrador</option>
+                    <option value="cliente">cliente</option>
                   </Form.Select>
                 </td>
                 <td>{formatearFecha(usuario.createdAt)}</td>
