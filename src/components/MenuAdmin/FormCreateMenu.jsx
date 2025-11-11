@@ -1,26 +1,33 @@
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
-import {
-  Form,
-  Button,
-  Container,
-  Row,
-  Col,
-  Card,
-} from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Card, Spinner } from "react-bootstrap";
 import PreviewMenu from "./PreviewMenu";
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
+import { uploadImageAndGetURL } from "../../service/storage.service.js";
+import clientAxios from "../../api/clientAxios.js";
 
 const FormCreateMenu = () => {
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
-  } = useForm();
+    reset,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      nombre: "",
+      descripcion: "",
+      precio: "",
+      categoria: "",
+    },
+  });
 
   const [imagen, setImagen] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const onDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0];
@@ -36,9 +43,40 @@ const FormCreateMenu = () => {
     multiple: false,
   });
 
-  const onSubmit = (data) => {
-    // 🚧 Lógica (Firebase + API) la agregás vos
-    console.log({ ...data, imagen });
+  const onSubmit = async (data) => {
+    if (!imagen) {
+      toast.error("Debe seleccionar una imagen antes de continuar");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const downloadURL = await uploadImageAndGetURL(imagen, "productos");
+
+      const nuevoMenu = {
+        nombre: data?.nombre || "",
+        descripcion: data?.descripcion || "",
+        precio: parseFloat(data?.precio) || 0,
+        categoria: data?.categoria || "sin categoría",
+        imagen: downloadURL || "",
+      };
+
+      await clientAxios.post("/productos", nuevoMenu);
+
+      toast.success("Menú creado correctamente");
+
+      reset();
+
+      setImagen(null);
+      setPreview(null);
+    } catch (error) {
+      console.error(error);
+      toast.error("Hubo un error al crear el menú. Inténtalo de nuevo.");
+    }
+    finally {
+      setLoading(false);
+    }
   };
 
   const nombre = watch("nombre");
@@ -48,6 +86,7 @@ const FormCreateMenu = () => {
 
   return (
     <Container className="mt-5 mb-5">
+      <ToastContainer position="top-right" autoClose={3000} />
       <Card
         style={{
           backgroundColor: "#122117",
@@ -60,7 +99,6 @@ const FormCreateMenu = () => {
           <h3 className="text-center mb-4">Crear Nuevo Menú</h3>
           <Form noValidate onSubmit={handleSubmit(onSubmit)}>
             <Row>
-
               <Col xs={12} lg={6}>
                 <Form.Group className="mb-3" controlId="nombre">
                   <Form.Label>Nombre del producto</Form.Label>
@@ -68,7 +106,9 @@ const FormCreateMenu = () => {
                     type="text"
                     placeholder="Ej: Pizza Napolitana"
                     isInvalid={!!errors.nombre}
-                    {...register("nombre", { required: "El nombre es obligatorio" })}
+                    {...register("nombre", {
+                      required: "El nombre es obligatorio",
+                    })}
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.nombre?.message}
@@ -113,7 +153,6 @@ const FormCreateMenu = () => {
                   </Form.Control.Feedback>
                 </Form.Group>
 
-
                 <Form.Group className="mb-3" controlId="categoria">
                   <Form.Label>Categoría</Form.Label>
                   <Form.Select
@@ -131,7 +170,6 @@ const FormCreateMenu = () => {
                     {errors.categoria?.message}
                   </Form.Control.Feedback>
                 </Form.Group>
-
 
                 <Form.Group className="mb-3">
                   <Form.Label>Imagen del menú</Form.Label>
@@ -172,15 +210,17 @@ const FormCreateMenu = () => {
                 <div className="text-center mt-4">
                   <Button
                     type="submit"
+                    disabled={!isValid || loading}
                     style={{
-                      backgroundColor: "#1aaf4b",
+                      backgroundColor: isValid ? "#1aaf4b" : "#5a5a5a",
                       border: "none",
                       padding: "10px 40px",
                       fontSize: "1.1rem",
                       borderRadius: "8px",
+                      transition: "all 0.3s ease",
                     }}
                   >
-                    Guardar Menú
+                    {loading ? <Spinner size="sm" /> : "Guardar Menú"}
                   </Button>
                 </div>
               </Col>
