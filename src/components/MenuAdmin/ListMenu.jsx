@@ -1,7 +1,105 @@
-import React from "react";
-import { Card, Button, Row, Col, Container } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Table, Spinner } from "react-bootstrap";
+import { toast } from "react-toastify";
+import {
+  obtenerProductos,
+  eliminarProducto,
+} from "../../service/products.service.js";
+import ModalEditMenu from "./ModalEditMenu.jsx";
+import FormCreateMenu from "./FormCreateMenu.jsx";
 
-const ListMenu = ({ menus = [] }) => {
+const ListMenu = () => {
+  const [menus, setMenus] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedMenu, setSelectedMenu] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [reload, setReload] = useState(false);
+
+     const fetchMenus = async () => {
+      try {
+        const data = await obtenerProductos();
+          setMenus(data || []);  
+      } catch (error) {
+        console.error(error);
+        toast.error("Error al cargar los menús");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+  useEffect(() => {
+    fetchMenus();
+  }, [reload]);
+
+   const handleMenuCreated = () => {
+    setReload((prev) => !prev); // 👈 dispara la recarga de la lista
+  };
+
+  const handleEdit = (menu) => {
+    setSelectedMenu(menu);
+    setShowModal(true);
+  };
+
+    const confirmDelete = (menu) => {
+    toast.info(
+      <div>
+        <p className="p-2">¿Seguro que deseas eliminar <b>{menu.nombre}</b>?</p>
+        <div style={{ display: "flex", justifyContent: "center", gap: "10px"}}>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => handleDelete(menu._id)}
+          >
+            Sí, eliminar
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => toast.dismiss()}
+          >
+            Cancelar
+          </Button>
+        </div>
+      </div>,
+      {
+        position: "top-center",
+        autoClose: false,
+        closeOnClick: false,
+        draggable: false,
+        hideProgressBar: true,
+      }
+    );
+  };
+
+  // 🔹 Eliminar menú
+  const handleDelete = async (id) => {
+    toast.dismiss();
+    try {
+      await eliminarProducto(id);
+      setMenus((prev) => prev.filter((m) => m._id !== id));
+      toast.success("Menú eliminado correctamente");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al eliminar el menú");
+    }
+  };
+
+  // 🔹 Actualizar menú tras editar
+  const handleUpdate = (updatedMenu) => {
+    setMenus((prev) =>
+      prev.map((menu) => (menu._id === updatedMenu._id ? updatedMenu : menu))
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="text-center mt-5">
+        <Spinner animation="border" variant="success" />
+        <p className="text-white mt-3">Cargando menús...</p>
+      </div>
+    );
+  }
+
   return (
     <div
       style={{
@@ -10,7 +108,7 @@ const ListMenu = ({ menus = [] }) => {
         padding: "40px 0",
       }}
     >
-      <Container>
+      <div className="container">
         <h2
           style={{
             color: "#ffffff",
@@ -21,112 +119,83 @@ const ListMenu = ({ menus = [] }) => {
           Listado de Menús
         </h2>
 
-        <Row className="g-4 justify-content-center">
-          {menus.length > 0 ? (
-            menus.map((menu) => (
-              <Col
-                key={menu._id || menu.id}
-                xs={12}
-                sm={6}
-                md={4}
-                lg={3}
-                className="d-flex justify-content-center"
-              >
-                <Card
-                  style={{
-                    backgroundColor: "#254630",
-                    color: "#ffffff",
-                    borderRadius: "16px",
-                    width: "100%",
-                    maxWidth: "280px",
-                    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
-                    overflow: "hidden",
-                    transition: "transform 0.2s ease",
-                  }}
-                  className="menu-card"
-                >
-                  <Card.Img
-                    variant="top"
-                    src={menu.imagen || "/placeholder.png"}
-                    alt={menu.nombre}
-                    style={{
-                      height: "180px",
-                      objectFit: "cover",
-                    }}
-                  />
-                  <Card.Body>
-                    <Card.Title
+        <Table
+          striped
+          bordered
+          responsive
+          style={{ borderRadius: "12px", overflow: "hidden" }}
+        >
+          <thead>
+            <tr>
+              <th className="tabla">Imagen</th>
+              <th className="tabla">Nombre</th>
+              <th className="tabla">Descripción</th>
+              <th className="tabla">Precio</th>
+              <th className="tabla">Categoría</th>
+              <th className="tabla">Acciones</th>
+            </tr>
+          </thead>
+          <tbody style={{ background: "#1E2A26 " }}>
+            {menus.length > 0 ? (
+              menus.map((menu) => (
+                <tr key={menu._id}>
+                  <td className="tabla">
+                    <img
+                      src={menu.imagen || "/placeholder.png"}
+                      alt={menu.nombre}
                       style={{
-                        fontSize: "1.2rem",
-                        fontWeight: "bold",
-                        color: "#1aaf4b",
+                        width: "70px",
+                        height: "70px",
+                        borderRadius: "8px",
                       }}
+                    />
+                  </td>
+                  <td className="tabla">{menu.nombre}</td>
+                  <td className="tabla">{menu.descripcion}</td>
+                  <td className="tabla">${menu.precio}</td>
+                  <td className="tabla">{menu.categoria}</td>
+                  <td className="text-center tabla">
+                    <Button
+                      variant="success"
+                      size="sm"
+                      className="m-2"
+                      onClick={() => handleEdit(menu)}
                     >
-                      {menu.nombre}
-                    </Card.Title>
-                    <Card.Text
-                      style={{
-                        color: "#ffffffcc",
-                        fontSize: "0.9rem",
-                      }}
+                      Editar
+                    </Button>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => confirmDelete(menu)}
                     >
-                      {menu.descripcion?.length > 80
-                        ? menu.descripcion.slice(0, 80) + "..."
-                        : menu.descripcion}
-                    </Card.Text>
-                    <Card.Text
-                      style={{
-                        fontWeight: "bold",
-                        color: "#1aaf4b",
-                        marginBottom: "1rem",
-                      }}
-                    >
-                      ${menu.precio}
-                    </Card.Text>
+                      Eliminar
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="text-center text-muted tabla">
+                  No hay menús cargados aún.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
 
-                    <div className="d-flex justify-content-between">
-                      <Button
-                        variant="success"
-                        style={{
-                          backgroundColor: "#1aaf4b",
-                          border: "none",
-                          borderRadius: "10px",
-                          fontWeight: "500",
-                          width: "48%",
-                        }}
-                      >
-                        Editar
-                      </Button>
-                      <Button
-                        variant="danger"
-                        style={{
-                          backgroundColor: "#8b0000",
-                          border: "none",
-                          borderRadius: "10px",
-                          fontWeight: "500",
-                          width: "48%",
-                        }}
-                      >
-                        Eliminar
-                      </Button>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))
-          ) : (
-            <p
-              style={{
-                color: "#ffffffb3",
-                textAlign: "center",
-                fontStyle: "italic",
-              }}
-            >
-              No hay menús cargados aún.
-            </p>
-          )}
-        </Row>
-      </Container>
+        <div className="mb-5">
+          <FormCreateMenu onMenuCreated={handleMenuCreated} /> 
+        </div>
+
+        {showModal && (
+          <ModalEditMenu
+            show={showModal}
+            onHide={() => setShowModal(false)}
+            menu={selectedMenu}
+            onUpdated={handleUpdate}
+          />
+        )}
+      </div>
     </div>
   );
 };

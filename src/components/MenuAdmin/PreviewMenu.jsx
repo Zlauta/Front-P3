@@ -25,7 +25,7 @@ const PreviewMenu = ({ nombre, descripcion, precio, categoria, imagen }) => {
                 width: "94%",
                 objectFit: "cover",
                 borderRadius: "16px",
-                margin: "3%"
+                margin: "3%",
               }}
             />
           ) : (
@@ -58,7 +58,9 @@ const PreviewMenu = ({ nombre, descripcion, precio, categoria, imagen }) => {
               {categoria || "Categoría"}
             </Card.Subtitle>
             <Card.Text style={{ fontSize: "0.95rem" }}>
-              {descripcion || "Aquí aparecerá la descripción del menú."}
+              {descripcion.length > 100
+                ? descripcion.substring(0, 100) + " ... "
+                : descripcion || "Aquí aparecerá la descripción del menú."}
             </Card.Text>
             <Card.Text
               style={{

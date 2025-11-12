@@ -3,8 +3,6 @@ import ListMenu from "../../components/MenuAdmin/ListMenu.jsx";
 
 const Menu = () => {
   return <>
-  <FormCreateMenu />
-
   <ListMenu />
   </>;
 };
