@@ -6,20 +6,19 @@ import {
   eliminarProducto,
 } from "../../service/products.service.js";
 import ModalEditMenu from "./ModalEditMenu.jsx";
+import FormCreateMenu from "./FormCreateMenu.jsx";
 
 const ListMenu = () => {
   const [menus, setMenus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [reload, setReload] = useState(false);
 
-  // 🔹 Cargar los menús al montar el componente
-  useEffect(() => {
-    const fetchMenus = async () => {
+     const fetchMenus = async () => {
       try {
         const data = await obtenerProductos();
-        console.log("🧠 Menús recibidos:", data);
-        setMenus(data || []);
+          setMenus(data || []);  
       } catch (error) {
         console.error(error);
         toast.error("Error al cargar los menús");
@@ -27,19 +26,54 @@ const ListMenu = () => {
         setLoading(false);
       }
     };
-    fetchMenus();
-  }, []);
 
-  // 🔹 Abrir modal de edición
+  useEffect(() => {
+    fetchMenus();
+  }, [reload]);
+
+   const handleMenuCreated = () => {
+    setReload((prev) => !prev); // 👈 dispara la recarga de la lista
+  };
+
   const handleEdit = (menu) => {
     setSelectedMenu(menu);
     setShowModal(true);
   };
 
+    const confirmDelete = (menu) => {
+    toast.info(
+      <div>
+        <p className="p-2">¿Seguro que deseas eliminar <b>{menu.nombre}</b>?</p>
+        <div style={{ display: "flex", justifyContent: "center", gap: "10px"}}>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => handleDelete(menu._id)}
+          >
+            Sí, eliminar
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => toast.dismiss()}
+          >
+            Cancelar
+          </Button>
+        </div>
+      </div>,
+      {
+        position: "top-center",
+        autoClose: false,
+        closeOnClick: false,
+        draggable: false,
+        hideProgressBar: true,
+      }
+    );
+  };
+
   // 🔹 Eliminar menú
   const handleDelete = async (id) => {
-    if (!window.confirm("¿Seguro que deseas eliminar este menú?")) return;
-
+    toast.dismiss();
     try {
       await eliminarProducto(id);
       setMenus((prev) => prev.filter((m) => m._id !== id));
@@ -91,8 +125,8 @@ const ListMenu = () => {
           responsive
           style={{ borderRadius: "12px", overflow: "hidden" }}
         >
-          <thead >
-            <tr >
+          <thead>
+            <tr>
               <th className="tabla">Imagen</th>
               <th className="tabla">Nombre</th>
               <th className="tabla">Descripción</th>
@@ -109,7 +143,11 @@ const ListMenu = () => {
                     <img
                       src={menu.imagen || "/placeholder.png"}
                       alt={menu.nombre}
-                      style={{ width: "70px", height: "70px", borderRadius: "8px" }}
+                      style={{
+                        width: "70px",
+                        height: "70px",
+                        borderRadius: "8px",
+                      }}
                     />
                   </td>
                   <td className="tabla">{menu.nombre}</td>
@@ -120,7 +158,7 @@ const ListMenu = () => {
                     <Button
                       variant="success"
                       size="sm"
-                      className="me-2"
+                      className="m-2"
                       onClick={() => handleEdit(menu)}
                     >
                       Editar
@@ -128,7 +166,7 @@ const ListMenu = () => {
                     <Button
                       variant="danger"
                       size="sm"
-                      onClick={() => handleDelete(menu._id)}
+                      onClick={() => confirmDelete(menu)}
                     >
                       Eliminar
                     </Button>
@@ -145,12 +183,16 @@ const ListMenu = () => {
           </tbody>
         </Table>
 
+        <div className="mb-5">
+          <FormCreateMenu onMenuCreated={handleMenuCreated} /> 
+        </div>
+
         {showModal && (
           <ModalEditMenu
             show={showModal}
-            handleClose={() => setShowModal(false)}
+            onHide={() => setShowModal(false)}
             menu={selectedMenu}
-            onUpdate={handleUpdate}
+            onUpdated={handleUpdate}
           />
         )}
       </div>

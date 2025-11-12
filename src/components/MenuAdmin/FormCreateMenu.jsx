@@ -1,15 +1,22 @@
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
-import { Form, Button, Container, Row, Col, Card, Spinner } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Container,
+  Row,
+  Col,
+  Card,
+  Spinner,
+} from "react-bootstrap";
 import PreviewMenu from "./PreviewMenu";
 import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
 import { uploadImageAndGetURL } from "../../service/storage.service.js";
-import clientAxios from "../../api/clientAxios.js";
 import { crearProducto } from "../../service/products.service.js";
 
-const FormCreateMenu = () => {
+const FormCreateMenu = ({ onMenuCreated }) => {
   const {
     register,
     handleSubmit,
@@ -71,11 +78,11 @@ const FormCreateMenu = () => {
 
       setImagen(null);
       setPreview(null);
+      if (onMenuCreated) onMenuCreated();
     } catch (error) {
       console.error(error);
       toast.error("Hubo un error al crear el menú. Inténtalo de nuevo.");
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -109,6 +116,19 @@ const FormCreateMenu = () => {
                     isInvalid={!!errors.nombre}
                     {...register("nombre", {
                       required: "El nombre es obligatorio",
+                      minLength: {
+                        value: 2,
+                        message: "El nombre debe tener entre 2 y 50 caracteres",
+                      },
+                      maxLength: {
+                        value: 50,
+                        message: "El nombre debe tener entre 2 y 50 caracteres",
+                      },
+                      pattern: {
+                        value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ0-9\s]+$/,
+                        message:
+                          "El nombre solo puede contener letras, números, espacios y caracteres en español",
+                      },
                     })}
                   />
                   <Form.Control.Feedback type="invalid">
@@ -127,7 +147,18 @@ const FormCreateMenu = () => {
                       required: "La descripción es obligatoria",
                       minLength: {
                         value: 10,
-                        message: "Debe tener al menos 10 caracteres",
+                        message:
+                          "Debe ingresar una descripción entre 10 y 500 caracteres",
+                      },
+                      maxLength: {
+                        value: 500,
+                        message:
+                          "Debe ingresar una descripción entre 10 y 500 caracteres",
+                      },
+                      pattern: {
+                        value: /^[a-zA-ZÀ-ÿ0-9.,;:¡!¿?\-()'"%°\s]{10,500}$/u,
+                        message:
+                          "La descripción solo puede contener letras, números y espacios",
                       },
                     })}
                   />
@@ -146,7 +177,14 @@ const FormCreateMenu = () => {
                     isInvalid={!!errors.precio}
                     {...register("precio", {
                       required: "El precio es obligatorio",
-                      min: { value: 0, message: "Debe ser positivo" },
+                      pattern: {
+                        value: /^\d+(\.\d{1,2})?$/,
+                        message:
+                          "El precio debe ser un número válido con hasta 2 decimales",
+                      },
+                      validate: (value) =>
+                        parseFloat(value) >= 0 ||
+                        "Debe ingresar un número válido para el precio",
                     })}
                   />
                   <Form.Control.Feedback type="invalid">
@@ -159,7 +197,10 @@ const FormCreateMenu = () => {
                   <Form.Select
                     isInvalid={!!errors.categoria}
                     {...register("categoria", {
-                      required: "Selecciona una categoría",
+                      required: "La categoría es obligatoria",
+                      validate: (value) =>
+                        ["comida", "bebida", "postre"].includes(value) ||
+                        "La categoría debe ser 'comida', 'bebida' o 'postre'",
                     })}
                   >
                     <option value="">Seleccionar categoría</option>
@@ -186,7 +227,21 @@ const FormCreateMenu = () => {
                       transition: "background-color 0.3s ease",
                     }}
                   >
-                    <input {...getInputProps()} />
+                    <input
+                      {...getInputProps()}
+                      {...register("imagen", {
+                        required: "La imagen es obligatoria",
+                        pattern: {
+                          value:
+                            /^https?:\/\/[^\s?#]+\.(?:jpe?g|png|gif|svg|webp|bmp|tiff?)(\?[^\s#]*)?$/i,
+                          message:
+                            "Solo se permiten imágenes (.jpg, .png, .gif, .svg, .webp, .bmp, .tiff)",
+                        },
+                        validate: (value) =>
+                          value.startsWith("https://") ||
+                          "La imagen debe usar HTTPS",
+                      })}
+                    />
                     {preview ? (
                       <img
                         src={preview}
@@ -206,6 +261,11 @@ const FormCreateMenu = () => {
                       </p>
                     )}
                   </div>
+                  {errors.imagen && (
+                    <div className="invalid-feedback d-block">
+                      {errors.imagen.message}
+                    </div>
+                  )}
                 </Form.Group>
 
                 <div className="text-center mt-4">
