@@ -4,3 +4,7 @@ body {
   padding: 0;
   min-height: 100vh;
 }
+.tabla {
+  background-color: #254630 !important;
+  color: #ffffff !important;
+}

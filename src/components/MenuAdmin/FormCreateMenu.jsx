@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
 import { uploadImageAndGetURL } from "../../service/storage.service.js";
 import clientAxios from "../../api/clientAxios.js";
+import { crearProducto } from "../../service/products.service.js";
 
 const FormCreateMenu = () => {
   const {
@@ -62,7 +63,7 @@ const FormCreateMenu = () => {
         imagen: downloadURL || "",
       };
 
-      await clientAxios.post("/productos", nuevoMenu);
+      await crearProducto(nuevoMenu);
 
       toast.success("Menú creado correctamente");
 
