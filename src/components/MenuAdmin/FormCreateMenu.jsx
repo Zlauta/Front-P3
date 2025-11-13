@@ -229,18 +229,8 @@ const FormCreateMenu = ({ onMenuCreated }) => {
                   >
                     <input
                       {...getInputProps()}
-                      {...register("imagen", {
-                        required: "La imagen es obligatoria",
-                        pattern: {
-                          value:
-                            /^https?:\/\/[^\s?#]+\.(?:jpe?g|png|gif|svg|webp|bmp|tiff?)(\?[^\s#]*)?$/i,
-                          message:
-                            "Solo se permiten imágenes (.jpg, .png, .gif, .svg, .webp, .bmp, .tiff)",
-                        },
-                        validate: (value) =>
-                          value.startsWith("https://") ||
-                          "La imagen debe usar HTTPS",
-                      })}
+                      accept="image/*"
+                      
                     />
                     {preview ? (
                       <img
