@@ -7,8 +7,9 @@ import SobreNosotros from "../pages/user/SobreNosotros";
 import Contacto from "../pages/user/Contacto";
 import Home from "../pages/user/Home";
 
-import Login from "../pages/auth/Login";
-import Register from "../pages/auth/Register";
+import Login from "../pages/user/Login";
+import Register from "../pages/user/Register";
+import NewPassword from "../pages/user/NewPassword";
 
 const PublicRoute = () => {
   return (
@@ -21,6 +22,7 @@ const PublicRoute = () => {
 
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/password" element={<NewPassword />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
