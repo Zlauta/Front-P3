@@ -4,12 +4,11 @@ import Form from "react-bootstrap/Form";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-//import emailjs from "@emailjs/browser";
-
 import {
-  obtenerUsuariosDeLocalStorage,
-  guardarEnLocalStorage,
-} from "../../utils/localStorage.users";
+  obtenerUsuarios,
+  registrarUsuario,
+} from "../../service/users.service.js";
+//import emailjs from "@emailjs/browser";
 
 const FormRegister = () => {
   const {
@@ -24,6 +23,7 @@ const FormRegister = () => {
       email: "",
       password: "",
       confirmPassword: "",
+      telefono: "",
     },
   });
 
@@ -35,34 +35,30 @@ const FormRegister = () => {
 
   const navegacion = useNavigate();
 
-  function onSubmit(data) {
-    console.log(data);
-
-    const usuariosDeLaDb = obtenerUsuariosDeLocalStorage();
-    const usuario = usuariosDeLaDb.find(
-      (usuarioLS) => usuarioLS.email === data.email
-    );
-
-    console.log(usuario);
-    if (usuario) {
-      Swal.fire({
-        icon: "error",
-        title: "Ingresá otro correo electronico ...",
-        text: "El usuario ya existe en la base de datos",
-        iconColor: "#1aaf4b",
-        confirmButtonColor: "#1aaf4b",
-        cancelButtonColor: "#254630",
-        customClass: {
-          popup: "small-alert",
-        },
-      });
-
-      reset();
-      return;
-    }
-
+  async function onSubmit(data) {
     try {
-      if (data.password != data.confirmPassword) {
+      const usuariosDeLaDb = await obtenerUsuarios();
+      const usuarioExistente = usuariosDeLaDb.find(
+        (usuario) => usuario.email === data.email
+      );
+      console.log(usuarioExistente);
+
+      if (usuarioExistente) {
+        Swal.fire({
+          icon: "error",
+          title: "Ingresá otro correo electrónico...",
+          text: "El usuario ya existe en la base de datos",
+          iconColor: "#1aaf4b",
+          confirmButtonColor: "#1aaf4b",
+          cancelButtonColor: "#254630",
+          customClass: { popup: "small-alert" },
+        });
+        reset();
+        return;
+      }
+
+      // 2. Validar contraseñas iguales
+      if (data.password !== data.confirmPassword) {
         Swal.fire({
           icon: "error",
           title: "Las contraseñas deben ser iguales!",
@@ -70,75 +66,49 @@ const FormRegister = () => {
           iconColor: "#1aaf4b",
           confirmButtonColor: "#1aaf4b",
           cancelButtonColor: "#254630",
-          customClass: {
-            popup: "small-alert",
-          },
+          customClass: { popup: "small-alert" },
         });
         return;
       }
 
+      // 3. Crear objeto nuevo usuario
       const nuevoUsuario = {
-        id: Date.now(),
-        nombreUsuario: data.userName,
+        nombre: data.userName,
         email: data.email,
-        password: data.password,
+        contrasenia: data.password,
+        telefono: data.telefono,
         createdAt: new Date().toISOString(),
-        estado: "pendiente",
         rol: "cliente",
       };
 
-      console.log(nuevoUsuario);
-
-      const usuariosDeLocalStorage = obtenerUsuariosDeLocalStorage();
-      console.log(usuariosDeLocalStorage);
-      guardarEnLocalStorage([...usuariosDeLocalStorage, nuevoUsuario]);
+      // 4. Registrar en Mongo
+      await registrarUsuario(nuevoUsuario);
 
       Swal.fire({
         position: "top-end",
         icon: "success",
-        title: "El formulario ha sido enviado",
+        title: "Usuario registrado correctamente",
         showConfirmButton: false,
         iconColor: "#1aaf4b",
         confirmButtonColor: "#1aaf4b",
         cancelButtonColor: "#254630",
-        customClass: {
-          popup: "small-alert",
-        },
+        customClass: { popup: "small-alert" },
         timer: 1500,
       });
+
       reset();
       navegacion("/");
     } catch (error) {
       Swal.fire({
         title: "Error al registrar usuario",
         icon: "error",
-        iconColor: "##1aaf4b",
-        confirmButtonColor: "##1aaf4b",
+        iconColor: "#1aaf4b",
+        confirmButtonColor: "#1aaf4b",
         cancelButtonColor: "#254630",
-        customClass: {
-          popup: "small-alert",
-        },
+        customClass: { popup: "small-alert" },
       });
       console.error(error);
     }
-
-    /*   emailjs
-      .send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID, // SERVICE_ID
-        import.meta.env.VITE_EMAILJS_TEMPLATE_REGISTER, // TEMPLATE_ID
-        {
-          user_name: data.userName,
-          user_email: data.email,
-          created_at: new Date().toLocaleString(),
-        },
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY //  PUBLIC_KEY
-      )
-      .then((response) => {
-        console.log("Correo enviado con éxito", response.status, response.text);
-      })
-      .catch((err) => {
-        console.error("Error al enviar el correo", err);
-      }); */
   }
 
   return (
@@ -231,6 +201,25 @@ const FormRegister = () => {
         />
         <Form.Control.Feedback type="invalid">
           {errors.confirmPassword?.message}
+        </Form.Control.Feedback>
+      </Form.Group>
+      <Form.Group className="label mb-3" controlId="formBasicTelefono">
+        <Form.Label>Teléfono</Form.Label>
+        <Form.Control
+          type="tel"
+          placeholder="Ingrese su número de teléfono"
+          isInvalid={errors.telefono}
+          {...register("telefono", {
+            required: "El teléfono es un campo requerido",
+            pattern: {
+              value: /^\+?[1-9]\d{1,14}$/,
+              message:
+                "El teléfono debe estar en formato internacional, por ejemplo: +5493811234567",
+            },
+          })}
+        />
+        <Form.Control.Feedback type="invalid">
+          {errors.telefono?.message}
         </Form.Control.Feedback>
       </Form.Group>
 

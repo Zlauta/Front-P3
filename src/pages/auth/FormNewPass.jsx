@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { obtenerUsuariosDeLocalStorage } from "../../utils/localStorage.users";
+import { obtenerUsuarios } from "../../service/users.service";
 
 const FormNewPass = () => {
   const {
@@ -25,13 +25,13 @@ const FormNewPass = () => {
     navigate("/");
   };
 
-  function onSubmit(data) {
-    const usuariosDeLaDb = obtenerUsuariosDeLocalStorage();
-    const usuario = usuariosDeLaDb.find(
-      (usuarioLS) => usuarioLS.email === data.email
+  async function onSubmit(data) {
+    const usuariosDeLaDb = await obtenerUsuarios();
+    const usuarioExistente = usuariosDeLaDb.find(
+      (usuario) => usuario.email === data.email
     );
 
-    if (!usuario) {
+    if (!usuarioExistente) {
       Swal.fire({
         icon: "question",
         title: "El usuario no existe...",

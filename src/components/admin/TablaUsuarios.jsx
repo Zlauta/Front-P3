@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { Table, Button, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
 import "./TablaUsuarios.css";
+import "../../api/clientAxios.js";
 import {
-  obtenerUsuariosDeLocalStorage,
-  guardarEnLocalStorage,
-} from "../../utils/localStorage.users";
+  actualizarUsuario,
+  obtenerUsuarios,
+  eliminarUsuario,
+} from "../../service/users.service.js";
 
 function formatearFecha(iso) {
   try {
@@ -19,7 +21,14 @@ export default function TablaUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
   const [ediciones, setEdiciones] = useState({});
 
-  const cargar = () => setUsuarios(obtenerUsuariosDeLocalStorage());
+  const cargar = async () => {
+    try {
+      const data = await obtenerUsuarios();
+      setUsuarios(data);
+    } catch (error) {
+      console.error("Error al cargar usuarios:", error);
+    }
+  };
 
   useEffect(() => {
     cargar();
@@ -40,34 +49,79 @@ export default function TablaUsuarios() {
     }));
   };
 
-  const guardarCambios = (id) => {
+  const guardarCambios = async (id) => {
     const cambios = ediciones[id];
     if (!cambios) return;
 
-    const actualizados = usuarios.map((u) =>
-      u.id === id ? { ...u, ...cambios } : u
-    );
+    try {
+      await actualizarUsuario(id, cambios);
+      await cargar();
+      setEdiciones((prev) => {
+        const copia = { ...prev };
+        delete copia[id];
+        return copia;
+      });
 
-    guardarEnLocalStorage(actualizados);
-    setUsuarios(actualizados);
+      Swal.fire({
+        title: "Rol de usuario, actualizado!",
+        icon: "success",
+        iconColor: "#1aaf4b ",
+        confirmButtonColor: "#1aaf4b ",
+        timer: 1200,
+        showConfirmButton: false,
+        customClass: {
+          popup: "small-alert",
+        },
+      });
+    } catch (error) {
+      console.error("Error al guardar actualizar rol de usuario:", error);
+      Swal.fire({
+        title: "Error al actualizar nuevo rol de usuario",
+        icon: "error",
+        confirmButtonColor: "#1aaf4b ",
+      });
+    }
+  };
 
-    setEdiciones((prev) => {
-      const copia = { ...prev };
-      delete copia[id];
-      return copia;
+  const manejarEliminar = async (id) => {
+    const result = await Swal.fire({
+      title: "¿Confirma que quiere eliminar este usuario?",
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#1aaf4b",
+      cancelButtonColor: "#042d12ff",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
     });
 
-    Swal.fire({
-      title: "Cambios guardados",
-      icon: "success",
-      iconColor: "#1aaf4b ",
-      confirmButtonColor: "#1aaf4b ",
-      timer: 1200,
-      showConfirmButton: false,
-      customClass: {
-        popup: "small-alert",
-      },
-    });
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    try {
+      await eliminarUsuario(id);
+      await cargar();
+
+      Swal.fire({
+        title: "Usuario eliminado",
+        icon: "success",
+        iconColor: "#1aaf4b ",
+        confirmButtonColor: "#1aaf4b ",
+        timer: 1200,
+        showConfirmButton: false,
+        customClass: {
+          popup: "small-alert",
+        },
+      });
+    } catch (error) {
+      console.error("Error al eliminar usuario:", error);
+      Swal.fire({
+        title: "Error al eliminar usuario",
+        icon: "error",
+        confirmButtonColor: "#1aaf4b ",
+      });
+    }
   };
 
   return (
@@ -79,25 +133,26 @@ export default function TablaUsuarios() {
             <th>#</th>
             <th>Nombre</th>
             <th>Email</th>
+            <th>Telefono</th>
             <th>Rol</th>
-            <th>Estado</th>
+            <th>Fecha Reg</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {usuarios.length ? (
             usuarios.map((usuario, idx) => (
-              <tr key={usuario.id}>
+              <tr key={usuario._id}>
                 <td>{idx + 1}</td>
-                <td>{usuario.nombreUsuario}</td>
+                <td>{usuario.nombre}</td>
                 <td>{usuario.email}</td>
-
+                <td>{usuario.telefono}</td>
                 <td>
                   <Form.Select
-                    value={ediciones[usuario.id]?.rol ?? usuario.rol}
-                    onChange={(e) => manejarCambio(usuario.id, e.target.value)}
+                    value={ediciones[usuario._id]?.rol ?? usuario.rol}
+                    onChange={(e) => manejarCambio(usuario._id, e.target.value)}
                   >
-                    <option value="administrador">administrador</option>
+                    <option value="admin">administrador</option>
                     <option value="cliente">cliente</option>
                   </Form.Select>
                 </td>
@@ -107,10 +162,18 @@ export default function TablaUsuarios() {
                     className="btn-tabla"
                     size="sm"
                     variant="secondary"
-                    onClick={() => guardarCambios(usuario.id)}
-                    disabled={!ediciones[usuario.id]}
+                    onClick={() => guardarCambios(usuario._id)}
+                    disabled={!ediciones[usuario._id]}
                   >
-                    Guardar cambios
+                    Cambiar Rol
+                  </Button>
+                  <Button
+                    className="btn-tabla btn-eliminar"
+                    size="sm"
+                    variant="danger"
+                    onClick={() => manejarEliminar(usuario._id)}
+                  >
+                    Eliminar
                   </Button>
                 </td>
               </tr>

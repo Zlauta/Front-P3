@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { obtenerUsuariosDeLocalStorage } from "../../utils/localStorage.users";
+import { loginUser } from "../../service/auth.service";
 
 const formLogin = () => {
   const {
@@ -26,111 +26,17 @@ const formLogin = () => {
     navegate("/register");
   };
 
-  const handleNewPassword = () => {
-    Swal.fire({
-      icon: "success",
-      iconColor: "#1aaf4b",
-      title: "¡Listo!",
-      text: "Tu contraseña está en proceso de ser recuperada",
-      confirmButtonColor: "#1aaf4b",
-      cancelButtonColor: "#254630",
-    });
-    navegate("/");
-  };
-
-  function onSubmit(data) {
-    console.log(data);
-
-    const usuariosDeLaDb = obtenerUsuariosDeLocalStorage();
-    const usuario = usuariosDeLaDb.find(
-      (usuarioLS) => usuarioLS.email === data.email
-    );
-
-    console.log(usuario);
-    if (!usuario) {
-      Swal.fire({
-        icon: "error",
-        title: "Resgistrate!",
-        text: "El usuario no existe en la base de datos",
-        iconColor: "##1aaf4b",
-        confirmButtonColor: "##1aaf4b",
-        cancelButtonColor: "#254630",
-        customClass: {
-          popup: "small-alert",
-        },
-      });
+  async function onSubmit(data) {
+    try {
+      const message = await loginUser(data);
+      alert(message);
       reset();
-      return;
+      navegacion("/");
+    } catch (error) {
+      console.log(error);
     }
-    if (usuario.password != data.password) {
-      Swal.fire({
-        icon: "warning",
-        title: "Contraseña incorrecta",
-        text: "Después de tres intentos incorrectos se bloqueará el usuario",
-        iconColor: "##1aaf4b",
-        confirmButtonColor: "##1aaf4b",
-        cancelButtonColor: "#254630",
-        customClass: {
-          popup: "small-alert",
-        },
-      });
-      reset();
-      return;
-    }
-
-    // if (usuario.estado == "pendiente") {
-    //   Swal.fire({
-    //     icon: "warning",
-    //     title: "Usuario pendiente",
-    //     text: "El usuario todavía no ha sido aprobado",
-    //     iconColor: "#1aaf4b",
-    //     confirmButtonColor: "#1aaf4b",
-    //     cancelButtonColor: "#254630",
-    //     customClass: {
-    //       popup: "small-alert",
-    //     },
-    //   });
-    //   reset();
-    //   return;
-    // }
-
-    if (usuario.estado == "suspendido") {
-      Swal.fire({
-        icon: "warning",
-        title: "Usuario Suspendido",
-        text: "El usuario ha sido suspendido",
-        iconColor: "#1aaf4b",
-        confirmButtonColor: "#1aaf4b",
-        cancelButtonColor: "#254630",
-        customClass: {
-          popup: "small-alert",
-        },
-      });
-      reset();
-      return;
-    }
-    const usuarioLogueado = {
-      email: data.email,
-      loginAt: new Date().toISOString(),
-    };
-    sessionStorage.setItem("usuario", JSON.stringify(usuarioLogueado));
-
-    Swal.fire({
-      title: "Usuario Logueado",
-      icon: "success",
-      draggable: true,
-      iconColor: "##1aaf4b",
-      confirmButtonColor: "##1aaf4b",
-      cancelButtonColor: "#254630",
-      customClass: {
-        popup: "small-alert",
-      },
-    });
-    reset();
-    navegate("/");
   }
 
-  //return <div>formulario de Login</div>;
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Form.Group className="label mb-3" controlId="formBasicEmail">
