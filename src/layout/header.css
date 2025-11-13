@@ -1,4 +1,4 @@
-/* Header navbar styles using the color palette provided by the user */
+
 :root{
   --green-dark: #122117; /* rgb(18,33,23) */
   --green-light: #1aaf4b; /* rgb(26,175,75) */
@@ -7,7 +7,8 @@
 }
 
 .header-navbar{
-  background: var(--green-dark);
+  background:linear-gradient(180deg,var(--green-dark) 0%,var(--green-transparent) 100%);
+  color:var(--white);
   padding-top: 0.4rem;
   padding-bottom: 0.4rem;
 }
@@ -16,8 +17,8 @@
   width: 80px;
   height: 80px;
   object-fit: cover;
-  border-radius: 50%; /* round */
-  background: transparent; /* remove boxed background */
+  border-radius: 50%; 
+  background: transparent;
   padding: 0;
 }
 
@@ -47,7 +48,7 @@
   color: var(--white);
 }
 
-/* Small screens tweaks */
+
 @media (max-width: 991px){
   .brand-text{ display: none; }
   .btn-cta{ width: 100%; margin-top: 0.5rem; }
