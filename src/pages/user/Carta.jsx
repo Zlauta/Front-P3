@@ -1,5 +1,12 @@
+
+import MenuPublicList from "../../components/menuUser/PublicMenu.jsx";
+import Header from "../../layout/Header.jsx";
+
 const Carta = () => {
-  return <div>Carta</div>;
+  return<>
+  <Header />
+  <MenuPublicList />
+  </> ;
 };
 
 export default Carta;

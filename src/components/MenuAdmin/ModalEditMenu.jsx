@@ -142,7 +142,6 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
             </Form.Control.Feedback>
           </Form.Group>
 
-          {/* 🖼 Imagen */}
           <Form.Group>
             <Form.Label>Imagen</Form.Label>
             <div
