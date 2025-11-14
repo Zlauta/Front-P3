@@ -9,8 +9,8 @@ const MenuCard = ({ nombre, descripcion, precio, categoria, imagen }) => {
   const toggleDescription = () => setShowFullDescription(!showFullDescription);
 
   const shortDescription =
-    descripcion && descripcion.length > 80
-      ? descripcion.substring(0, 80) + " ... "
+    descripcion && descripcion.length > 100
+      ? descripcion.substring(0, 100) + " ... "
       : descripcion;
 
   return (
@@ -54,7 +54,7 @@ const MenuCard = ({ nombre, descripcion, precio, categoria, imagen }) => {
                 onLoad={() => setImageLoaded(true)}
                 onError={() => setImageError(true)}
                 style={{
-                  height: "100%",
+                  height: "200px",
                   width: "94%",
                   objectFit: "cover",
                   borderRadius: "16px",

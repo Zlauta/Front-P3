@@ -3,7 +3,7 @@ import { Container, Row, Col, Spinner, Alert } from "react-bootstrap";
 import { obtenerProductos } from "../../service/products.service.js";
 import MenuCard from "./MenuCard.jsx";
 
-const MenuPublicList = () => {
+const PublicMenu = () => {
   const [menus, setMenus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,7 +51,10 @@ const MenuPublicList = () => {
   if (menus.length === 0) {
     return (
       <Container className="py-5">
-        <Alert className="text-center" style={{background: "#254630", color: "#fff"}}>
+        <Alert
+          className="text-center"
+          style={{ background: "#254630", color: "#fff" }}
+        >
           No hay menús disponibles por el momento
         </Alert>
       </Container>
@@ -64,16 +67,10 @@ const MenuPublicList = () => {
         Nuestra Carta
       </h2>
 
-      <Row className="g-4 justify-content-center">
+      <Row className="g-4 justify-content-start">
         {menus.map((menu) => (
-          <Col key={menu._id} xs={12} md={10} lg={8}>
-            <MenuCard
-              nombre={menu.nombre}
-              categoria={menu.categoria}
-              descripcion={menu.descripcion}
-              precio={menu.precio}
-              imagen={menu.imagen}
-            />
+          <Col key={menu._id} xs={12} sm={10} lg={8}>
+            <MenuCard {...menu} />
           </Col>
         ))}
       </Row>
@@ -81,4 +78,4 @@ const MenuPublicList = () => {
   );
 };
 
-export default MenuPublicList;
+export default PublicMenu;
