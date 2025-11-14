@@ -69,13 +69,13 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
 
   return (
     <Modal show={show} onHide={onHide} centered backdrop="static">
-      <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+      <Form noValidate onSubmit={handleSubmit(onSubmit)} style={{background:"#254630"}}>
         <Modal.Header closeButton>
-          <Modal.Title>Editar Menú</Modal.Title>
+          <Modal.Title style={{color:"#fff"}}>Editar Menú</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="mb-3">
-            <Form.Label>Nombre</Form.Label>
+            <Form.Label style={{color:"#fff"}}>Nombre</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ej: Milanesa con papas"
@@ -91,7 +91,7 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Descripción</Form.Label>
+            <Form.Label style={{color:"#fff"}}>Descripción</Form.Label>
             <Form.Control
               as="textarea"
               rows={3}
@@ -111,7 +111,7 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Precio ($)</Form.Label>
+            <Form.Label style={{color:"#fff"}}>Precio ($)</Form.Label>
             <Form.Control
               type="number"
               step="0.01"
@@ -127,7 +127,7 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Categoría</Form.Label>
+            <Form.Label style={{color:"#fff"}}>Categoría</Form.Label>
             <Form.Select
               isInvalid={!!errors.categoria}
               {...register("categoria", { required: "Selecciona una categoría" })}
@@ -143,7 +143,7 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Imagen</Form.Label>
+            <Form.Label style={{color:"#fff"}}>Imagen</Form.Label>
             <div
               {...getRootProps()}
               style={{
