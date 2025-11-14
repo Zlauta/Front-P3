@@ -32,7 +32,7 @@ const ListMenu = () => {
   }, [reload]);
 
    const handleMenuCreated = () => {
-    setReload((prev) => !prev); // 👈 dispara la recarga de la lista
+    setReload((prev) => !prev); 
   };
 
   const handleEdit = (menu) => {
@@ -71,7 +71,6 @@ const ListMenu = () => {
     );
   };
 
-  // 🔹 Eliminar menú
   const handleDelete = async (id) => {
     toast.dismiss();
     try {
@@ -84,7 +83,7 @@ const ListMenu = () => {
     }
   };
 
-  // 🔹 Actualizar menú tras editar
+
   const handleUpdate = (updatedMenu) => {
     setMenus((prev) =>
       prev.map((menu) => (menu._id === updatedMenu._id ? updatedMenu : menu))
