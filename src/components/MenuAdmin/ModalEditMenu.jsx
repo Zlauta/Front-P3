@@ -4,7 +4,10 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { actualizarProducto } from "../../service/products.service.js";
 import { useDropzone } from "react-dropzone";
-import { deleteImageByURL, uploadImageAndGetURL } from "../../service/storage.service.js";
+import {
+  deleteImageByURL,
+  uploadImageAndGetURL,
+} from "../../service/storage.service.js";
 
 const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
   const {
@@ -60,7 +63,7 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
 
       onUpdated(result);
       onHide();
-      reset()
+      reset();
     } catch (error) {
       console.error(error);
       toast.error("No se pudo actualizar el menú");
@@ -69,20 +72,36 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
 
   return (
     <Modal show={show} onHide={onHide} centered backdrop="static">
-      <Form noValidate onSubmit={handleSubmit(onSubmit)} style={{background:"#254630"}}>
+      <Form
+        noValidate
+        onSubmit={handleSubmit(onSubmit)}
+        style={{ background: "#254630" }}
+      >
         <Modal.Header closeButton>
-          <Modal.Title style={{color:"#fff"}}>Editar Menú</Modal.Title>
+          <Modal.Title style={{ color: "#fff" }}>Editar Menú</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group className="mb-3">
-            <Form.Label style={{color:"#fff"}}>Nombre</Form.Label>
+          <Form.Group className="mb-3" controlId="nombre">
+            <Form.Label>Nombre del producto</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Ej: Milanesa con papas"
+              placeholder="Ej: Pizza Napolitana"
               isInvalid={!!errors.nombre}
               {...register("nombre", {
                 required: "El nombre es obligatorio",
-                minLength: { value: 3, message: "Debe tener al menos 3 caracteres" },
+                minLength: {
+                  value: 2,
+                  message: "El nombre debe tener entre 2 y 50 caracteres",
+                },
+                maxLength: {
+                  value: 50,
+                  message: "El nombre debe tener entre 2 y 50 caracteres",
+                },
+                pattern: {
+                  value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ0-9\s]+$/,
+                  message:
+                    "El nombre solo puede contener letras, números, espacios y caracteres en español",
+                },
               })}
             />
             <Form.Control.Feedback type="invalid">
@@ -90,8 +109,8 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
             </Form.Control.Feedback>
           </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label style={{color:"#fff"}}>Descripción</Form.Label>
+          <Form.Group className="mb-3" controlId="descripcion">
+            <Form.Label>Descripción</Form.Label>
             <Form.Control
               as="textarea"
               rows={3}
@@ -101,7 +120,18 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
                 required: "La descripción es obligatoria",
                 minLength: {
                   value: 10,
-                  message: "Debe tener al menos 10 caracteres",
+                  message:
+                    "Debe ingresar una descripción entre 10 y 500 caracteres",
+                },
+                maxLength: {
+                  value: 500,
+                  message:
+                    "Debe ingresar una descripción entre 10 y 500 caracteres",
+                },
+                pattern: {
+                  value: /^[a-zA-ZÀ-ÿ0-9.,;:¡!¿?\-()'"%°\s]{10,500}$/u,
+                  message:
+                    "La descripción solo puede contener letras, números y espacios",
                 },
               })}
             />
@@ -110,15 +140,24 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
             </Form.Control.Feedback>
           </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label style={{color:"#fff"}}>Precio ($)</Form.Label>
+          <Form.Group className="mb-3" controlId="precio">
+            <Form.Label>Precio ($)</Form.Label>
             <Form.Control
               type="number"
               step="0.01"
+              min="0"
+              placeholder="Ej: 1200"
               isInvalid={!!errors.precio}
               {...register("precio", {
                 required: "El precio es obligatorio",
-                min: { value: 0, message: "Debe ser positivo" },
+                pattern: {
+                  value: /^\d+(\.\d{1,2})?$/,
+                  message:
+                    "El precio debe ser un número válido con hasta 2 decimales",
+                },
+                validate: (value) =>
+                  parseFloat(value) >= 0 ||
+                  "Debe ingresar un número válido para el precio",
               })}
             />
             <Form.Control.Feedback type="invalid">
@@ -126,11 +165,16 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
             </Form.Control.Feedback>
           </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label style={{color:"#fff"}}>Categoría</Form.Label>
+          <Form.Group className="mb-3" controlId="categoria">
+            <Form.Label>Categoría</Form.Label>
             <Form.Select
               isInvalid={!!errors.categoria}
-              {...register("categoria", { required: "Selecciona una categoría" })}
+              {...register("categoria", {
+                required: "La categoría es obligatoria",
+                validate: (value) =>
+                  ["comida", "bebida", "postre"].includes(value) ||
+                  "La categoría debe ser 'comida', 'bebida' o 'postre'",
+              })}
             >
               <option value="">Seleccionar categoría</option>
               <option value="comida">Comida</option>
@@ -142,38 +186,45 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
             </Form.Control.Feedback>
           </Form.Group>
 
-          <Form.Group>
-            <Form.Label style={{color:"#fff"}}>Imagen</Form.Label>
+          <Form.Group className="mb-3">
+            <Form.Label>Imagen del menú</Form.Label>
             <div
               {...getRootProps()}
               style={{
                 border: "2px dashed #1aaf4b",
-                borderRadius: "10px",
-                padding: "20px",
+                borderRadius: "12px",
+                padding: "30px",
                 textAlign: "center",
                 backgroundColor: isDragActive ? "#254630" : "transparent",
                 cursor: "pointer",
                 transition: "background-color 0.3s ease",
               }}
             >
-              <input {...getInputProps()} />
+              <input {...getInputProps()} accept="image/*" />
               {preview ? (
                 <img
                   src={preview}
                   alt="Preview"
                   style={{
                     maxWidth: "100%",
-                    height: "180px",
+                    height: "200px",
                     objectFit: "cover",
-                    borderRadius: "10px",
+                    borderRadius: "12px",
                   }}
                 />
               ) : (
-                <p style={{ color: "#fff" }}>
-                  Arrastra o haz clic para seleccionar una nueva imagen
+                <p style={{ color: "#ffffff" }}>
+                  {isDragActive
+                    ? "Suelta la imagen aquí..."
+                    : "Arrastra o haz clic para seleccionar una imagen"}
                 </p>
               )}
             </div>
+            {errors.imagen && (
+              <div className="invalid-feedback d-block">
+                {errors.imagen.message}
+              </div>
+            )}
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
