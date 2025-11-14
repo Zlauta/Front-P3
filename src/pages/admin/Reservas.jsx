@@ -7,65 +7,81 @@ export default function ReservasAdmin() {
   const [editReserva, setEditReserva] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // -------------------------------
-  // Cargar datos (simulación)
-  // -------------------------------
+  // ===========================================
+  // CARGAR RESERVAS DESDE EL BACKEND
+  // ===========================================
   useEffect(() => {
-    // Aquí después haces fetch("tu-api/reservas")
-    setReservas([
-      {
-        id: 1,
-        nombre: "Leonel",
-        mesa: 3,
-        cantidadPersonas: 4,
-        fecha: "2025-11-10",
-        hora: "20:30",
-        notas: "Ventana",
-      },
-      {
-        id: 2,
-        nombre: "Maria",
-        mesa: 1,
-        cantidadPersonas: 2,
-        fecha: "2025-11-11",
-        hora: "21:00",
-        notas: "",
-      },
-    ]);
+    const fetchReservas = async () => {
+      const res = await fetch("http://localhost:3000/api/reservas");
+      const data = await res.json();
+      setReservas(data);
+    };
+
+    fetchReservas();
   }, []);
 
-  // -------------------------------
-  // Eliminar reserva
-  // -------------------------------
-  const handleDelete = (id) => {
+  // ===========================================
+  // ELIMINAR RESERVA
+  // ===========================================
+  const handleDelete = async (_id) => {
     if (!confirm("¿Seguro que deseas eliminar esta reserva?")) return;
 
-    setReservas(reservas.filter((r) => r.id !== id));
+    try {
+      const res = await fetch(`http://localhost:3000/api/reservas/${_id}`, {
+        method: "DELETE",
+      });
 
-    // Aquí iría tu DELETE:
-    // await fetch(`/api/reservas/${id}`, { method: "DELETE" });
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "No se pudo eliminar la reserva");
+        return;
+      }
+
+      // 🔥 Eliminar del estado
+      setReservas((prev) => prev.filter((r) => r._id !== _id));
+    } catch (error) {
+      console.error(error);
+      alert("Error de conexión");
+    }
   };
 
-  // -------------------------------
-  // Abrir modal de edición
-  // -------------------------------
+  // ===========================================
+  // ABRIR MODAL CON LA RESERVA A EDITAR
+  // ===========================================
   const openEdit = (reserva) => {
-    setEditReserva(reserva);
+    setEditReserva({ ...reserva });
     setShowModal(true);
   };
 
-  // -------------------------------
-  // Guardar cambios
-  // -------------------------------
-  const handleSave = () => {
-    setReservas(
-      reservas.map((r) => (r.id === editReserva.id ? editReserva : r))
-    );
+  // ===========================================
+  // GUARDAR CAMBIOS (PUT)
+  // ===========================================
+  const handleSave = async () => {
+    const _id = editReserva._id;
 
-    // Aquí tu PUT:
-    // await fetch(`/api/reservas/${id}`, { method: "PUT", body: JSON.stringify(editReserva) });
+    try {
+      const res = await fetch(`http://localhost:3000/api/reservas/${_id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editReserva),
+      });
 
-    setShowModal(false);
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "No se pudo actualizar la reserva");
+        return;
+      }
+
+      // 🔥 Actualizar estado local
+      setReservas((prev) => prev.map((r) => (r._id === _id ? editReserva : r)));
+
+      setShowModal(false);
+    } catch (error) {
+      console.error(error);
+      alert("Error al actualizar la reserva");
+    }
   };
 
   return (
@@ -78,7 +94,7 @@ export default function ReservasAdmin() {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Nombre</th>
+              <th>Usuario</th>
               <th>Mesa</th>
               <th>Personas</th>
               <th>Fecha</th>
@@ -87,16 +103,18 @@ export default function ReservasAdmin() {
               <th>Acciones</th>
             </tr>
           </thead>
+
           <tbody>
             {reservas.map((res) => (
-              <tr key={res.id}>
-                <td>{res.id}</td>
-                <td>{res.nombre}</td>
+              <tr key={res._id}>
+                <td>{res._id}</td>
+                <td>{res.usuario}</td>
                 <td>{res.mesa}</td>
                 <td>{res.cantidadPersonas}</td>
                 <td>{res.fecha}</td>
                 <td>{res.hora}</td>
                 <td>{res.notas || "-"}</td>
+
                 <td>
                   <Button
                     variant="warning"
@@ -110,7 +128,7 @@ export default function ReservasAdmin() {
                   <Button
                     variant="danger"
                     size="sm"
-                    onClick={() => handleDelete(res.id)}
+                    onClick={() => handleDelete(res._id)}
                   >
                     Eliminar
                   </Button>
@@ -130,13 +148,13 @@ export default function ReservasAdmin() {
 
           <Modal.Body>
             <div className="mb-3">
-              <label>Nombre</label>
+              <label>Usuario</label>
               <input
                 type="text"
                 className="form-control"
-                value={editReserva.nombre}
+                value={editReserva.usuario}
                 onChange={(e) =>
-                  setEditReserva({ ...editReserva, nombre: e.target.value })
+                  setEditReserva({ ...editReserva, usuario: e.target.value })
                 }
               />
             </div>
@@ -154,7 +172,7 @@ export default function ReservasAdmin() {
             </div>
 
             <div className="mb-3">
-              <label>Cantidad de Personas</label>
+              <label>Personas</label>
               <input
                 type="number"
                 className="form-control"

@@ -17,10 +17,40 @@ export default function FormReserva() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Datos enviados:", form);
-    // Aquí va tu fetch al backend
+
+    try {
+      const res = await fetch("http://localhost:3000/api/reservas", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Error al crear la reserva");
+        return;
+      }
+
+      alert("Reserva creada con éxito");
+
+      // Opcional: limpiar el formulario
+      setForm({
+        usuario: "",
+        mesa: "",
+        cantidadPersonas: "",
+        fecha: "",
+        hora: "",
+        notas: "",
+      });
+    } catch (error) {
+      console.error("Error al enviar la reserva:", error);
+      alert("Hubo un problema al conectar con el servidor");
+    }
   };
 
   return (
