@@ -2,13 +2,16 @@ import React from "react";
 import SobreNosotros from "./SobreNosotros";
 import Galeria from "./Galeria";
 import Resenias from "./Resenias";
+import Header from "../../layout/Header.jsx";
 
 const Home = () => {
   return (
-    <main>
-      <section id="sobre-nosotros">
-        <SobreNosotros />
-      </section>
+    <>
+      <Header />
+      <main>
+        <section id="sobre-nosotros">
+          <SobreNosotros />
+        </section>
 
       <section id="galeria">
         <Galeria />
@@ -18,6 +21,7 @@ const Home = () => {
         <Resenias />
       </section>
     </main>
+    </>
   );
 };
 

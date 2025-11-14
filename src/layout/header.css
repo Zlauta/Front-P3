@@ -1,0 +1,57 @@
+
+:root{
+  --green-dark: #122117; /* rgb(18,33,23) */
+  --green-light: #1aaf4b; /* rgb(26,175,75) */
+  --white: #ffffff;
+  --green-transparent: #254630; /* rgb(37,70,48) */
+}
+
+.header-navbar{
+  background:linear-gradient(180deg,var(--green-dark) 0%,var(--green-transparent) 100%);
+  color:var(--white);
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+
+.header-logo{
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%; 
+  background: transparent;
+  padding: 0;
+}
+
+.brand-text{
+  color: var(--white);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.navbar-nav .nav-link{
+  color: rgba(255,255,255,0.9);
+  margin-right: 0.25rem;
+}
+
+.navbar-nav .nav-link:hover{
+  color: var(--green-light);
+}
+
+.btn-cta{
+  background: var(--green-light);
+  color: var(--white);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.btn-cta:hover{
+  background: #16a43a;
+  color: var(--white);
+}
+
+
+@media (max-width: 991px){
+  .brand-text{ display: none; }
+  .btn-cta{ width: 100%; margin-top: 0.5rem; }
+  .navbar-nav{ background: transparent; padding-top: 0.5rem; }
+}
+ 
