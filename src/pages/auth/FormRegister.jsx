@@ -117,7 +117,7 @@ const FormRegister = () => {
         <Form.Label>Nombre de Usuario</Form.Label>
         <Form.Control
           type="text"
-          placeholder="Ingrese su nombre de usuario"
+          placeholder="Nombre de usuario"
           isInvalid={errors.userName}
           {...register("userName", {
             required: "El nombre de usuario es requerido",
