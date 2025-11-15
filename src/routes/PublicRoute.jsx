@@ -9,6 +9,7 @@ import Home from "../pages/user/Home";
 
 import Login from "../pages/user/Login";
 import Register from "../pages/user/Register";
+import NuevoUsuario from "../pages/admin/NuevoUsuario";
 import NewPassword from "../pages/user/NewPassword";
 
 const PublicRoute = () => {
@@ -22,6 +23,7 @@ const PublicRoute = () => {
 
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/new-user" element={<NuevoUsuario />} />
       <Route path="/password" element={<NewPassword />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />

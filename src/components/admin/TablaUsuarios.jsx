@@ -139,13 +139,13 @@ export default function TablaUsuarios() {
       <h3 className="text-light fs-1 mt-5 mb-5">Usuarios registrados</h3>
       <Button
         as={Link}
-        to="/register"
+        to="/new-user"
         variant="success"
         className="ms-lg-3 me-2"
       >
         Nuevo Usuario
       </Button>
-      
+
       <Table striped bordered hover responsive>
         <thead>
           <tr>

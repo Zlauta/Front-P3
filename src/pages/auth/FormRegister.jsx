@@ -10,7 +10,7 @@ import {
 } from "../../service/users.service.js";
 //import emailjs from "@emailjs/browser";
 
-const FormRegister = () => {
+const FormRegister = ({ fromAdmin = false }) => {
   const {
     register,
     handleSubmit,
@@ -29,8 +29,13 @@ const FormRegister = () => {
 
   const navegate = useNavigate();
 
-  const handleGoHome = () => {
-    navegate("/");
+  const handleCancel = () => {
+    // si viene del admin, cancelar vuelve al admin
+    if (fromAdmin) {
+      navegate("/admin");
+    } else {
+      navegate("/");
+    }
   };
 
   const navegacion = useNavigate();
@@ -54,10 +59,14 @@ const FormRegister = () => {
           customClass: { popup: "small-alert" },
         });
         reset();
+        if (fromAdmin) {
+          navegate("/admin");
+        } else {
+          navegate("/");
+        }
         return;
       }
 
-      // 2. Validar contraseñas iguales
       if (data.password !== data.confirmPassword) {
         Swal.fire({
           icon: "error",
@@ -71,17 +80,15 @@ const FormRegister = () => {
         return;
       }
 
-      // 3. Crear objeto nuevo usuario
       const nuevoUsuario = {
         nombre: data.userName,
         email: data.email,
         contrasenia: data.password,
         telefono: data.telefono,
         createdAt: new Date().toISOString(),
-        rol: "cliente",
+        rol: "admin",
       };
 
-      // 4. Registrar en Mongo
       await registrarUsuario(nuevoUsuario);
 
       Swal.fire({
@@ -97,7 +104,11 @@ const FormRegister = () => {
       });
 
       reset();
-      navegacion("/");
+      if (fromAdmin) {
+        navegate("/admin");
+      } else {
+        navegate("/");
+      }
     } catch (error) {
       Swal.fire({
         title: "Error al registrar usuario",
@@ -228,7 +239,7 @@ const FormRegister = () => {
           Enviar
         </Button>
 
-        <Button className="forms-boton" onClick={handleGoHome}>
+        <Button className="forms-boton" onClick={handleCancel}>
           <>Cancelar</>
         </Button>
       </div>
