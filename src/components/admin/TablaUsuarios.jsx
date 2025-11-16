@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Form } from "react-bootstrap";
+import { Table, Button, Form, Container } from "react-bootstrap";
 import Swal from "sweetalert2";
-import "./TablaUsuarios.css";
+import "../../index.css";
+//import "./TablaUsuarios.css";
 import "../../api/clientAxios.js";
 import {
   actualizarUsuario,
   obtenerUsuarios,
   eliminarUsuario,
 } from "../../service/users.service.js";
-import { Link } from "react-router-dom";
+import FormRegister from "../../pages/auth/FormRegister.jsx";
 
 function formatearFecha(iso) {
   try {
@@ -21,6 +22,7 @@ function formatearFecha(iso) {
 export default function TablaUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
   const [ediciones, setEdiciones] = useState({});
+  const [mostrarForm, setMostrarForm] = useState(false);
 
   const cargar = async () => {
     try {
@@ -59,6 +61,7 @@ export default function TablaUsuarios() {
       },
     }));
   };
+
   const guardarCambios = async (id) => {
     const cambios = ediciones[id];
     if (!cambios) return;
@@ -137,37 +140,54 @@ export default function TablaUsuarios() {
   return (
     <div className="p-1">
       <h3 className="text-light fs-1 mt-5 mb-5">Usuarios registrados</h3>
+
       <Button
-        as={Link}
-        to="/new-user"
         variant="success"
-        className="ms-lg-3 me-2"
+        className="ms-lg-3 me-2 mb-4"
+        onClick={() => setMostrarForm(true)}
       >
         Nuevo Usuario
       </Button>
 
+      {mostrarForm && (
+        <div className="page-wrapper mt-4">
+          <h1 className="titulos-form">Nuevo Usuario</h1>
+          <Container className="custom-form border rounded p-4 w-50 mb-5">
+            <FormRegister fromAdmin={true} />
+            <div className="mt-4 text-center">
+              <Button
+                variant="secondary"
+                onClick={() => setMostrarForm(false)} // 👈 cerrar formulario
+              >
+                ← Volver
+              </Button>
+            </div>
+          </Container>
+        </div>
+      )}
+
       <Table striped bordered hover responsive>
         <thead>
           <tr>
-            <th>#</th>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Rol</th>
-            <th>Estado</th>
-            <th>Telefono</th>
-            <th>Fecha </th>
-            <th>Acciones</th>
+            <th className="tabla"> #</th>
+            <th className="tabla">Nombre</th>
+            <th className="tabla">Email</th>
+            <th className="tabla">Rol</th>
+            <th className="tabla">Estado</th>
+            <th className="tabla">Telefono</th>
+            <th className="tabla">Fecha </th>
+            <th className="tabla">Acciones</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style={{ background: "#1E2A26 " }}>
           {usuarios.length ? (
             usuarios.map((usuario, idx) => (
               <tr key={usuario._id}>
-                <td>{idx + 1}</td>
-                <td>{usuario.nombre}</td>
-                <td>{usuario.email}</td>
+                <td className="tabla">{idx + 1}</td>
+                <td className="tabla">{usuario.nombre}</td>
+                <td className="tabla">{usuario.email}</td>
 
-                <td>
+                <td className="tabla">
                   <Form.Select
                     value={ediciones[usuario._id]?.rol ?? usuario.rol}
                     onChange={(e) => manejarCambio(usuario._id, e.target.value)}
@@ -176,7 +196,7 @@ export default function TablaUsuarios() {
                     <option value="cliente">cliente</option>
                   </Form.Select>
                 </td>
-                <td>
+                <td className="tabla">
                   <Form.Select
                     value={ediciones[usuario._id]?.estado ?? usuario.estado}
                     onChange={(e) => manejarEstado(usuario._id, e.target.value)}
@@ -185,9 +205,9 @@ export default function TablaUsuarios() {
                     <option value="inactivo">inactivo</option>
                   </Form.Select>
                 </td>
-                <td>{usuario.telefono}</td>
-                <td>{formatearFecha(usuario.createdAt)}</td>
-                <td className="d-flex flex-column gap-2">
+                <td className="tabla">{usuario.telefono}</td>
+                <td className="tabla">{formatearFecha(usuario.createdAt)}</td>
+                <td className="tabla d-flex flex-column gap-2">
                   <Button
                     className="btn-tabla"
                     size="sm"
@@ -195,12 +215,12 @@ export default function TablaUsuarios() {
                     onClick={() => guardarCambios(usuario._id)}
                     disabled={!ediciones[usuario._id]}
                   >
-                    Cambiar
+                    Guardar
                   </Button>
                   <Button
                     className="btn-tabla btn-eliminar"
                     size="sm"
-                    variant="danger"
+                    variant="success"
                     onClick={() => manejarEliminar(usuario._id)}
                   >
                     Eliminar
