@@ -8,6 +8,7 @@ import {
   obtenerUsuarios,
   eliminarUsuario,
 } from "../../service/users.service.js";
+import { Link } from "react-router-dom";
 
 function formatearFecha(iso) {
   try {
@@ -49,6 +50,15 @@ export default function TablaUsuarios() {
     }));
   };
 
+  const manejarEstado = (id, valor) => {
+    setEdiciones((prev) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        estado: valor,
+      },
+    }));
+  };
   const guardarCambios = async (id) => {
     const cambios = ediciones[id];
     if (!cambios) return;
@@ -63,7 +73,7 @@ export default function TablaUsuarios() {
       });
 
       Swal.fire({
-        title: "Rol de usuario, actualizado!",
+        title: "Usuario actualizado!",
         icon: "success",
         iconColor: "#1aaf4b ",
         confirmButtonColor: "#1aaf4b ",
@@ -74,9 +84,9 @@ export default function TablaUsuarios() {
         },
       });
     } catch (error) {
-      console.error("Error al guardar actualizar rol de usuario:", error);
+      console.error("Error al guardar actualizar usuario:", error);
       Swal.fire({
-        title: "Error al actualizar nuevo rol de usuario",
+        title: "Error al actualizar usuario",
         icon: "error",
         confirmButtonColor: "#1aaf4b ",
       });
@@ -127,15 +137,25 @@ export default function TablaUsuarios() {
   return (
     <div className="p-1">
       <h3 className="text-light fs-1 mt-5 mb-5">Usuarios registrados</h3>
+      <Button
+        as={Link}
+        to="/new-user"
+        variant="success"
+        className="ms-lg-3 me-2"
+      >
+        Nuevo Usuario
+      </Button>
+
       <Table striped bordered hover responsive>
         <thead>
           <tr>
             <th>#</th>
             <th>Nombre</th>
             <th>Email</th>
-            <th>Telefono</th>
             <th>Rol</th>
-            <th>Fecha Reg</th>
+            <th>Estado</th>
+            <th>Telefono</th>
+            <th>Fecha </th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -146,7 +166,7 @@ export default function TablaUsuarios() {
                 <td>{idx + 1}</td>
                 <td>{usuario.nombre}</td>
                 <td>{usuario.email}</td>
-                <td>{usuario.telefono}</td>
+
                 <td>
                   <Form.Select
                     value={ediciones[usuario._id]?.rol ?? usuario.rol}
@@ -156,6 +176,16 @@ export default function TablaUsuarios() {
                     <option value="cliente">cliente</option>
                   </Form.Select>
                 </td>
+                <td>
+                  <Form.Select
+                    value={ediciones[usuario._id]?.estado ?? usuario.estado}
+                    onChange={(e) => manejarEstado(usuario._id, e.target.value)}
+                  >
+                    <option value="activo">activo</option>
+                    <option value="inactivo">inactivo</option>
+                  </Form.Select>
+                </td>
+                <td>{usuario.telefono}</td>
                 <td>{formatearFecha(usuario.createdAt)}</td>
                 <td className="d-flex flex-column gap-2">
                   <Button
@@ -165,7 +195,7 @@ export default function TablaUsuarios() {
                     onClick={() => guardarCambios(usuario._id)}
                     disabled={!ediciones[usuario._id]}
                   >
-                    Cambiar Rol
+                    Cambiar
                   </Button>
                   <Button
                     className="btn-tabla btn-eliminar"
@@ -180,7 +210,7 @@ export default function TablaUsuarios() {
             ))
           ) : (
             <tr>
-              <td colSpan={7} className="text-center py-4">
+              <td colSpan={8} className="text-center py-4">
                 No hay usuarios registrados aún.
               </td>
             </tr>

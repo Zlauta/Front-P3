@@ -3,9 +3,50 @@ import { ScrollLink } from "react-scroll";
 import { Link } from "react-router-dom";
 import { Navbar, Container, Nav, Button } from "react-bootstrap";
 import "./header.css";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 import logopng from "/images/logo.png";
 
 const Header = () => {
+  const navigate = useNavigate();
+
+  navigate("/");
+
+  const user = JSON.parse(sessionStorage.getItem("usuario")) || null;
+  function logout() {
+    Swal.fire({
+      title: "¿Estás seguro de cerrar sesión?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Salir",
+      iconColor: "#1aaf4b",
+      confirmButtonColor: "#1aaf4b",
+      cancelButtonColor: "#254630",
+      customClass: {
+        popup: "small-alert",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Sesión cerrada!",
+          icon: "success",
+          iconColor: "#254630",
+          confirmButtonColor: "#1aaf4b",
+          customClass: {
+            popup: "small-alert",
+          },
+          timer: 1200,
+          showConfirmButton: false,
+        });
+
+        localStorage.removeItem("token");
+        sessionStorage.removeItem("usuario");
+
+        navigate("/");
+      }
+    });
+  }
+
   return (
     <header>
       <Navbar expand="lg" className="header-navbar" variant="dark">
@@ -29,17 +70,38 @@ const Header = () => {
               <Nav.Link href="#sobre-nosotros" className="scroll">
                 Sobre Nosotros
               </Nav.Link>
-              <Nav.Link
-                href="#resenias" className="scroll"
-              >
+              <Nav.Link href="#resenias" className="scroll">
                 Reseñas
               </Nav.Link>
               <Nav.Link as={Link} to="/contacto">
                 Contacto
               </Nav.Link>
-              <Button as={Link} to="/reservas" className="btn-cta ms-lg-3">
-                Reservar
-              </Button>
+
+              {user ? (
+                <>
+                  {user.rol === "admin" && (
+                    <Nav.Link as={Link} to="/admin">
+                      Admin
+                    </Nav.Link>
+                  )}
+                  <Button
+                    as={Link}
+                    to="/reservas"
+                    className="btn-cta ms-lg-3 me-2"
+                  >
+                    Reservar
+                  </Button>
+                  <Button variant="success" onClick={logout} className="ms-2">
+                    Salir
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button as={Link} to="/login" className="btn-cta ms-lg-3">
+                    Reservar
+                  </Button>
+                </>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>

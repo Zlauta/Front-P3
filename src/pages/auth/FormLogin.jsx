@@ -20,18 +20,22 @@ const formLogin = () => {
       password: "",
     },
   });
-  const navegate = useNavigate();
+  const navigate = useNavigate();
 
   const handleGoRegister = () => {
-    navegate("/register");
+    navigate("/register");
   };
 
   async function onSubmit(data) {
     try {
       const message = await loginUser(data);
-      alert(message);
+      Swal.fire({
+        title: message,
+        icon: "success",
+        confirmButtonColor: "#1aaf4b",
+      });
       reset();
-      navegacion("/");
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
@@ -58,7 +62,6 @@ const formLogin = () => {
           {errors.email?.message}
         </Form.Control.Feedback>
       </Form.Group>
-
       <Form.Group className="label mb-3" controlId="formBasicPassword">
         <Form.Label>Contraseña</Form.Label>
         <Form.Control
@@ -79,7 +82,6 @@ const formLogin = () => {
           {errors.password?.message}
         </Form.Control.Feedback>
       </Form.Group>
-
       <div className="text-center mt-5 d-flex flex-column justify-content-center gap-2 flex-md-row">
         <Button className="forms-boton mt-3" type="submit">
           Iniciar Sesion
@@ -89,6 +91,7 @@ const formLogin = () => {
           <>Registrarse</>
         </Button>
       </div>
+      x``
     </Form>
   );
 };

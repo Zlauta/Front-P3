@@ -14,6 +14,7 @@ export const loginUser = async ({ email, password }) => {
       sessionStorage.setItem("usuario", JSON.stringify(usuario));
     }
     return response.data?.msg;
+    
   } catch (error) {
     console.log(error);
   }
