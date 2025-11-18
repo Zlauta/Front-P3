@@ -10,6 +10,7 @@ import Home from "../pages/user/Home";
 import Login from "../pages/user/Login";
 import Register from "../pages/user/Register";
 import NewPassword from "../pages/user/NewPassword";
+import Reservas from "../pages/user/Reservas.jsx";
 
 const PublicRoute = () => {
   return (
@@ -19,6 +20,7 @@ const PublicRoute = () => {
       <Route path="/galeria" element={<Galeria />} />
       <Route path="/sobre-nosotros" element={<SobreNosotros />} />
       <Route path="/contacto" element={<Contacto />} />
+      <Route path="/reservas" element={<Reservas />} />
 
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
