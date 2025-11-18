@@ -13,8 +13,9 @@ export const loginUser = async ({ email, password }) => {
       localStorage.setItem("token", token);
       sessionStorage.setItem("usuario", JSON.stringify(usuario));
     }
-    return response.data?.msg;
+    return response.data;
   } catch (error) {
     console.log(error);
+    throw error.response?.data || { msg: "Error desconocido" };
   }
 };

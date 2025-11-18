@@ -28,16 +28,33 @@ const formLogin = () => {
 
   async function onSubmit(data) {
     try {
-      const message = await loginUser(data);
+      const response = await loginUser(data);
+
+      if (response.payload.estado !== "activo") {
+        Swal.fire({
+          title: "Usuario inactivo",
+          text: "Consulte al administrador",
+          icon: "warning",
+          confirmButtonColor: "#254630",
+        });
+        return;
+      }
+
       Swal.fire({
-        title: message,
+        title: response.msg,
         icon: "success",
         confirmButtonColor: "#1aaf4b",
       });
+
       reset();
       navigate("/");
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        title: "Error en el login",
+        text: error.msg || "Verifique sus credenciales",
+        icon: "error",
+        confirmButtonColor: "#254630",
+      });
     }
   }
 
