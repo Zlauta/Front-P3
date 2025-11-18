@@ -9,6 +9,7 @@ import Resenias from "../pages/admin/Resenias";
 import Reservas from "../pages/admin/Reservas";
 import Contacto from "../pages/admin/Contacto";
 import Promociones from "../pages/admin/Promociones";
+import ProtectedRoute from "./ProtectedRoute.jsx";
 
 const AdminLayout = () => {
   return (
@@ -24,7 +25,7 @@ const AdminLayout = () => {
 const AdminRoute = () => {
   return (
     <Routes>
-      {/* Use AdminLayout as wrapper for all admin child routes (mounted at /admin/*) */}
+      <Route element={<ProtectedRoute />}>
       <Route path="/" element={<AdminLayout />}>
         <Route index element={<Navigate to="/admin/usuarios" replace />} />
         <Route path="usuarios" element={<Usuarios />} />
@@ -34,6 +35,7 @@ const AdminRoute = () => {
         <Route path="reservas" element={<Reservas />} />
         <Route path="contacto" element={<Contacto />} />
         <Route path="promociones" element={<Promociones />} />
+      </Route>
       </Route>
 
       <Route path="*" element={<Navigate to="/admin/usuarios" replace />} />

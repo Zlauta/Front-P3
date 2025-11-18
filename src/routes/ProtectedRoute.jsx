@@ -1,17 +1,16 @@
- import React from "react";
- import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
+const ProtectedRoute = () => {
+  const token = localStorage.getItem("token");
+  const usuario = JSON.parse(sessionStorage.getItem("usuario"));
 
- import Reservas from "../pages/user/Reservas";
+  if (!token) return <Navigate to="/login" replace />;
 
- const ProtectedRoute = () => {
-   return (
-     <Routes>
+  if (!usuario || usuario.rol !== "admin") {
+    return <Navigate to="/" replace />;
+  }
 
-       <Route path="/" element={<Reservas />} />
-       <Route path="*" element={<Navigate to="/reservas" replace />} />
-     </Routes>
-   );
- };
+  return <Outlet />;
+};
 
- export default ProtectedRoute;
+export default ProtectedRoute;
