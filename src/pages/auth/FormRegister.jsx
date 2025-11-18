@@ -86,7 +86,7 @@ const FormRegister = ({ fromAdmin = false }) => {
         contrasenia: data.password,
         telefono: data.telefono,
         createdAt: new Date().toISOString(),
-        rol: "admin",
+        rol: "cliente",
       };
 
       await registrarUsuario(nuevoUsuario);
@@ -118,7 +118,7 @@ const FormRegister = ({ fromAdmin = false }) => {
         cancelButtonColor: "#254630",
         customClass: { popup: "small-alert" },
       });
-      console.error(error);
+      console.log(error);
     }
   }
 
