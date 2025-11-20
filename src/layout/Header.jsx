@@ -10,9 +10,9 @@ import logopng from "/images/logo.png";
 const Header = () => {
   const navigate = useNavigate();
 
-  navigate("/");
-
   const user = JSON.parse(sessionStorage.getItem("usuario")) || null;
+  const isActiveUser = user && user.estado === "activo";
+
   function logout() {
     Swal.fire({
       title: "¿Estás seguro de cerrar sesión?",
@@ -77,7 +77,7 @@ const Header = () => {
                 Contacto
               </Nav.Link>
 
-              {user ? (
+              {isActiveUser ? (
                 <>
                   {user.rol === "admin" && (
                     <Nav.Link as={Link} to="/admin">

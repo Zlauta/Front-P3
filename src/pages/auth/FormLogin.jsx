@@ -36,6 +36,8 @@ const formLogin = () => {
           text: "Consulte al administrador",
           icon: "warning",
           confirmButtonColor: "#254630",
+        }).then(() => {
+          navigate("/");
         });
         return;
       }
