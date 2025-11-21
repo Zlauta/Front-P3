@@ -14,7 +14,7 @@ export const SobreNosotros = () => {
       id: 1,
       nombre: "Nadia Medina",
       rol: "Scrum Master",
-      img: "/images/member1.jpg",
+      img: "/images/personaMujer.svg",
       social: {
         instagram: "https://instagram.com/alguien",
         facebook: "https://facebook.com/in/alguien",
@@ -26,7 +26,7 @@ export const SobreNosotros = () => {
       id: 2,
       nombre: "Lautaro Zarate",
       rol: "Desarrollador Full Stack",
-      img: "/images/member2.jpg",
+      img: "/images/personaHombre.svg",
       social: {
         instagram: "https://instagram.com/alguien",
         facebook: "https://facebook.com/in/alguien",
@@ -36,9 +36,9 @@ export const SobreNosotros = () => {
     },
     {
       id: 3,
-      nombre: "Sofía Ramírez",
+      nombre: "Amelia Antoni",
       rol: "Desarrolladora Full Stack",
-      img: "/images/member3.jpg",
+      img: "/images/personaMujer.svg",
       social: {
         instagram: "https://instagram.com/alguien",
         facebook: "https://facebook.com/in/alguien",
@@ -50,7 +50,7 @@ export const SobreNosotros = () => {
       id: 4,
       nombre: "Felipe Marrone",
       rol: "Desarrollador Full Stack",
-      img: "/images/member4.jpg",
+      img: "/images/personaHombre.svg",
       social: {
         instagram: "https://instagram.com/alguien",
         facebook: "https://facebook.com/in/alguien",
@@ -60,9 +60,9 @@ export const SobreNosotros = () => {
     },
     {
       id: 5,
-      nombre: "Matias Gonzalez",
+      nombre: "Matias Soria",
       rol: "Desarrollador Full Stack",
-      img: "/images/member5.jpg",
+      img: "/images/personaHombre.svg",
       social: {
         instagram: "https://instagram.com/alguien",
         facebook: "https://facebook.com/in/alguien",
@@ -113,7 +113,12 @@ export const SobreNosotros = () => {
                     rel="noreferrer"
                     style={{ color: "white" }}
                   >
-                    Instagram
+                    <img
+                      width="48"
+                      height="48"
+                      src="https://img.icons8.com/color/48/instagram-new--v1.png"
+                      alt="instagram-new--v1"
+                    />
                   </a>
                 )}
                 {miembro.social?.facebook && (
@@ -123,7 +128,12 @@ export const SobreNosotros = () => {
                     rel="noreferrer"
                     style={{ color: "white" }}
                   >
-                    Facebook
+                    <img
+                      width="48"
+                      height="48"
+                      src="https://img.icons8.com/color/48/facebook-new.png"
+                      alt="facebook-new"
+                    />
                   </a>
                 )}
                 {miembro.social?.github && (
@@ -133,7 +143,12 @@ export const SobreNosotros = () => {
                     rel="noreferrer"
                     style={{ color: "white" }}
                   >
-                    GitHub
+                    <img
+                      width="48"
+                      height="48"
+                      src="https://img.icons8.com/color/48/github--v1.png"
+                      alt="github--v1"
+                    />
                   </a>
                 )}
                 {miembro.social?.whatsapp && (
@@ -143,7 +158,12 @@ export const SobreNosotros = () => {
                     rel="noreferrer"
                     style={{ color: "white" }}
                   >
-                    WhatsApp
+                    <img
+                      width="48"
+                      height="48"
+                      src="https://img.icons8.com/color/48/whatsapp--v1.png"
+                      alt="whatsapp--v1"
+                      />
                   </a>
                 )}
               </div>

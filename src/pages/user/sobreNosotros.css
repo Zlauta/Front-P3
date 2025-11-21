@@ -52,7 +52,11 @@
           font-size: 0.9rem;
           opacity: 0.9;
         }
-
+        .social-links{
+            justify-content: center;
+            display: flex;
+            gap: 1rem;
+        }
 
         @media (max-width: 420px) {
           .about-card { width: 93%; }
