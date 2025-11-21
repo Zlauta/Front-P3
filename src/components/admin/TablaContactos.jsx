@@ -2,14 +2,12 @@ import { useEffect, useState } from "react";
 import { Table, Button, Form, Container } from "react-bootstrap";
 import Swal from "sweetalert2";
 import "../../index.css";
-//import "./TablaUsuarios.css";
 import "../../api/clientAxios.js";
 import {
-  actualizarUsuario,
-  obtenerUsuarios,
-  eliminarUsuario,
-} from "../../service/users.service.js";
-import FormRegister from "../../pages/auth/FormRegister.jsx";
+  actualizarContacto,
+  obtenerContactos,
+  eliminarContacto,
+} from "../../service/contact.service.js";
 
 function formatearFecha(iso) {
   try {
@@ -19,24 +17,24 @@ function formatearFecha(iso) {
   }
 }
 
-export default function TablaUsuarios() {
-  const [usuarios, setUsuarios] = useState([]);
+export default function TablaContactos() {
+  const [contactos, setContatos] = useState([]);
   const [ediciones, setEdiciones] = useState({});
   const [mostrarForm, setMostrarForm] = useState(false);
 
   const cargar = async () => {
     try {
-      const data = await obtenerUsuarios();
-      setUsuarios(data);
+      const data = await obtenerContactos();
+      setContatos(data);
     } catch (error) {
-      console.error("Error al cargar usuarios:", error);
+      console.error("Error al cargar contactos:", error);
     }
   };
 
   useEffect(() => {
     cargar();
     const enAlmacenamiento = (evento) => {
-      if (evento.key === "usuarios") cargar();
+      if (evento.key === "contactos") cargar();
     };
     window.addEventListener("storage", enAlmacenamiento);
     return () => window.removeEventListener("storage", enAlmacenamiento);
@@ -67,7 +65,7 @@ export default function TablaUsuarios() {
     if (!cambios) return;
 
     try {
-      await actualizarUsuario(id, cambios);
+      await actualizarContacto(id, cambios);
       await cargar();
       setEdiciones((prev) => {
         const copia = { ...prev };
@@ -76,7 +74,7 @@ export default function TablaUsuarios() {
       });
 
       Swal.fire({
-        title: "Usuario actualizado!",
+        title: "Contacto actualizado!",
         icon: "success",
         iconColor: "#1aaf4b ",
         confirmButtonColor: "#1aaf4b ",
@@ -87,9 +85,9 @@ export default function TablaUsuarios() {
         },
       });
     } catch (error) {
-      console.error("Error al guardar actualizar usuario:", error);
+      console.error("Error al guardar actualizar contacto:", error);
       Swal.fire({
-        title: "Error al actualizar usuario",
+        title: "Error al actualizar contacto",
         icon: "error",
         confirmButtonColor: "#1aaf4b ",
       });
@@ -98,7 +96,7 @@ export default function TablaUsuarios() {
 
   const manejarEliminar = async (id) => {
     const result = await Swal.fire({
-      title: "¿Confirma que quiere eliminar este usuario?",
+      title: "¿Confirma que quiere eliminar este contacto?",
       text: "Esta acción no se puede deshacer",
       icon: "warning",
       showCancelButton: true,
@@ -113,11 +111,11 @@ export default function TablaUsuarios() {
     }
 
     try {
-      await eliminarUsuario(id);
+      await eliminarContacto(id);
       await cargar();
 
       Swal.fire({
-        title: "Usuario eliminado",
+        title: "Contacto eliminado",
         icon: "success",
         iconColor: "#1aaf4b ",
         confirmButtonColor: "#1aaf4b ",
@@ -128,9 +126,9 @@ export default function TablaUsuarios() {
         },
       });
     } catch (error) {
-      console.error("Error al eliminar usuario:", error);
+      console.error("Error al eliminar contacto:", error);
       Swal.fire({
-        title: "Error al eliminar usuario",
+        title: "Error al eliminar contacto",
         icon: "error",
         confirmButtonColor: "#1aaf4b ",
       });
@@ -139,78 +137,49 @@ export default function TablaUsuarios() {
 
   return (
     <div className="p-1">
-      <h3 className="text-light fs-1 mt-5 mb-5">Usuarios registrados</h3>
-
-      <Button
-        variant="success"
-        className="ms-lg-3 me-2 mb-4"
-        onClick={() => setMostrarForm(true)}
-      >
-        Nuevo Usuario
-      </Button>
-
-      {mostrarForm && (
-        <div className="page-wrapper mt-4">
-          <h1 className="titulos-form">Nuevo Usuario</h1>
-          <Container className="custom-form border rounded p-4 w-50 mb-5">
-            <FormRegister fromAdmin={true} />
-            <div className="mt-4 text-center">
-              <Button variant="secondary" onClick={() => setMostrarForm(false)}>
-                ← Volver
-              </Button>
-            </div>
-          </Container>
-        </div>
-      )}
-
+      <h3 className="text-light fs-1 mt-5 mb-5">Contactos recibidos</h3>
       <Table striped bordered hover responsive>
         <thead>
           <tr>
             <th className="tabla"> #</th>
             <th className="tabla">Nombre</th>
             <th className="tabla">Email</th>
-            <th className="tabla">Rol</th>
-            <th className="tabla">Estado</th>
             <th className="tabla">Telefono</th>
+            <th className="tabla">Mensaje</th>
+            <th className="tabla">Estado</th>
             <th className="tabla">Fecha </th>
-            <th className="tabla">Acciones</th>
           </tr>
         </thead>
         <tbody style={{ background: "#1E2A26 " }}>
-          {usuarios.length ? (
-            usuarios.map((usuario, idx) => (
-              <tr key={usuario._id}>
+          {contactos.length ? (
+            contactos.map((contacto, idx) => (
+              <tr key={contacto._id}>
                 <td className="tabla">{idx + 1}</td>
-                <td className="tabla">{usuario.nombre}</td>
-                <td className="tabla">{usuario.email}</td>
+                <td className="tabla">{contacto.nombre}</td>
+                <td className="tabla">{contacto.email}</td>
+                <td className="tabla">{contacto.telefono}</td>
+                <td className="tabla">{contacto.mensaje}</td>
 
                 <td className="tabla">
                   <Form.Select
-                    value={ediciones[usuario._id]?.rol ?? usuario.rol}
-                    onChange={(e) => manejarCambio(usuario._id, e.target.value)}
+                    value={ediciones[contacto._id]?.estado ?? contacto.estado}
+                    onChange={(e) =>
+                      manejarEstado(contacto._id, e.target.value)
+                    }
                   >
-                    <option value="admin">administrador</option>
-                    <option value="cliente">cliente</option>
+                    <option value="pendiente">pendiente</option>
+                    <option value="resuelto">resuelto</option>
                   </Form.Select>
                 </td>
-                <td className="tabla">
-                  <Form.Select
-                    value={ediciones[usuario._id]?.estado ?? usuario.estado}
-                    onChange={(e) => manejarEstado(usuario._id, e.target.value)}
-                  >
-                    <option value="activo">activo</option>
-                    <option value="inactivo">inactivo</option>
-                  </Form.Select>
-                </td>
-                <td className="tabla">{usuario.telefono}</td>
-                <td className="tabla">{formatearFecha(usuario.createdAt)}</td>
+
+                <td className="tabla">{formatearFecha(contacto.createdAt)}</td>
                 <td className="tabla d-flex flex-column gap-2">
                   <Button
                     className="btn-tabla"
                     size="sm"
                     variant="secondary"
-                    onClick={() => guardarCambios(usuario._id)}
-                    disabled={!ediciones[usuario._id]}
+                    onClick={() => guardarCambios(contacto._id)}
+                    disabled={!ediciones[contacto._id]}
                   >
                     Guardar
                   </Button>
@@ -218,7 +187,7 @@ export default function TablaUsuarios() {
                     className="btn-tabla btn-eliminar"
                     size="sm"
                     variant="success"
-                    onClick={() => manejarEliminar(usuario._id)}
+                    onClick={() => manejarEliminar(contacto._id)}
                   >
                     Eliminar
                   </Button>
@@ -228,14 +197,14 @@ export default function TablaUsuarios() {
           ) : (
             <tr>
               <td colSpan={8} className="text-center py-4">
-                No hay usuarios registrados aún.
+                No hay contactos registrados aún.
               </td>
             </tr>
           )}
         </tbody>
       </Table>
       <div className="text-light fs-5">
-        Total: {usuarios.length} usuario{usuarios.length === 1 ? "" : "s"}
+        Total: {contactos.length} contacto{contactos.length === 1 ? "" : "s"}
       </div>
     </div>
   );
