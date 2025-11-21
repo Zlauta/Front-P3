@@ -9,18 +9,16 @@ const Home = () => {
     <>
       <Header />
       <main>
+        <section id="galeria">
+          <Galeria />
+        </section>
         <section id="sobre-nosotros">
           <SobreNosotros />
         </section>
-
-      <section id="galeria">
-        <Galeria />
-      </section>
-
-      <section id="resenias">
-        <Resenias />
-      </section>
-    </main>
+        <section id="resenias">
+          <Resenias />
+        </section>
+      </main>
     </>
   );
 };
