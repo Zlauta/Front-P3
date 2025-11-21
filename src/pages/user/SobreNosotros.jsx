@@ -74,6 +74,15 @@ export const SobreNosotros = () => {
 
   return (
     <Container fluid className="sobre-container">
+      <div data-aos="fade-up">
+        <h1 className="text-light">DevFusion</h1>
+        <h3 className="text-light">
+          Conoce al equipo detrás de nuestro proyecto
+        </h3>
+        <h5 className="text-light">
+          Unidos por la pasión de crear soluciones innovadoras
+        </h5>
+      </div>
       {miembros.map((miembro, i) => (
         <Card
           key={miembro.id}
@@ -163,7 +172,7 @@ export const SobreNosotros = () => {
                       height="48"
                       src="https://img.icons8.com/color/48/whatsapp--v1.png"
                       alt="whatsapp--v1"
-                      />
+                    />
                   </a>
                 )}
               </div>
