@@ -74,7 +74,7 @@ export const SobreNosotros = () => {
 
   return (
     <Container fluid className="sobre-container">
-      <div data-aos="fade-up">
+      <div data-aos="fade-up" className="text-center mb-5">
         <h1 className="text-light">DevFusion</h1>
         <h3 className="text-light">
           Conoce al equipo detrás de nuestro proyecto
