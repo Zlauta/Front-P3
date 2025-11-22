@@ -11,15 +11,13 @@ import Login from "../pages/user/Login";
 import Register from "../pages/user/Register";
 import NewPassword from "../pages/user/NewPassword";
 import Reservas from "../pages/user/Reservas.jsx";
-
+import NotFound from "../pages/user/NotFound.jsx";
 
 const PublicRoute = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/carta" element={<Carta />} />
-      <Route path="/galeria" element={<Galeria />} />
-      <Route path="/sobre-nosotros" element={<SobreNosotros />} />
       <Route path="/contacto" element={<Contacto />} />
       <Route path="/reservas" element={<Reservas />} />
 
@@ -27,7 +25,7 @@ const PublicRoute = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/password" element={<NewPassword />} />
 
-<Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

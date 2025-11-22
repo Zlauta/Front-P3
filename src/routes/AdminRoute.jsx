@@ -10,6 +10,7 @@ import Reservas from "../pages/admin/Reservas";
 import Contacto from "../pages/admin/Contacto";
 import Promociones from "../pages/admin/Promociones";
 import ProtectedRoute from "./ProtectedRoute.jsx";
+import NotFound from "../pages/user/NotFound.jsx";
 
 const AdminLayout = () => {
   return (
@@ -38,7 +39,7 @@ const AdminRoute = () => {
       </Route>
       </Route>
 
-      <Route path="*" element={<Navigate to="/admin/usuarios" replace />} />
+      <Route path="*" element={<NotFound/>} />
     </Routes>
   );
 };

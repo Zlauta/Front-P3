@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-import clientAxios from '../api/clientAxios'; 
+import clientAxios from '../../api/clientAxios.js'; 
 
 const AxiosInterceptor = ({ children }) => {
   const navigate = useNavigate();
