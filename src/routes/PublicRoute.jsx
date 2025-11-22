@@ -12,6 +12,7 @@ import Register from "../pages/user/Register";
 import NewPassword from "../pages/user/NewPassword";
 import Reservas from "../pages/user/Reservas.jsx";
 
+
 const PublicRoute = () => {
   return (
     <Routes>
@@ -26,7 +27,7 @@ const PublicRoute = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/password" element={<NewPassword />} />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+<Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };

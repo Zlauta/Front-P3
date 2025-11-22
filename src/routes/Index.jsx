@@ -2,24 +2,22 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AdminRoute from "./AdminRoute";
 import PublicRoute from "./PublicRoute";
-import ProtectedRoute from "./ProtectedRoute";
+import NotFound from "../pages/user/NotFound.jsx";
+
 
 
 const Index = () => {
   return (
     <BrowserRouter>
       <Routes>
+        
+        <Route path="/404" element={<NotFound />} />
 
         <Route path="/admin/*" element={<AdminRoute />} />
-
-
-        <Route path="/reservas/*" element={<ProtectedRoute />} />
-
 
         <Route path="/*" element={<PublicRoute />} />
 
 
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
