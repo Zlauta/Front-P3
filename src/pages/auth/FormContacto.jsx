@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { crearContacto } from "../../service/contact.service.js";
-//import emailjs from "@emailjs/browser";
+import emailjs from "@emailjs/browser";
 
 const FormContacto = () => {
   const {
@@ -33,14 +33,26 @@ const FormContacto = () => {
       const nuevoContacto = {
         nombre: data.nombreContacto,
         email: data.email,
-        contrasenia: data.password,
         telefono: data.telefono,
         mensaje: data.mensajeContacto,
         estado: "pendiente",
-        createdAt: new Date().toISOString(),
       };
 
       await crearContacto(nuevoContacto);
+
+      const response = await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_CONTACT,
+        {
+          user_name: data.nombreContacto,
+          to_email: data.email,
+          message: data.mensajeContacto,
+          created_at: new Date().toLocaleString(),
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+
+      console.log("Correo enviado con éxito", response.status, response.text);
 
       Swal.fire({
         position: "top-end",
@@ -53,6 +65,7 @@ const FormContacto = () => {
         customClass: { popup: "small-alert" },
         timer: 1500,
       });
+
       reset();
       navegate("/");
     } catch (error) {
@@ -64,7 +77,7 @@ const FormContacto = () => {
         cancelButtonColor: "#254630",
         customClass: { popup: "small-alert" },
       });
-      console.log(error);
+      console.error(error);
     }
   }
 

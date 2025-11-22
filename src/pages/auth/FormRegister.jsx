@@ -8,7 +8,7 @@ import {
   obtenerUsuarios,
   registrarUsuario,
 } from "../../service/users.service.js";
-//import emailjs from "@emailjs/browser";
+import emailjs from "@emailjs/browser";
 
 const FormRegister = ({ fromAdmin = false }) => {
   const {
@@ -90,6 +90,28 @@ const FormRegister = ({ fromAdmin = false }) => {
       };
 
       await registrarUsuario(nuevoUsuario);
+
+      emailjs
+        .send(
+          import.meta.env.VITE_EMAILJS_SERVICE_ID,
+          import.meta.env.VITE_EMAILJS_TEMPLATE_REGISTER,
+          {
+            user_name: data.userName,
+            to_email: data.email,
+            created_at: new Date().toLocaleString(),
+          },
+          import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+        )
+        .then((response) => {
+          console.log(
+            "Correo enviado con éxito",
+            response.status,
+            response.text
+          );
+        })
+        .catch((err) => {
+          console.error("Error al enviar el correo", err);
+        });
 
       Swal.fire({
         position: "top-end",
