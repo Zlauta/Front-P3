@@ -4,6 +4,7 @@ import AdminRoute from "./AdminRoute";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
 
+
 const Index = () => {
   return (
     <BrowserRouter>

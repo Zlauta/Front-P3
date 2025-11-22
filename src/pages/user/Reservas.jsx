@@ -1,5 +1,15 @@
-const Reservas = () => {
-  return <div>Reservas</div>;
-};
+import FormReserva from "../../components/FormReservas";
 
-export default Reservas;
+export default function Reservas() {
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        padding: "40px",
+      }}
+      className="d-flex justify-content-center align-items-start"
+    >
+      <FormReserva />
+    </div>
+  );
+}
