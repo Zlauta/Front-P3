@@ -148,7 +148,7 @@ export default function TablaContactos() {
             <th className="tabla">Mensaje</th>
             <th className="tabla">Estado</th>
             <th className="tabla">Fecha </th>
-            <th className="tabla">Estado </th>
+            <th className="tabla">Accion </th>
           </tr>
         </thead>
         <tbody style={{ background: "#1E2A26 " }}>
