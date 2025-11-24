@@ -9,7 +9,7 @@ const Login = () => {
     <>
       <div className="page-wrapper">
         <h1 className="titulos-form">Iniciar Sesion</h1>
-        <Container className="custom-form border rounded p-4 w-50 mb-5">
+        <Container className="custom-form border rounded p-4 w-100 w-md-75 w-lg-50 mb-5">
           <FormLogin></FormLogin>
           <div className="mt-4 text-center">
             <Link to="/password" className="link-color text-decoration-none">

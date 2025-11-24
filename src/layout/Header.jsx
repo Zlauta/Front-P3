@@ -84,13 +84,9 @@ const Header = () => {
                       Admin
                     </Nav.Link>
                   )}
-                  <Button
-                    as={Link}
-                    to="/reservas"
-                    className="btn-cta ms-lg-3 me-2"
-                  >
-                    Reservar
-                  </Button>
+                  <Nav.Link as={Link} to="/reservas">
+                    Reservas
+                  </Nav.Link>
                   <Button variant="success" onClick={logout} className="ms-2">
                     Salir
                   </Button>
