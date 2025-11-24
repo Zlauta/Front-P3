@@ -86,12 +86,12 @@ const FormNewPass = () => {
         </Form.Control.Feedback>
       </Form.Group>
 
-      <div className="text-center mt-5">
-        <Button className="forms-boton" type="submit">
+      <div className="text-center mt-5 d-flex flex-column justify-content-center gap-2 flex-md-row">
+        <Button className="forms-boton mt-3" type="submit">
           Enviar
         </Button>
 
-        <Button className="forms-boton ms-4" onClick={handleGoHome}>
+        <Button className="forms-boton mt-3" onClick={handleGoHome}>
           Cancelar
         </Button>
       </div>
