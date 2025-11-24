@@ -1,14 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function FormReserva() {
   const [form, setForm] = useState({
-    usuario: "", // ahora username, no ID numérico
+    usuario: "",
+    usuarioEmail: "",
     mesa: "",
     cantidadPersonas: "",
     fecha: "",
     hora: "",
     notas: "",
   });
+
+  // ✅ Al cargar el form, llenamos usuario + email desde sessionStorage
+  useEffect(() => {
+    const nombre = sessionStorage.getItem("nombre") || "";
+    const email = sessionStorage.getItem("email") || "";
+
+    setForm((prev) => ({
+      ...prev,
+      usuario: nombre,
+      usuarioEmail: email,
+    }));
+  }, []);
 
   const handleChange = (e) => {
     setForm({
@@ -37,7 +50,8 @@ export default function FormReserva() {
       alert("Reserva creada con éxito");
 
       setForm({
-        usuario: "",
+        usuario: sessionStorage.getItem("nombre") || "",
+        usuarioEmail: sessionStorage.getItem("email") || "",
         mesa: "",
         cantidadPersonas: "",
         fecha: "",
@@ -58,24 +72,35 @@ export default function FormReserva() {
         backdropFilter: "blur(6px)",
         padding: "20px",
         borderRadius: "12px",
-        width: "100%",            // ← clave para mobile
-        maxWidth: "380px",        // ← se adapta sin romper layout
+        width: "100%",
+        maxWidth: "380px",
         margin: "0 auto",
         color: "#f5f5f5",
       }}
     >
       <h3 className="mb-3 text-center">Nueva Reserva</h3>
 
-      {/* Usuario */}
+      {/* Usuario (readonly) */}
       <div className="mb-3">
-        <label className="form-label">Usuario (username)</label>
+        <label className="form-label">Nombre</label>
         <input
           type="text"
           className="form-control"
           name="usuario"
-          placeholder="Ej: leonel_soria"
           value={form.usuario}
-          onChange={handleChange}
+          readOnly
+        />
+      </div>
+
+      {/* Email del usuario (readonly) */}
+      <div className="mb-3">
+        <label className="form-label">Email (identificación)</label>
+        <input
+          type="email"
+          className="form-control"
+          name="usuarioEmail"
+          value={form.usuarioEmail}
+          readOnly
         />
       </div>
 
