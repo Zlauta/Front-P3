@@ -119,31 +119,6 @@ export default function FormReserva() {
       }}
     >
       <h3 className="mb-3 text-center">Nueva Reserva</h3>
-
-      {/* Usuario */}
-      <div className="mb-3">
-        <label className="form-label">Nombre</label>
-        <input
-          type="text"
-          className="form-control"
-          name="usuario"
-          value={form.usuario}
-          readOnly
-        />
-      </div>
-
-      {/* Email */}
-      <div className="mb-3">
-        <label className="form-label">Email</label>
-        <input
-          type="email"
-          className="form-control"
-          name="usuarioEmail"
-          value={form.usuarioEmail}
-          readOnly
-        />
-      </div>
-
       {/* Mesa */}
       <div className="mb-3">
         <label className="form-label">Mesa</label>
