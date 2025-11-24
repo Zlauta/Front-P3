@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export default function FormReserva() {
   const [form, setForm] = useState({
-    usuario: "",
+    usuario: "", // ahora username, no ID numérico
     mesa: "",
     cantidadPersonas: "",
     fecha: "",
@@ -23,9 +23,7 @@ export default function FormReserva() {
     try {
       const res = await fetch("http://localhost:3000/api/reservas", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
@@ -38,7 +36,6 @@ export default function FormReserva() {
 
       alert("Reserva creada con éxito");
 
-      // Opcional: limpiar el formulario
       setForm({
         usuario: "",
         mesa: "",
@@ -59,9 +56,11 @@ export default function FormReserva() {
       style={{
         backgroundColor: "rgba(255, 255, 255, 0.12)",
         backdropFilter: "blur(6px)",
-        padding: "25px",
+        padding: "20px",
         borderRadius: "12px",
-        minWidth: "380px",
+        width: "100%",            // ← clave para mobile
+        maxWidth: "380px",        // ← se adapta sin romper layout
+        margin: "0 auto",
         color: "#f5f5f5",
       }}
     >
@@ -69,11 +68,12 @@ export default function FormReserva() {
 
       {/* Usuario */}
       <div className="mb-3">
-        <label className="form-label">ID del Usuario</label>
+        <label className="form-label">Usuario (username)</label>
         <input
           type="text"
           className="form-control"
           name="usuario"
+          placeholder="Ej: leonel_soria"
           value={form.usuario}
           onChange={handleChange}
         />
