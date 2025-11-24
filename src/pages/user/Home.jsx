@@ -3,6 +3,7 @@ import SobreNosotros from "./SobreNosotros";
 import Galeria from "./Galeria";
 import Resenias from "./Resenias";
 import Header from "../../layout/Header.jsx";
+import Footer from "../../layout/Footer.jsx";
 
 const Home = () => {
   return (
@@ -19,6 +20,7 @@ const Home = () => {
           <Resenias />
         </section>
       </main>
+      <Footer />
     </>
   );
 };
