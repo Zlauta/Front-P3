@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 
 export default function FormReserva() {
+  const [minDate, setMinDate] = useState("");
+  const [minTime, setMinTime] = useState("");
+
   const [form, setForm] = useState({
     usuario: "",
     usuarioEmail: "",
@@ -11,7 +14,7 @@ export default function FormReserva() {
     notas: "",
   });
 
-  // ✅ Al cargar el form, llenamos usuario + email desde sessionStorage
+  // 🔹 Cargar usuario desde sessionStorage
   useEffect(() => {
     const nombre = sessionStorage.getItem("nombre") || "";
     const email = sessionStorage.getItem("email") || "";
@@ -23,6 +26,32 @@ export default function FormReserva() {
     }));
   }, []);
 
+  // 🔹 Configurar fecha mínima (hoy)
+  useEffect(() => {
+    const hoy = new Date();
+    const yyyy = hoy.getFullYear();
+    const mm = String(hoy.getMonth() + 1).padStart(2, "0");
+    const dd = String(hoy.getDate()).padStart(2, "0");
+
+    setMinDate(`${yyyy}-${mm}-${dd}`);
+  }, []);
+
+  // 🔹 Actualizar hora mínima si la fecha es hoy
+  useEffect(() => {
+    if (!form.fecha) return;
+
+    const hoy = new Date();
+    const fechaElegida = new Date(form.fecha + "T00:00");
+
+    if (fechaElegida.toDateString() === hoy.toDateString()) {
+      const hh = String(hoy.getHours()).padStart(2, "0");
+      const mm = String(hoy.getMinutes()).padStart(2, "0");
+      setMinTime(`${hh}:${mm}`);
+    } else {
+      setMinTime(""); // otra fecha → sin límite
+    }
+  }, [form.fecha]);
+
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -32,6 +61,17 @@ export default function FormReserva() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // ❌ Validación adicional en front
+    if (form.fecha < minDate) {
+      alert("La fecha no puede ser pasada.");
+      return;
+    }
+
+    if (form.fecha === minDate && form.hora < minTime) {
+      alert("La hora no puede ser del pasado.");
+      return;
+    }
 
     try {
       const res = await fetch("http://localhost:3000/api/reservas", {
@@ -80,7 +120,7 @@ export default function FormReserva() {
     >
       <h3 className="mb-3 text-center">Nueva Reserva</h3>
 
-      {/* Usuario (readonly) */}
+      {/* Usuario */}
       <div className="mb-3">
         <label className="form-label">Nombre</label>
         <input
@@ -92,9 +132,9 @@ export default function FormReserva() {
         />
       </div>
 
-      {/* Email del usuario (readonly) */}
+      {/* Email */}
       <div className="mb-3">
-        <label className="form-label">Email (identificación)</label>
+        <label className="form-label">Email</label>
         <input
           type="email"
           className="form-control"
@@ -109,6 +149,7 @@ export default function FormReserva() {
         <label className="form-label">Mesa</label>
         <input
           type="number"
+          min="1"
           className="form-control"
           name="mesa"
           value={form.mesa}
@@ -116,11 +157,12 @@ export default function FormReserva() {
         />
       </div>
 
-      {/* Cantidad Personas */}
+      {/* Personas */}
       <div className="mb-3">
         <label className="form-label">Cantidad de Personas</label>
         <input
           type="number"
+          min="1"
           className="form-control"
           name="cantidadPersonas"
           value={form.cantidadPersonas}
@@ -128,7 +170,7 @@ export default function FormReserva() {
         />
       </div>
 
-      {/* Fecha */}
+      {/* Fecha con restricción */}
       <div className="mb-3">
         <label className="form-label">Fecha</label>
         <input
@@ -136,11 +178,12 @@ export default function FormReserva() {
           className="form-control"
           name="fecha"
           value={form.fecha}
+          min={minDate}
           onChange={handleChange}
         />
       </div>
 
-      {/* Hora */}
+      {/* Hora con restricción dinámica */}
       <div className="mb-3">
         <label className="form-label">Hora</label>
         <input
@@ -148,13 +191,14 @@ export default function FormReserva() {
           className="form-control"
           name="hora"
           value={form.hora}
+          min={minTime}
           onChange={handleChange}
         />
       </div>
 
       {/* Notas */}
       <div className="mb-3">
-        <label className="form-label">Notas (opcional)</label>
+        <label className="form-label">Notas</label>
         <textarea
           className="form-control"
           name="notas"
