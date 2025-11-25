@@ -39,13 +39,7 @@ export default function Footer() {
               </Nav.Link>
             </li>
             <li>
-              <Nav.Link
-                as={NavLink}
-                to="/#sobre-nosotros"
-                className="footer-link"
-              >
-                Sobre Nosotros
-              </Nav.Link>
+              <Nav.Link href="/#sobre-nosotros">Sobre Nosotros</Nav.Link>
             </li>
             <li>
               <Nav.Link as={NavLink} to="/contacto" className="footer-link">
