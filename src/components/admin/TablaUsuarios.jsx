@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Table, Button, Form, Container } from "react-bootstrap";
 import Swal from "sweetalert2";
 import "../../index.css";
-//import "./TablaUsuarios.css";
 import "../../api/clientAxios.js";
 import {
   actualizarUsuario,
@@ -89,7 +88,7 @@ export default function TablaUsuarios() {
     } catch (error) {
       console.error("Error al guardar actualizar usuario:", error);
       Swal.fire({
-        title: "Error al actualizar usuario",
+        title: respone?.data?.msg || "Error al actualizar usuario",
         icon: "error",
         confirmButtonColor: "#1aaf4b ",
       });
@@ -130,7 +129,7 @@ export default function TablaUsuarios() {
     } catch (error) {
       console.error("Error al eliminar usuario:", error);
       Swal.fire({
-        title: "Error al eliminar usuario",
+        title: response?.data?.msg || "Error al eliminar usuario",
         icon: "error",
         confirmButtonColor: "#1aaf4b ",
       });
