@@ -23,6 +23,11 @@ export default function TablaUsuarios() {
   const [ediciones, setEdiciones] = useState({});
   const [mostrarForm, setMostrarForm] = useState(false);
 
+  const usuarioLogueado = JSON.parse(sessionStorage.getItem("usuario"));
+
+  // ahora puedes acceder al email
+  const emailLogueado = usuarioLogueado?.email;
+
   const cargar = async () => {
     try {
       const data = await obtenerUsuarios();
@@ -88,7 +93,7 @@ export default function TablaUsuarios() {
     } catch (error) {
       console.error("Error al guardar actualizar usuario:", error);
       Swal.fire({
-        title: respone?.data?.msg || "Error al actualizar usuario",
+        title: error.response.data.msg || "Error al actualizar usuario",
         icon: "error",
         confirmButtonColor: "#1aaf4b ",
       });
@@ -129,7 +134,7 @@ export default function TablaUsuarios() {
     } catch (error) {
       console.error("Error al eliminar usuario:", error);
       Swal.fire({
-        title: response?.data?.msg || "Error al eliminar usuario",
+        title: error.response.data.msg || "Error al eliminar usuario",
         icon: "error",
         confirmButtonColor: "#1aaf4b ",
       });
@@ -187,6 +192,7 @@ export default function TablaUsuarios() {
                   <Form.Select
                     value={ediciones[usuario._id]?.rol ?? usuario.rol}
                     onChange={(e) => manejarCambio(usuario._id, e.target.value)}
+                    disabled={usuario.email === usuarioLogueado?.email}
                   >
                     <option value="admin">administrador</option>
                     <option value="cliente">cliente</option>
@@ -196,6 +202,7 @@ export default function TablaUsuarios() {
                   <Form.Select
                     value={ediciones[usuario._id]?.estado ?? usuario.estado}
                     onChange={(e) => manejarEstado(usuario._id, e.target.value)}
+                    disabled={usuario.email === usuarioLogueado?.email}
                   >
                     <option value="activo">activo</option>
                     <option value="inactivo">inactivo</option>
@@ -209,7 +216,10 @@ export default function TablaUsuarios() {
                     size="sm"
                     variant="secondary"
                     onClick={() => guardarCambios(usuario._id)}
-                    disabled={!ediciones[usuario._id]}
+                    disabled={
+                      !ediciones[usuario._id] ||
+                      usuario.email === usuarioLogueado?.email
+                    }
                   >
                     Guardar
                   </Button>
@@ -218,6 +228,7 @@ export default function TablaUsuarios() {
                     size="sm"
                     variant="success"
                     onClick={() => manejarEliminar(usuario._id)}
+                    disabled={usuario.email === usuarioLogueado?.email}
                   >
                     Eliminar
                   </Button>
