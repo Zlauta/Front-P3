@@ -1,7 +1,7 @@
 import React from "react";
-import { BrowserRouter, Routes, Route} from "react-router-dom";
-import AdminRoute from "./AdminRoute";
-import PublicRoute from "./PublicRoute";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AdminRoute from "../layout/AdminRoute.jsx";
+import PublicRoute from "../layout/PublicRoute.jsx";
 import NotFound from "../pages/user/NotFound.jsx";
 import AxiosInterceptor from "../components/manejoErrores/AxiosInterceptor.jsx";
 

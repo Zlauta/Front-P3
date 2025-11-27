@@ -2,13 +2,12 @@ import React from "react";
 import SobreNosotros from "./SobreNosotros";
 import Galeria from "./Galeria";
 import Resenias from "./Resenias";
-import Header from "../../layout/Header.jsx";
-import Footer from "../../layout/Footer.jsx";
+import Header from "../../components/navegacionUser/Header.jsx";
+import Footer from "../../components/navegacionUser/Footer.jsx";
 
 const Home = () => {
   return (
     <>
-      <Header />
       <main>
         <section id="galeria">
           <Galeria />
@@ -20,7 +19,6 @@ const Home = () => {
           <Resenias />
         </section>
       </main>
-      <Footer />
     </>
   );
 };
