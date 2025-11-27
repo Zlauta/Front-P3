@@ -1,9 +1,11 @@
-import React from 'react'
+import TablaPedidos from "../../components/admin/TablaPedidos";
 
 const Pedidos = () => {
   return (
-    <div>Pedidos</div>
-  )
-}
+    <div className="page-wrapper">
+      <TablaPedidos />
+    </div>
+  );
+};
 
-export default Pedidos
+export default Pedidos;
