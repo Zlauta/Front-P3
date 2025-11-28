@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { FaStar } from 'react-icons/fa';
-import { crearResenia } from '../../service/resenias.service.js';
+import { crearResenia } from '../service/resenias.service.js';
 import Swal from 'sweetalert2';
 
 const ModalCreateResenia = ({ show, handleClose, updateList }) => {

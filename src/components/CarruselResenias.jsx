@@ -1,15 +1,17 @@
-import React from 'react';
-import { Card } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Card, Button } from 'react-bootstrap';
 import { FaStar, FaQuoteLeft } from 'react-icons/fa';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
+import './carruselResenia.css'; 
+import ModalCreateResenia from './ModalCreateResenia.jsx'; 
 
-import './CarruselResenia.css'; 
-
-const CarruselResenia = ({ resenias = [] }) => {
+const CarruselResenia = ({ resenias = [], updateList }) => {
   
+  const [showModal, setShowModal] = useState(false);
+
   const reseniasActivas = Array.isArray(resenias)
-    ? resenias.filter((r) => r.activo === true)
+    ? resenias.filter((resenia) => resenia.activo === true)
     : [];
 
   const responsive = {
@@ -20,8 +22,8 @@ const CarruselResenia = ({ resenias = [] }) => {
   };
 
   return (
-    <div className="py-3">
-      <h2 className="text-center text-white mb-5">
+    <div className="py-3 position-relative">
+      <h2 className="text-center text-white mb-4">
         Lo que dicen nuestros clientes
       </h2>
 
@@ -41,38 +43,59 @@ const CarruselResenia = ({ resenias = [] }) => {
               : 0;
 
             return (
-              <div key={resenia._id} className="h-100 pb-2">
-                {/* 👇 Usamos className "resenia-card" */}
-                <Card className="resenia-card text-center">
-                  
-                  <FaQuoteLeft size={30} color="#1aaf4b" className="mb-3 opacity-50" />
-                  
-                  {/* 👇 Usamos className "resenia-comentario" */}
-                  <Card.Text className="resenia-comentario">
-                    "{resenia.comentario}"
-                  </Card.Text>
-                  
-                  <div className="mt-2">
-                    {[...Array(estrellas)].map((_, i) => (
-                      <FaStar key={i} color="#ffc107" size={20} />
-                    ))}
-                  </div>
-                  
-                  {/* 👇 Usamos className "resenia-user" */}
-                  <Card.Title className="resenia-user">
-                    - {resenia.nombre}
-                  </Card.Title>
+              <div key={resenia._id} className="h-100 pb-2 px-2">
+                <Card className="resenia-card text-center h-100">
+                  <Card.Body className="d-flex flex-column justify-content-center align-items-center">
+                    <FaQuoteLeft size={30} color="#1aaf4b" className="mb-3 opacity-50" />
+                    
+                    <Card.Text className="resenia-comentario fst-italic">
+                      "{resenia.comentario}"
+                    </Card.Text>
+                    
+                    <div className="mt-auto pt-3">
+                      <div className="mb-2">
+                        {[...Array(estrellas)].map((_, i) => (
+                          <FaStar key={i} color="#ffc107" size={20} />
+                        ))}
+                      </div>
+                      <Card.Title className="resenia-user fw-bold" style={{ fontSize: '1.2rem', color: '#1aaf4b' }}>
+                        - {resenia.nombre}
+                      </Card.Title>
+                    </div>
 
+                  </Card.Body>
                 </Card>
               </div>
             );
           })}
         </Carousel>
       ) : (
-        <div className="text-center text-white p-5" style={{ backgroundColor: "#254630", borderRadius: "15px" }}>
-          <p className="mb-0">Aún no hay reseñas visibles.</p>
+        <div className="text-center text-white p-5 mx-auto" style={{ backgroundColor: "#254630", borderRadius: "15px", maxWidth: "600px" }}>
+          <p className="mb-0 fs-5">¡Sé el primero en dejar una reseña!</p>
         </div>
       )}
+
+      <div className="text-center mt-5">
+        <Button 
+            variant="outline-light" 
+            onClick={() => setShowModal(true)}
+            style={{ 
+                borderRadius: "20px", 
+                fontWeight: "bold", 
+                borderWidth: "2px",
+                padding: "8px 20px"
+            }}
+        >
+            Dejar una reseña
+        </Button>
+      </div>
+
+      <ModalCreateResenia 
+        show={showModal} 
+        handleClose={() => setShowModal(false)}
+        updateList={updateList} 
+      />
+
     </div>
   );
 };

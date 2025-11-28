@@ -82,7 +82,7 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="mb-3" controlId="nombre">
-            <Form.Label>Nombre del producto</Form.Label>
+            <Form.Label className=" text-light">Nombre del producto</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ej: Pizza Napolitana"
@@ -110,7 +110,7 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="descripcion">
-            <Form.Label>Descripción</Form.Label>
+            <Form.Label className=" text-light">Descripción</Form.Label>
             <Form.Control
               as="textarea"
               rows={3}
@@ -141,7 +141,7 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="precio">
-            <Form.Label>Precio ($)</Form.Label>
+            <Form.Label className=" text-light">Precio ($)</Form.Label>
             <Form.Control
               type="number"
               step="0.01"
@@ -166,18 +166,19 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="categoria">
-            <Form.Label>Categoría</Form.Label>
+            <Form.Label className=" text-light">Categoría</Form.Label>
             <Form.Select
               isInvalid={!!errors.categoria}
               {...register("categoria", {
                 required: "La categoría es obligatoria",
                 validate: (value) =>
-                  ["comida", "bebida", "postre"].includes(value) ||
-                  "La categoría debe ser 'comida', 'bebida' o 'postre'",
+                  ["entrada","principal", "bebida", "postre"].includes(value) ||
+                  "La categoría debe ser 'entrada','principal', 'bebida' o 'postre'",
               })}
             >
               <option value="">Seleccionar categoría</option>
-              <option value="comida">Comida</option>
+              <option value="entrada">Entrada</option>
+              <option value="principal">Principal</option>
               <option value="bebida">Bebida</option>
               <option value="postre">Postre</option>
             </Form.Select>
@@ -187,7 +188,7 @@ const ModalEditMenu = ({ show, onHide, menu, onUpdated }) => {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Imagen del menú</Form.Label>
+            <Form.Label className=" text-light">Imagen del menú</Form.Label>
             <div
               {...getRootProps()}
               style={{

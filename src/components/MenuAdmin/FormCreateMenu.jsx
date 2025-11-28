@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
+import Swal from "sweetalert2"; // 🔹 Importamos SweetAlert2
 import {
   Form,
   Button,
@@ -11,8 +12,6 @@ import {
   Spinner,
 } from "react-bootstrap";
 import PreviewMenu from "./PreviewMenu";
-import "react-toastify/dist/ReactToastify.css";
-import { toast, ToastContainer } from "react-toastify";
 import { uploadImageAndGetURL } from "../../service/storage.service.js";
 import { crearProducto } from "../../service/products.service.js";
 
@@ -53,7 +52,12 @@ const FormCreateMenu = ({ onMenuCreated }) => {
 
   const onSubmit = async (data) => {
     if (!imagen) {
-      toast.error("Debe seleccionar una imagen antes de continuar");
+      Swal.fire({
+        icon: "warning",
+        title: "Falta la imagen",
+        text: "Debe seleccionar una imagen antes de continuar",
+        confirmButtonColor: "#e6ad00", 
+      });
       return;
     }
 
@@ -72,16 +76,27 @@ const FormCreateMenu = ({ onMenuCreated }) => {
 
       await crearProducto(nuevoMenu);
 
-      toast.success("Menú creado correctamente");
+      Swal.fire({
+        icon: "success",
+        title: "¡Menú Creado!",
+        text: "El producto se ha guardado correctamente.",
+        confirmButtonColor: "#1aaf4b",
+        timer: 3000,
+      });
 
       reset();
-
       setImagen(null);
       setPreview(null);
       if (onMenuCreated) onMenuCreated();
     } catch (error) {
       console.error(error);
-      toast.error("Hubo un error al crear el menú. Inténtalo de nuevo.");
+      // 🔹 Alerta de error
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un error al crear el menú. Inténtalo de nuevo.",
+        confirmButtonColor: "#d33",
+      });
     } finally {
       setLoading(false);
     }
@@ -94,7 +109,6 @@ const FormCreateMenu = ({ onMenuCreated }) => {
 
   return (
     <Container className="mt-5 mb-5">
-      <ToastContainer position="top-right" autoClose={3000} />
       <Card
         style={{
           backgroundColor: "#122117",
@@ -126,8 +140,7 @@ const FormCreateMenu = ({ onMenuCreated }) => {
                       },
                       pattern: {
                         value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ0-9\s]+$/,
-                        message:
-                          "El nombre solo puede contener letras, números, espacios y caracteres en español",
+                        message: "Caracteres no permitidos",
                       },
                     })}
                   />
@@ -147,18 +160,11 @@ const FormCreateMenu = ({ onMenuCreated }) => {
                       required: "La descripción es obligatoria",
                       minLength: {
                         value: 10,
-                        message:
-                          "Debe ingresar una descripción entre 10 y 500 caracteres",
+                        message: "Mínimo 10 caracteres",
                       },
                       maxLength: {
                         value: 500,
-                        message:
-                          "Debe ingresar una descripción entre 10 y 500 caracteres",
-                      },
-                      pattern: {
-                        value: /^[a-zA-ZÀ-ÿ0-9.,;:¡!¿?\-()'"%°\s]{10,500}$/u,
-                        message:
-                          "La descripción solo puede contener letras, números y espacios",
+                        message: "Máximo 500 caracteres",
                       },
                     })}
                   />
@@ -177,14 +183,8 @@ const FormCreateMenu = ({ onMenuCreated }) => {
                     isInvalid={!!errors.precio}
                     {...register("precio", {
                       required: "El precio es obligatorio",
-                      pattern: {
-                        value: /^\d+(\.\d{1,2})?$/,
-                        message:
-                          "El precio debe ser un número válido con hasta 2 decimales",
-                      },
                       validate: (value) =>
-                        parseFloat(value) >= 0 ||
-                        "Debe ingresar un número válido para el precio",
+                        parseFloat(value) >= 0 || "Precio inválido",
                     })}
                   />
                   <Form.Control.Feedback type="invalid">
@@ -199,12 +199,14 @@ const FormCreateMenu = ({ onMenuCreated }) => {
                     {...register("categoria", {
                       required: "La categoría es obligatoria",
                       validate: (value) =>
-                        ["comida", "bebida", "postre"].includes(value) ||
-                        "La categoría debe ser 'comida', 'bebida' o 'postre'",
+                        ["entrada", "principal", "bebida", "postre"].includes(
+                          value
+                        ) || "Categoría inválida",
                     })}
                   >
                     <option value="">Seleccionar categoría</option>
-                    <option value="comida">Comida</option>
+                    <option value="entrada">Entrada</option>
+                    <option value="principal">Principal</option>
                     <option value="bebida">Bebida</option>
                     <option value="postre">Postre</option>
                   </Form.Select>
@@ -222,16 +224,14 @@ const FormCreateMenu = ({ onMenuCreated }) => {
                       borderRadius: "12px",
                       padding: "30px",
                       textAlign: "center",
-                      backgroundColor: isDragActive ? "#254630" : "transparent",
+                      backgroundColor: isDragActive
+                        ? "#254630"
+                        : "transparent",
                       cursor: "pointer",
                       transition: "background-color 0.3s ease",
                     }}
                   >
-                    <input
-                      {...getInputProps()}
-                      accept="image/*"
-                      
-                    />
+                    <input {...getInputProps()} accept="image/*" />
                     {preview ? (
                       <img
                         src={preview}
@@ -247,15 +247,10 @@ const FormCreateMenu = ({ onMenuCreated }) => {
                       <p style={{ color: "#ffffff" }}>
                         {isDragActive
                           ? "Suelta la imagen aquí..."
-                          : "Arrastra o haz clic para seleccionar una imagen"}
+                          : "Arrastra o haz clic para seleccionar"}
                       </p>
                     )}
                   </div>
-                  {errors.imagen && (
-                    <div className="invalid-feedback d-block">
-                      {errors.imagen.message}
-                    </div>
-                  )}
                 </Form.Group>
 
                 <div className="text-center mt-4">

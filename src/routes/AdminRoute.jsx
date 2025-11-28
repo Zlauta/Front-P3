@@ -8,7 +8,6 @@ import Pedidos from "../pages/admin/Pedidos";
 import Resenias from "../pages/admin/Resenias";
 import Reservas from "../pages/admin/Reservas";
 import Contacto from "../pages/admin/Contacto";
-import Promociones from "../pages/admin/Promociones";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import NotFound from "../pages/user/NotFound.jsx";
 
@@ -35,7 +34,6 @@ const AdminRoute = () => {
         <Route path="resenias" element={<Resenias />} />
         <Route path="reservas" element={<Reservas />} />
         <Route path="contacto" element={<Contacto />} />
-        <Route path="promociones" element={<Promociones />} />
       </Route>
       </Route>
 
