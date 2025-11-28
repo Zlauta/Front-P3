@@ -16,8 +16,7 @@ function formatearFecha(iso) {
         return iso ?? "";
     }
 }
-
-export default function TablaPedidos() {
+const TablaPedidos = () => {
     const [pedidos, setPedidos] = useState([]);
     const [ediciones, setEdiciones] = useState({});
 
@@ -138,9 +137,9 @@ export default function TablaPedidos() {
 
                                 {/* ITEMS */}
                                 <td className="tabla">
-                                    {pedido.items?.map((it, i) => (
+                                    {pedido.items?.map((item, i) => (
                                         <div key={i}>
-                                            {it.producto?.nombre} × {it.cantidad}
+                                            {item.producto?.nombre} × {item.cantidad}
                                         </div>
                                     ))}
                                 </td>
@@ -213,3 +212,4 @@ export default function TablaPedidos() {
         </div>
     );
 }
+export default TablaPedidos
