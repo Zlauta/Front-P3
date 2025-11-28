@@ -1,130 +1,105 @@
 import React, { useState } from "react";
 import { Card, Row, Col, Spinner, Button } from "react-bootstrap";
 
-const MenuCard = ({ nombre, descripcion, precio, categoria, imagen }) => {
+const MenuCard = ({
+  _id,
+  nombre,
+  descripcion,
+  precio,
+  categoria,
+  imagen,
+  isLogged,
+  addToCart,
+}) => {
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
-  const [showFullDescription, setShowFullDescription] = useState(false);
-
-  const toggleDescription = () => setShowFullDescription(!showFullDescription);
-
-  const shortDescription =
-    descripcion && descripcion.length > 100
-      ? descripcion.substring(0, 100) + " ... "
-      : descripcion;
+  const [showFull, setShowFull] = useState(false);
 
   return (
     <Card
       style={{
         backgroundColor: "#254630",
-        color: "#ffffff",
-        border: "none",
+        color: "#fff",
         borderRadius: "16px",
-        width: "100%",
-        maxWidth: "600px",
         overflow: "hidden",
-        boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
+        border: "none",
       }}
     >
       <Row className="g-0 align-items-center">
-        <Col xs={12} md={5} style={{ position: "relative" }}>
-          {imagen && !imageError ? (
-            <>
-              {!imageLoaded && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "#122117",
-                    borderRadius: "16px",
-                  }}
-                >
-                  <Spinner animation="border" variant="light" size="sm" />
-                </div>
-              )}
-              <Card.Img
-                src={imagen}
-                alt="Vista previa del menú"
-                onLoad={() => setImageLoaded(true)}
-                onError={() => setImageError(true)}
+        <Col xs={12} md={5}>
+          <div
+            style={{ position: "relative", height: "200px", margin: "10px" }}
+          >
+            {!imageLoaded && (
+              <div
                 style={{
-                  height: "200px",
-                  width: "94%",
-                  objectFit: "cover",
-                  borderRadius: "16px",
-                  margin: "3%",
-                  display: imageLoaded ? "block" : "none",
+                  position: "absolute",
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  background: "#122117",
+                  borderRadius: "10px",
                 }}
-              />
-            </>
-          ) : (
-            <div
+              >
+                <Spinner animation="border" variant="light" size="sm" />
+              </div>
+            )}
+            <Card.Img
+              src={imagen}
+              onLoad={() => setImageLoaded(true)}
               style={{
                 height: "100%",
-                minHeight: "180px",
-                backgroundColor: "#122117",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#ffffff80",
-                borderRadius: "16px 0 0 16px",
+                width: "100%",
+                objectFit: "cover",
+                borderRadius: "10px",
+                display: imageLoaded ? "block" : "none",
               }}
-            >
-              Sin imagen
-            </div>
-          )}
+            />
+          </div>
         </Col>
-
         <Col xs={12} md={7}>
           <Card.Body>
-            <Card.Title style={{ fontSize: "1.3rem", fontWeight: "bold" }}>
-              {nombre || "Nombre del menú"}
-            </Card.Title>
-
-            <Card.Subtitle
-              className="mb-2"
-              style={{ color: "#1aaf4b", fontWeight: "500" }}
-            >
-              {categoria || "Categoría"}
+            <Card.Title style={{ fontWeight: "bold" }}>{nombre}</Card.Title>
+            <Card.Subtitle className="mb-2 text-success">
+              {categoria}
             </Card.Subtitle>
 
-            <Card.Text style={{ fontSize: "0.95rem", whiteSpace: "pre-line" }}>
-              {showFullDescription
+            <Card.Text style={{ fontSize: "0.9rem" }}>
+              {showFull
                 ? descripcion
-                : shortDescription || "Aquí aparecerá la descripción del menú."}
+                : descripcion?.substring(0, 80) +
+                  (descripcion?.length > 80 ? "..." : "")}
             </Card.Text>
 
-            {descripcion && descripcion.length > 120 && (
+            {descripcion?.length > 80 && (
               <Button
                 variant="link"
                 size="sm"
-                onClick={toggleDescription}
-                style={{
-                  color: "#1aaf4b",
-                  textDecoration: "none",
-                  padding: 0,
-                }}
+                onClick={() => setShowFull(!showFull)}
+                style={{ color: "#1aaf4b", padding: 0, textDecoration: "none" }}
               >
-                {showFullDescription ? "Ver menos ▲" : "Ver más ▼"}
+                {showFull ? "Ver menos" : "Ver más"}
               </Button>
             )}
 
-            <Card.Text
-              style={{
-                fontWeight: "bold",
-                fontSize: "1.1rem",
-                color: "#1aaf4b",
-                marginTop: "8px",
-              }}
-            >
-              {precio ? `$${precio}` : "Precio pendiente"}
-            </Card.Text>
+            <div className="d-flex justify-content-between align-items-center mt-3">
+              <h5 className="text-success m-0 fw-bold">${precio}</h5>
+
+              {isLogged && (
+                <Button
+                  onClick={() => addToCart({ _id, nombre, precio, imagen })}
+                  style={{
+                    backgroundColor: "#1aaf4b",
+                    border: "none",
+                    borderRadius: "20px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Pedir
+                </Button>
+              )}
+            </div>
           </Card.Body>
         </Col>
       </Row>
