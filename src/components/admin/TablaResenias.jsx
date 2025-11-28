@@ -1,112 +1,157 @@
-import React from 'react';
-import { Table, Button, Form, Badge } from 'react-bootstrap';
-import { FaTrash, FaStar } from 'react-icons/fa';
-import { cambiarEstadoResenia, eliminarResenia } from '../../service/resenias.service.js'; // Ajusta la ruta si es necesario
-import Swal from 'sweetalert2';
+import { useEffect, useState } from "react";
+import { Table, Button, Form } from "react-bootstrap";
+import { FaStar, FaTrash } from "react-icons/fa";
+import Swal from "sweetalert2";
 
-const TablaResenias = ({ resenias = [], updateList }) => {
+// Importa tus servicios
+import {
+  obtenerResenias,
+  eliminarResenia,
+  editarResenia
+} from "../../service/resenias.service.js";
 
-  const handleToggle = async (id, estadoActual) => {
+const TablaResenias = () => {
+  const [resenias, setResenias] = useState([]);
+
+  const cargar = async () => {
     try {
-      await cambiarEstadoResenia(id, estadoActual);
-      updateList();
-      
-      const Toast = Swal.mixin({
-        toast: true, position: 'top-end', showConfirmButton: false, timer: 2000,
-        background: '#254630', color: '#fff'
+      const data = await obtenerResenias();
+      if (Array.isArray(data)) 
+       return setResenias(data)
+    } catch (error) {
+      console.error("Error al cargar reseñas:", error);
+      setResenias([]);
+    }
+  };
+
+  useEffect(() => {
+    cargar();
+  }, []);
+
+ const toggleEstado = async (resenia) => {
+    try {
+      const nuevoEstado = !resenia.activo; 
+      await editarResenia(resenia._id, { activo: nuevoEstado });
+      await cargar(); 
+      const toastMixin = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,
+        background: '#fff',
+        color: '#333'
       });
       
-      Toast.fire({ 
-        icon: 'success', 
-        title: !estadoActual ? 'Reseña ahora VISIBLE' : 'Reseña ahora OCULTA' 
+      toastMixin.fire({
+        icon: 'success',
+        title: nuevoEstado ? 'Reseña visible' : 'Reseña oculta'
       });
 
     } catch (error) {
       console.error(error);
+      Swal.fire("Error", "No se pudo cambiar el estado", "error");
     }
   };
 
-  const handleDelete = async (id) => {
+  const manejarEliminar = async (id) => {
     const result = await Swal.fire({
-      title: '¿Eliminar reseña?',
-      text: "No podrás revertir esto",
-      icon: 'warning',
+      title: "¿Borrar reseña?",
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#1aaf4b',
-      background: '#254630',
-      color: '#fff'
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, borrar",
+      cancelButtonText: "Cancelar"
     });
 
     if (result.isConfirmed) {
       try {
         await eliminarResenia(id);
-        updateList();
-        Swal.fire({
-          title: 'Eliminado',
-          background: '#254630',
-          color: '#fff',
-          confirmButtonColor: '#1aaf4b'
-        });
+        await cargar();
+        Swal.fire("Eliminado", "La reseña ha sido borrada.", "success");
       } catch (error) {
-        console.error(error);
+        Swal.fire("Error", "No se pudo eliminar", "error");
       }
     }
   };
 
-  const tableStyle = { backgroundColor: '#254630', color: '#fff', borderColor: '#1aaf4b' };
+  const renderEstrellas = (cantidad) => {
+    return [...Array(5)].map((_, i) => (
+      <FaStar key={i} color={i < cantidad ? "#ffc107" : "#6c757d"} size={14} />
+    ));
+  };
 
   return (
-    <div className="table-responsive">
-      <Table bordered hover style={{ color: '#fff', verticalAlign: 'middle' }}>
-        <thead style={{ backgroundColor: '#122117', color: '#1aaf4b', margin:"30px" }}>
-          <tr>
-            <th>Usuario</th>
-            <th>Comentario</th>
-            <th>Calificación</th>
-            <th className="text-center">Visibilidad</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Array.isArray(resenias) && resenias.length > 0 ? (
-            resenias.map((resenia) => (
-              <tr key={resenia._id} style={tableStyle}>
-                <td>{resenia.nombre}</td>
-                <td>{resenia.comentario}</td>
-                <td>
-                  {resenia.calificacion} <FaStar color="#ffc107" className="mb-1"/>
-                </td>
-                
-                <td className="text-center">
-                  <div className="d-flex flex-column align-items-center">
-                    <Form.Check 
-                      type="switch"
-                      id={`switch-${resenia._id}`}
-                      checked={resenia.activo}
-                      onChange={() => handleToggle(resenia._id, resenia.activo)}
-                      style={{ fontSize: '1.2rem', cursor: 'pointer' }}
-                    />
-                    <span style={{ fontSize: '0.8rem', color: resenia.activo ? '#1aaf4b' : '#aaa' }}>
-                      {resenia.activo ? "Visible" : "Oculto"}
-                    </span>
-                  </div>
-                </td>
+    <div className="p-4">
+      <h3 className="text-light mb-4">Administrar Reseñas</h3>
 
-                <td>
-                  <Button variant="danger" size="sm" onClick={() => handleDelete(resenia._id)}>
-                    <FaTrash />
-                  </Button>
-                </td>
-              </tr>
-            ))
-          ) : (
+      <div className="table-responsive">
+        <Table striped bordered hover>
+          <thead>
             <tr>
-              <td colSpan="5" className="text-center">No hay reseñas.</td>
+              <th className="tabla">Usuario</th>
+              <th className="tabla">Calificación</th>
+              <th className="tabla">Comentario</th>
+              <th className="text-center tabla">Visible</th>
+              <th className="text-center tabla">Acciones</th>
             </tr>
-          )}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {Array.isArray(resenias) && resenias.length > 0 ? (
+              resenias.map((resenia) => (
+                <tr key={resenia._id}>
+                  {/* Nombre */}
+                  <td className="align-middle fw-bold tabla">
+                    {resenia.nombre || "Anónimo"}
+                  </td>
+
+                  <td className="align-middle tabla">
+                    <div className="d-flex gap-1">
+                      {renderEstrellas(resenia.calificacion)}
+                    </div>
+                  </td>
+                  <td className="align-middle tabla">
+                    <small className="fst-italic text-white-50">
+                      "{resenia.comentario?.substring(0, 60)}
+                      {resenia.comentario?.length > 60 ? "..." : ""}"
+                    </small>
+                  </td>
+
+                  <td className="align-middle text-center tabla">
+                    <Form.Check 
+                        type="switch"
+                        id={`switch-${resenia._id}`}
+                        checked={!!resenia.activo}
+                        onChange={() => toggleEstado(resenia)}
+                        label={resenia.activo ? "Sí" : "No"}
+                        className={resenia.activo ? "text-success fw-bold" : "text-secondary"}
+                    />
+                  </td>
+                  <td className="align-middle text-center tabla">
+                    <Button 
+                      variant="danger" 
+                      size="sm" 
+                      onClick={() => manejarEliminar(resenia._id)}
+                      title="Eliminar reseña"
+                    >
+                      <FaTrash />
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+               <tr>
+                 <td colSpan={5} className="text-center py-5 text-white-50 tabla">
+                   {resenias === null 
+                      ? "Cargando reseñas..." 
+                      : "No hay reseñas registradas aún."}
+                 </td>
+               </tr>
+            )}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 };
