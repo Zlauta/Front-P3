@@ -4,7 +4,6 @@ import Header from "../../layout/Header.jsx";
 const Carta = () => {
   return (
     <>
-      <Header />
       <PublicMenu />
     </>
   );

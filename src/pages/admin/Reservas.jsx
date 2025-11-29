@@ -1,238 +1,280 @@
 import { useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Table, Button, Modal, Form } from "react-bootstrap";
+import Swal from "sweetalert2";
+import "../../index.css";
+import {
+  obtenerReservas,
+  actualizarReserva,
+  eliminarReserva,
+} from "../../service/reservas.service.js";
+
+function formatearFecha(iso) {
+  try {
+    const fecha = new Date(iso);
+    return fecha.toLocaleDateString();
+  } catch {
+    return iso ?? "";
+  }
+}
 
 export default function ReservasAdmin() {
   const [reservas, setReservas] = useState([]);
-  const [editReserva, setEditReserva] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [editReserva, setEditReserva] = useState(null);
 
-  // ===========================================
-  // CARGAR RESERVAS DESDE EL BACKEND
-  // ===========================================
-  useEffect(() => {
-    const fetchReservas = async () => {
-      const res = await fetch("http://localhost:3000/api/reservas");
-      const data = await res.json();
-      setReservas(data);
-    };
-
-    fetchReservas();
-  }, []);
-
-  // ===========================================
-  // ELIMINAR RESERVA
-  // ===========================================
-  const handleDelete = async (_id) => {
-    if (!confirm("¿Seguro que deseas eliminar esta reserva?")) return;
-
+  const cargar = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/reservas/${_id}`, {
-        method: "DELETE",
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message || "No se pudo eliminar la reserva");
-        return;
-      }
-
-      // 🔥 Eliminar del estado
-      setReservas((prev) => prev.filter((r) => r._id !== _id));
+      const respuesta = await obtenerReservas();
+      setReservas(respuesta);
     } catch (error) {
-      console.error(error);
-      alert("Error de conexión");
+      console.error("Error al cargar reservas:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudieron cargar las reservas",
+        confirmButtonColor: "#1aaf4b",
+      });
     }
   };
 
-  // ===========================================
-  // ABRIR MODAL CON LA RESERVA A EDITAR
-  // ===========================================
-  const openEdit = (reserva) => {
-    setEditReserva({ ...reserva });
+  useEffect(() => {
+    cargar();
+  }, []);
+
+  const abrirModalEditar = (reserva) => {
+    let fechaFormatoInput = "";
+    if (reserva.fecha) {
+      fechaFormatoInput = new Date(reserva.fecha).toISOString().split("T")[0];
+    }
+
+    setEditReserva({
+      ...reserva,
+      fecha: fechaFormatoInput,
+    });
     setShowModal(true);
   };
 
-  // ===========================================
-  // GUARDAR CAMBIOS (PUT)
-  // ===========================================
-  const handleSave = async () => {
-    const _id = editReserva._id;
+  const cerrarModal = () => {
+    setShowModal(false);
+    setEditReserva(null);
+  };
+
+  const handleChangeModal = (e) => {
+    setEditReserva({
+      ...editReserva,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleGuardarCambios = async () => {
+    if (!editReserva) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/api/reservas/${_id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editReserva),
+      await actualizarReserva(editReserva._id, editReserva);
+
+      await cargar();
+      cerrarModal();
+
+      Swal.fire({
+        title: "Reserva actualizada!",
+        icon: "success",
+        iconColor: "#1aaf4b",
+        confirmButtonColor: "#1aaf4b",
+        timer: 1500,
+        showConfirmButton: false,
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message || "No se pudo actualizar la reserva");
-        return;
-      }
-
-      // 🔥 Actualizar estado local
-      setReservas((prev) => prev.map((r) => (r._id === _id ? editReserva : r)));
-
-      setShowModal(false);
     } catch (error) {
-      console.error(error);
-      alert("Error al actualizar la reserva");
+      console.error("Error al actualizar:", error);
+      Swal.fire({
+        title: error.response?.data?.message || "Error al actualizar",
+        icon: "error",
+        confirmButtonColor: "#1aaf4b",
+      });
+    }
+  };
+
+  const manejarEliminar = async (id) => {
+    const result = await Swal.fire({
+      title: "¿Eliminar esta reserva?",
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#1aaf4b",
+      cancelButtonColor: "#042d12ff",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await eliminarReserva(id);
+      await cargar();
+
+      Swal.fire({
+        title: "Reserva eliminada",
+        icon: "success",
+        iconColor: "#1aaf4b",
+        confirmButtonColor: "#1aaf4b",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("Error al eliminar:", error);
+      Swal.fire({
+        title: error.response?.data?.message || "Error al eliminar",
+        icon: "error",
+        confirmButtonColor: "#1aaf4b",
+      });
     }
   };
 
   return (
-    <div className="container py-4">
-      <h2 className="mb-4">Administrador – Reservas</h2>
+    <div className="p-1">
+      <h3 className="text-light fs-1 mt-5 mb-5">Administrador de Reservas</h3>
 
-      {/* TABLA */}
-      <div className="table-responsive">
-        <table className="table table-dark table-striped table-hover text-center align-middle">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Usuario</th>
-              <th>Mesa</th>
-              <th>Personas</th>
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Notas</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {reservas.map((res) => (
+      <Table striped bordered hover responsive>
+        <thead>
+          <tr>
+            <th className="tabla">Usuario</th>
+            <th className="tabla">Mesa</th>
+            <th className="tabla">Personas</th>
+            <th className="tabla">Fecha</th>
+            <th className="tabla">Hora</th>
+            <th className="tabla">Notas</th>
+            <th className="tabla">Acciones</th>
+          </tr>
+        </thead>
+        <tbody style={{ background: "#1E2A26" }}>
+          {reservas && reservas.length > 0 ? (
+            reservas.map((res) => (
               <tr key={res._id}>
-                <td>{res._id}</td>
-                <td>{res.usuario}</td>
-                <td>{res.mesa}</td>
-                <td>{res.cantidadPersonas}</td>
-                <td>{res.fecha}</td>
-                <td>{res.hora}</td>
-                <td>{res.notas || "-"}</td>
+                <td className="tabla">
+                  {res.usuario?.email || "Usuario eliminado"}
+                </td>
+                <td className="tabla">{res.mesa}</td>
+                <td className="tabla">{res.cantidadPersonas}</td>
+                <td className="tabla">{formatearFecha(res.fecha)}</td>
+                <td className="tabla">{res.hora}</td>
+                <td className="tabla">{res.notas || "-"}</td>
 
-                <td>
+                <td className="tabla d-flex flex-column flex-lg-row gap-2 justify-content-center">
                   <Button
-                    variant="warning"
+                    className="btn-tabla"
                     size="sm"
-                    className="me-2"
-                    onClick={() => openEdit(res)}
+                    variant="secondary"
+                    onClick={() => abrirModalEditar(res)}
                   >
                     Editar
                   </Button>
 
                   <Button
-                    variant="danger"
+                    className="btn-tabla btn-eliminar"
                     size="sm"
-                    onClick={() => handleDelete(res._id)}
+                    variant="success"
+                    onClick={() => manejarEliminar(res._id)}
                   >
                     Eliminar
                   </Button>
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={8} className="text-center py-4 text-light tabla">
+                No hay reservas registradas.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
+
+      <div className="text-light fs-5">
+        Total: {reservas?.length || 0} reserva{reservas.length === 1 ? "" : "s"}
       </div>
 
-      {/* MODAL DE EDICIÓN */}
-      {editReserva && (
-        <Modal show={showModal} onHide={() => setShowModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Editar Reserva</Modal.Title>
-          </Modal.Header>
+      <Modal show={showModal} onHide={cerrarModal} centered>
+        <Modal.Header
+          closeButton
+          style={{
+            backgroundColor: "#1E2A26",
+            color: "white",
+            borderBottom: "1px solid #1aaf4b",
+          }}
+        >
+          <Modal.Title>Editar Reserva</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ backgroundColor: "#1E2A26", color: "white" }}>
+          {editReserva && (
+            <Form>
+              <Form.Group className="mb-3">
+                <Form.Label>Mesa</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="mesa"
+                  value={editReserva.mesa}
+                  onChange={handleChangeModal}
+                />
+              </Form.Group>
 
-          <Modal.Body>
-            <div className="mb-3">
-              <label>Usuario</label>
-              <input
-                type="text"
-                className="form-control"
-                value={editReserva.usuario}
-                onChange={(e) =>
-                  setEditReserva({ ...editReserva, usuario: e.target.value })
-                }
-              />
-            </div>
+              <Form.Group className="mb-3">
+                <Form.Label>Cantidad de Personas</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="cantidadPersonas"
+                  value={editReserva.cantidadPersonas}
+                  onChange={handleChangeModal}
+                />
+              </Form.Group>
 
-            <div className="mb-3">
-              <label>Mesa</label>
-              <input
-                type="number"
-                className="form-control"
-                value={editReserva.mesa}
-                onChange={(e) =>
-                  setEditReserva({ ...editReserva, mesa: e.target.value })
-                }
-              />
-            </div>
+              <Form.Group className="mb-3">
+                <Form.Label>Fecha</Form.Label>
+                <Form.Control
+                  type="date"
+                  name="fecha"
+                  value={editReserva.fecha}
+                  onChange={handleChangeModal}
+                />
+              </Form.Group>
 
-            <div className="mb-3">
-              <label>Personas</label>
-              <input
-                type="number"
-                className="form-control"
-                value={editReserva.cantidadPersonas}
-                onChange={(e) =>
-                  setEditReserva({
-                    ...editReserva,
-                    cantidadPersonas: e.target.value,
-                  })
-                }
-              />
-            </div>
+              <Form.Group className="mb-3">
+                <Form.Label>Hora</Form.Label>
+                <Form.Control
+                  type="time"
+                  name="hora"
+                  value={editReserva.hora}
+                  onChange={handleChangeModal}
+                />
+              </Form.Group>
 
-            <div className="mb-3">
-              <label>Fecha</label>
-              <input
-                type="date"
-                className="form-control"
-                value={editReserva.fecha}
-                onChange={(e) =>
-                  setEditReserva({ ...editReserva, fecha: e.target.value })
-                }
-              />
-            </div>
-
-            <div className="mb-3">
-              <label>Hora</label>
-              <input
-                type="time"
-                className="form-control"
-                value={editReserva.hora}
-                onChange={(e) =>
-                  setEditReserva({ ...editReserva, hora: e.target.value })
-                }
-              />
-            </div>
-
-            <div className="mb-3">
-              <label>Notas</label>
-              <textarea
-                className="form-control"
-                rows="3"
-                value={editReserva.notas}
-                onChange={(e) =>
-                  setEditReserva({ ...editReserva, notas: e.target.value })
-                }
-              ></textarea>
-            </div>
-          </Modal.Body>
-
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Cancelar
-            </Button>
-            <Button variant="primary" onClick={handleSave}>
-              Guardar Cambios
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
+              <Form.Group className="mb-3">
+                <Form.Label>Notas</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  name="notas"
+                  value={editReserva.notas}
+                  onChange={handleChangeModal}
+                />
+              </Form.Group>
+            </Form>
+          )}
+        </Modal.Body>
+        <Modal.Footer
+          style={{ backgroundColor: "#1E2A26", borderTop: "1px solid #1aaf4b" }}
+        >
+          <Button variant="secondary" onClick={cerrarModal}>
+            Cancelar
+          </Button>
+          <Button
+            variant="success"
+            style={{ backgroundColor: "#1aaf4b", borderColor: "#1aaf4b" }}
+            onClick={handleGuardarCambios}
+          >
+            Guardar Cambios
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

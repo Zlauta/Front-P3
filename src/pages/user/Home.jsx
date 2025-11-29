@@ -8,7 +8,6 @@ import Footer from "../../layout/Footer.jsx";
 const Home = () => {
   return (
     <>
-      <Header />
       <main>
         <section id="galeria">
           <Galeria />
@@ -20,7 +19,6 @@ const Home = () => {
           <SobreNosotros />
         </section>
       </main>
-      <Footer />
     </>
   );
 };
