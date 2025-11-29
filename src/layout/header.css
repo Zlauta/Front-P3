@@ -66,3 +66,13 @@
     padding-top: 0.5rem;
   }
 }
+
+.header-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1050;
+  /* más alto que otros elementos */
+  transition: transform 0.3s ease-in-out;
+}

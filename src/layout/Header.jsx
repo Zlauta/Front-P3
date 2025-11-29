@@ -76,7 +76,9 @@ const Header = () => {
               <Nav.Link as={Link} to="/contacto">
                 Contacto
               </Nav.Link>
-
+              <Nav.Link as={Link} to="/reservas">
+                Reservas
+              </Nav.Link>
               {isActiveUser ? (
                 <>
                   {user.rol === "admin" && (
@@ -84,9 +86,7 @@ const Header = () => {
                       Admin
                     </Nav.Link>
                   )}
-                  <Nav.Link as={Link} to="/reservas">
-                    Reservas
-                  </Nav.Link>
+
                   <Button variant="success" onClick={logout} className="ms-2">
                     Salir
                   </Button>
@@ -94,7 +94,7 @@ const Header = () => {
               ) : (
                 <>
                   <Button as={Link} to="/login" className="btn-cta ms-lg-3">
-                    Reservar
+                    Iniciar Sesion
                   </Button>
                 </>
               )}
