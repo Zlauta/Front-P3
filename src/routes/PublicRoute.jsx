@@ -12,21 +12,27 @@ import Register from "../pages/user/Register";
 import NewPassword from "../pages/user/NewPassword";
 import Reservas from "../pages/user/Reservas.jsx";
 import NotFound from "../pages/user/NotFound.jsx";
+import Header from "../layout/Header.jsx";
+import Footer from "../layout/Footer.jsx";
 
 const PublicRoute = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/carta" element={<Carta />} />
-      <Route path="/contacto" element={<Contacto />} />
-      <Route path="/reservas" element={<Reservas />} />
+    <>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/carta" element={<Carta />} />
+        <Route path="/contacto" element={<Contacto />} />
+        <Route path="/reservas" element={<Reservas />} />
 
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/password" element={<NewPassword />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/password" element={<NewPassword />} />
 
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <Footer />
+    </>
   );
 };
 
