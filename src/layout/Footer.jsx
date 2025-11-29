@@ -38,14 +38,21 @@ export default function Footer() {
                 Carta
               </Nav.Link>
             </li>
+
             <li>
               <Nav.Link href="/#sobre-nosotros">Sobre Nosotros</Nav.Link>
             </li>
+
+            <li>
+              <Nav.Link href="/#resenias">Reseñas</Nav.Link>
+            </li>
+
             <li>
               <Nav.Link as={NavLink} to="/contacto" className="footer-link">
                 Contacto
               </Nav.Link>
             </li>
+
             <li>
               <Nav.Link as={NavLink} to="/reservas" className="footer-link">
                 Reservas
