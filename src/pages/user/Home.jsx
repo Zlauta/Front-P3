@@ -2,9 +2,6 @@ import React from "react";
 import SobreNosotros from "./SobreNosotros";
 import Galeria from "./Galeria";
 import Resenias from "./Resenias";
-import Header from "../../layout/Header.jsx";
-import Footer from "../../layout/Footer.jsx";
-import ScrollButtons from "../../layout/ScrollButtons.jsx";
 
 const Home = () => {
   return (
@@ -19,7 +16,6 @@ const Home = () => {
         <section id="sobre-nosotros">
           <SobreNosotros />
         </section>
-        <ScrollButtons />
       </main>
     </>
   );
