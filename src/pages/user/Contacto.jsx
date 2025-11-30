@@ -1,9 +1,8 @@
 import React from "react";
 import { Container } from "react-bootstrap";
-import "./login.css";
+import "../../style/iniciarSesion.css";
 import { Link } from "react-router-dom";
-import FormContacto from "../auth/FormContacto";
-import Header from "../../layout/Header";
+import FormContacto from "../auth/FormularioContacto";
 
 const Contacto = () => {
   return (

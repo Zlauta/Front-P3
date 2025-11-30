@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Row, Col } from "react-bootstrap";
 
-const PreviewMenu = ({ nombre, descripcion, precio, categoria, imagen }) => {
+const VistaPreviaMenu = ({ nombre, descripcion, precio, categoria, imagen }) => {
   return (
     <Card
       style={{
@@ -79,4 +79,4 @@ const PreviewMenu = ({ nombre, descripcion, precio, categoria, imagen }) => {
   );
 };
 
-export default PreviewMenu;
+export default VistaPreviaMenu;

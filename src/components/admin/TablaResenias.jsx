@@ -3,7 +3,6 @@ import { Table, Button, Form } from "react-bootstrap";
 import { FaStar, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 
-// Importa tus servicios
 import {
   obtenerResenias,
   eliminarResenia,

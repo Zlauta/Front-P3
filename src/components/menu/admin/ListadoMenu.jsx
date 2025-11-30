@@ -4,35 +4,35 @@ import { toast } from "react-toastify";
 import {
   obtenerProductos,
   eliminarProducto,
-} from "../../service/products.service.js";
-import ModalEditMenu from "./ModalEditMenu.jsx";
-import FormCreateMenu from "./FormCreateMenu.jsx";
+} from "../../../service/producto.service.js";
+import ModalEditMenu from "./EditarMenuModal.jsx";
+import FormularioCrearMenu from "./FormularioCrearMenu.jsx";
 
-const ListMenu = () => {
+const ListadoMenu = () => {
   const [menus, setMenus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [reload, setReload] = useState(false);
 
-     const fetchMenus = async () => {
-      try {
-        const data = await obtenerProductos();
-          setMenus(data || []);  
-      } catch (error) {
-        console.error(error);
-        toast.error("Error al cargar los menús");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchMenus = async () => {
+    try {
+      const data = await obtenerProductos();
+      setMenus(data || []);
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al cargar los menús");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchMenus();
   }, [reload]);
 
-   const handleMenuCreated = () => {
-    setReload((prev) => !prev); 
+  const handleMenuCreated = () => {
+    setReload((prev) => !prev);
   };
 
   const handleEdit = (menu) => {
@@ -40,11 +40,13 @@ const ListMenu = () => {
     setShowModal(true);
   };
 
-    const confirmDelete = (menu) => {
+  const confirmDelete = (menu) => {
     toast.info(
       <div>
-        <p className="p-2">¿Seguro que deseas eliminar <b>{menu.nombre}</b>?</p>
-        <div style={{ display: "flex", justifyContent: "center", gap: "10px"}}>
+        <p className="p-2">
+          ¿Seguro que deseas eliminar <b>{menu.nombre}</b>?
+        </p>
+        <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
           <Button
             variant="danger"
             size="sm"
@@ -52,11 +54,7 @@ const ListMenu = () => {
           >
             Sí, eliminar
           </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => toast.dismiss()}
-          >
+          <Button variant="secondary" size="sm" onClick={() => toast.dismiss()}>
             Cancelar
           </Button>
         </div>
@@ -82,7 +80,6 @@ const ListMenu = () => {
       toast.error("Error al eliminar el menú");
     }
   };
-
 
   const handleUpdate = (updatedMenu) => {
     setMenus((prev) =>
@@ -183,7 +180,7 @@ const ListMenu = () => {
         </Table>
 
         <div className="mb-5">
-          <FormCreateMenu onMenuCreated={handleMenuCreated} /> 
+          <FormularioCrearMenu onMenuCreated={handleMenuCreated} />
         </div>
 
         {showModal && (
@@ -199,4 +196,4 @@ const ListMenu = () => {
   );
 };
 
-export default ListMenu;
+export default ListadoMenu;

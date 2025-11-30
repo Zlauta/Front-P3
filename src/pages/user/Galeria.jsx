@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Container } from "react-bootstrap";
-import "./galeria.css";
+import "../../style/galeria.css";
 
 export const Galeria = () => {
   useEffect(() => {

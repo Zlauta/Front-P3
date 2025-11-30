@@ -7,7 +7,7 @@ import {
   actualizarContacto,
   obtenerContactos,
   eliminarContacto,
-} from "../../service/contact.service.js";
+} from "../../service/contacto.service.js";
 
 function formatearFecha(iso) {
   try {
@@ -20,7 +20,7 @@ function formatearFecha(iso) {
 export default function TablaContactos() {
   const [contactos, setContatos] = useState([]);
   const [ediciones, setEdiciones] = useState({});
-  const [mostrarForm, setMostrarForm] = useState(false);
+
 
   const cargar = async () => {
     try {
@@ -40,15 +40,6 @@ export default function TablaContactos() {
     return () => window.removeEventListener("storage", enAlmacenamiento);
   }, []);
 
-  const manejarCambio = (id, valor) => {
-    setEdiciones((prev) => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        rol: valor,
-      },
-    }));
-  };
 
   const manejarEstado = (id, valor) => {
     setEdiciones((prev) => ({

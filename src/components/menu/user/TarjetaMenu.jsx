@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, Row, Col, Spinner, Button } from "react-bootstrap";
 
-const MenuCard = ({
+const TarjetaMenu = ({
   _id,
   nombre,
   descripcion,
@@ -107,4 +107,4 @@ const MenuCard = ({
   );
 };
 
-export default MenuCard;
+export default TarjetaMenu;

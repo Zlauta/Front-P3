@@ -4,10 +4,9 @@ import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 import Swal from "sweetalert2"; 
 import { crearPreferenciaPago } from "../../service/pagos.service.js";
 
-// Inicializamos Mercado Pago (Asegúrate de que la variable de entorno esté bien configurada)
 initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, { locale: "es-AR" });
 
-const CartModal = ({ show, handleClose, cart, total, removeFromCart }) => {
+const CarritoModal = ({ show, handleClose, cart, total, removeFromCart }) => {
   
   const [preferenceId, setPreferenceId] = useState(null);
   const [cargando, setCargando] = useState(false);
@@ -175,4 +174,4 @@ const CartModal = ({ show, handleClose, cart, total, removeFromCart }) => {
   );
 };
 
-export default CartModal;
+export default CarritoModal;

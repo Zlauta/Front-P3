@@ -1,10 +1,11 @@
-import FormCreateMenu from "../../components/MenuAdmin/FormCreateMenu.jsx";
-import ListMenu from "../../components/MenuAdmin/ListMenu.jsx";
+import ListadoMenu from "../../components/menu/admin/ListadoMenu.jsx";
 
 const Menu = () => {
-  return <>
-  <ListMenu />
-  </>;
+  return (
+    <>
+      <ListadoMenu />
+    </>
+  );
 };
 
 export default Menu;

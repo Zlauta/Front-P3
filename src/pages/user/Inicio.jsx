@@ -3,7 +3,7 @@ import SobreNosotros from "./SobreNosotros";
 import Galeria from "./Galeria";
 import Resenias from "./Resenias";
 
-const Home = () => {
+const Inicio = () => {
   return (
     <>
       <main>
@@ -21,4 +21,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Inicio;

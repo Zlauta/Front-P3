@@ -11,11 +11,11 @@ import {
   Card,
   Spinner,
 } from "react-bootstrap";
-import PreviewMenu from "./PreviewMenu";
-import { uploadImageAndGetURL } from "../../service/storage.service.js";
-import { crearProducto } from "../../service/products.service.js";
+import PreviewMenu from "./VistaPreviaMenu.jsx";
+import { uploadImageAndGetURL } from "../../../service/almacenamiento.service.js";
+import { crearProducto } from "../../../service/producto.service.js";
 
-const FormCreateMenu = ({ onMenuCreated }) => {
+const FormularioCrearMenu = ({ onMenuCreated }) => {
   const {
     register,
     handleSubmit,
@@ -56,7 +56,7 @@ const FormCreateMenu = ({ onMenuCreated }) => {
         icon: "warning",
         title: "Falta la imagen",
         text: "Debe seleccionar una imagen antes de continuar",
-        confirmButtonColor: "#e6ad00", 
+        confirmButtonColor: "#e6ad00",
       });
       return;
     }
@@ -224,9 +224,7 @@ const FormCreateMenu = ({ onMenuCreated }) => {
                       borderRadius: "12px",
                       padding: "30px",
                       textAlign: "center",
-                      backgroundColor: isDragActive
-                        ? "#254630"
-                        : "transparent",
+                      backgroundColor: isDragActive ? "#254630" : "transparent",
                       cursor: "pointer",
                       transition: "background-color 0.3s ease",
                     }}
@@ -292,4 +290,4 @@ const FormCreateMenu = ({ onMenuCreated }) => {
   );
 };
 
-export default FormCreateMenu;
+export default FormularioCrearMenu;

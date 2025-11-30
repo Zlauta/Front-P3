@@ -1,10 +1,9 @@
-import PublicMenu from "../../components/menuUser/PublicMenu.jsx";
-import Header from "../../layout/Header.jsx";
+import MenuPublico from "../../components/menu/user/MenuPublico.jsx";
 
 const Carta = () => {
   return (
     <>
-      <PublicMenu />
+      <MenuPublico />
     </>
   );
 };

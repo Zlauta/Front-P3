@@ -130,12 +130,12 @@ const TablaPedidos = () => {
                             <tr key={pedido._id}>
                                 <td className="tabla">{idx + 1}</td>
 
-                                {/* CLIENTE */}
+
                                 <td className="tabla">
                                     {pedido.cliente?.nombre ?? "Sin cliente"}
                                 </td>
 
-                                {/* ITEMS */}
+
                                 <td className="tabla">
                                     {pedido.items?.map((item, i) => (
                                         <div key={i}>
@@ -144,16 +144,15 @@ const TablaPedidos = () => {
                                     ))}
                                 </td>
 
-                                {/* TOTAL */}
                                 <td className="tabla">${pedido.total}</td>
 
-                                {/* DIRECCIÓN */}
+
                                 <td className="tabla">{pedido.direccion}</td>
 
-                                {/* TELÉFONO */}
+
                                 <td className="tabla">{pedido.telefono}</td>
 
-                                {/* ESTADO */}
+
                                 <td className="tabla">
                                     <Form.Select
                                         value={ediciones[pedido._id]?.estado ?? pedido.estado}
@@ -170,10 +169,8 @@ const TablaPedidos = () => {
                                     </Form.Select>
                                 </td>
 
-                                {/* FECHA */}
                                 <td className="tabla">{formatearFecha(pedido.createdAt)}</td>
 
-                                {/* ACCIONES */}
                                 <td className="tabla d-flex flex-column gap-2">
                                     <Button
                                         className="btn-tabla"

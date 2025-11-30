@@ -1,9 +1,9 @@
 import React from "react";
 import { Container } from "react-bootstrap";
-import FormRegister from "../auth/FormRegister";
-import "./login.css";
+import FormRegister from "../auth/FormularioRegistro";
+import "../../style/iniciarSesion.css";
 import { Link } from "react-router-dom";
-import Header from "../../layout/Header";
+
 
 const RegisterPage = () => {
   return (
