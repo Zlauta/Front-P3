@@ -10,17 +10,14 @@ import {
   FiMail,
   FiTag,
 } from "react-icons/fi";
-import "./sidebar.css";
+import "../../style/sidebar.css";
 
 const SidebarAdmin = () => {
   return (
     <>
-      {/* Mobile: collapsed vertical strip (mini) visible when offcanvas is closed */}
       <div className="sidebar-mini d-lg-none" aria-hidden="true">
-        {/* mini strip intentionally without logo — hamburger button sits above */}
       </div>
 
-      {/* Mobile: Navbar with Offcanvas handled by react-bootstrap (no manual state) */}
       <Navbar expand="lg" className="d-lg-none sidebar-mobile-navbar">
         <Container fluid>
           <Navbar.Toggle
@@ -131,7 +128,6 @@ const SidebarAdmin = () => {
         </Container>
       </Navbar>
 
-      {/* Desktop sidebar (visible on lg+) */}
       <aside className="sidebar-admin d-none d-lg-block">
         <div className="sidebar-inner">
           <div className="sidebar-brand">

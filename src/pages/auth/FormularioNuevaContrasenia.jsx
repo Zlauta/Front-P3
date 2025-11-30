@@ -4,9 +4,9 @@ import Form from "react-bootstrap/Form";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { obtenerUsuarios } from "../../service/users.service";
+import { obtenerUsuarios } from "../../service/usuario.service";
 
-const FormNewPass = () => {
+const FormularioNuevaContrasenia = () => {
   const {
     register,
     handleSubmit,
@@ -99,4 +99,4 @@ const FormNewPass = () => {
   );
 };
 
-export default FormNewPass;
+export default FormularioNuevaContrasenia;

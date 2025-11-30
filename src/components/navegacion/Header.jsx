@@ -1,8 +1,7 @@
 import React from "react";
-import { ScrollLink } from "react-scroll";
 import { Link } from "react-router-dom";
 import { Navbar, Container, Nav, Button } from "react-bootstrap";
-import "./header.css";
+import "../../style/header.css";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import logopng from "/images/logo.png";

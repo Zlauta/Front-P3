@@ -1,11 +1,10 @@
 import React from "react";
 
 import { Container } from "react-bootstrap";
-import "./login.css";
-import FormNewPass from "../auth/FormNewPass";
-import Header from "../../layout/Header";
+import "../../style/iniciarSesion.css";
+import FormNewPass from "../auth/FormularioNuevaContrasenia";
 
-const NewPassPage = () => {
+const NuevaContrasenia = () => {
   return (
     <>
       <div className="page-wrapper">
@@ -18,4 +17,4 @@ const NewPassPage = () => {
   );
 };
 
-export default NewPassPage;
+export default NuevaContrasenia;

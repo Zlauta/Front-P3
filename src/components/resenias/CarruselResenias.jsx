@@ -3,8 +3,8 @@ import { Card, Button } from 'react-bootstrap';
 import { FaStar, FaQuoteLeft } from 'react-icons/fa';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import './carruselResenia.css'; 
-import ModalCreateResenia from './ModalCreateResenia.jsx'; 
+import '../../style/carruselResenia.css'; 
+import ModalCreateResenia from './CrearReseniaModal.jsx'; 
 
 const CarruselResenia = ({ resenias = [], updateList }) => {
   

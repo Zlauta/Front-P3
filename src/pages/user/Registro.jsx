@@ -1,21 +1,18 @@
 import React from "react";
-import FormLogin from "../auth/FormLogin";
 import { Container } from "react-bootstrap";
-import "./login.css";
+import FormRegister from "../auth/FormularioRegistro";
+import "../../style/iniciarSesion.css";
 import { Link } from "react-router-dom";
-import Header from "../../layout/Header";
 
-const Login = () => {
+
+const RegisterPage = () => {
   return (
     <>
       <div className="page-wrapper">
-        <h1 className="titulos-form">Iniciar Sesion</h1>
+        <h1 className="titulos-form">Registrarse </h1>
         <Container className="custom-form border rounded p-4 w-100 w-md-75 w-lg-50 mb-5">
-          <FormLogin></FormLogin>
+          <FormRegister></FormRegister>
           <div className="mt-4 text-center">
-            <Link to="/password" className="link-color text-decoration-none">
-              Recuperar contraseña?
-            </Link>
             <div className="mt-2">
               <Link to="/" className="link-color text-decoration-none">
                 ← Volver al inicio
@@ -28,4 +25,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default RegisterPage;

@@ -7,8 +7,8 @@ import {
   actualizarUsuario,
   obtenerUsuarios,
   eliminarUsuario,
-} from "../../service/users.service.js";
-import FormRegister from "../../pages/auth/FormRegister.jsx";
+} from "../../service/usuario.service.js";
+import FormRegister from "../../pages/auth/FormularioRegistro.jsx";
 
 function formatearFecha(iso) {
   try {

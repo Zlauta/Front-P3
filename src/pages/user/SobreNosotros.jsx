@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Card, Container, Image } from "react-bootstrap";
-import "./sobreNosotros.css";
+import "../../style/sobreNosotros.css";
 
 export const SobreNosotros = () => {
   useEffect(() => {

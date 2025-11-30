@@ -3,10 +3,10 @@ import Form from "react-bootstrap/Form";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { crearContacto } from "../../service/contact.service.js";
+import { crearContacto } from "../../service/contacto.service.js";
 import emailjs from "@emailjs/browser";
 
-const FormContacto = () => {
+const FormularioContacto = () => {
   const {
     register,
     handleSubmit,
@@ -193,4 +193,4 @@ const FormContacto = () => {
   );
 };
 
-export default FormContacto;
+export default FormularioContacto;

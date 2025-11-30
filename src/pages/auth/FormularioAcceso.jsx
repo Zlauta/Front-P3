@@ -3,11 +3,10 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../../service/auth.service";
+import { loginUser } from "../../service/autenticacion.service";
 
-const formLogin = () => {
+const FormularioAcceso = () => {
   const {
     register,
     handleSubmit,
@@ -70,7 +69,6 @@ const formLogin = () => {
           isInvalid={errors.email}
           {...register("email", {
             required: "El email es requerido",
-            // Esta expresion regular evalua que sea un email valido
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
               message: "Debe ingresar un email válido",
@@ -110,9 +108,8 @@ const formLogin = () => {
           <>Registrarse</>
         </Button>
       </div>
-      x``
     </Form>
   );
 };
 
-export default formLogin;
+export default FormularioAcceso;

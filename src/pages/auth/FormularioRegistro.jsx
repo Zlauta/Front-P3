@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 import {
   obtenerUsuarios,
   registrarUsuario,
-} from "../../service/users.service.js";
+} from "../../service/usuario.service.js";
 import emailjs from "@emailjs/browser";
 
-const FormRegister = ({ fromAdmin = false }) => {
+const FormularioRegistro = ({ fromAdmin = false }) => {
   const {
     register,
     handleSubmit,
@@ -269,4 +269,4 @@ const FormRegister = ({ fromAdmin = false }) => {
   );
 };
 
-export default FormRegister;
+export default FormularioRegistro;
