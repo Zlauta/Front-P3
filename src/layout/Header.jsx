@@ -40,6 +40,7 @@ const Header = () => {
         });
 
         localStorage.removeItem("token");
+        localStorage.removeItem("userEmail");
         sessionStorage.removeItem("usuario");
 
         navigate("/");

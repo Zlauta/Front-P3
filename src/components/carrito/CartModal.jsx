@@ -4,34 +4,40 @@ import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 import Swal from "sweetalert2"; 
 import { crearPreferenciaPago } from "../../service/pagos.service.js";
 
-// Inicializamos Mercado Pago leyendo la variable de entorno
+// Inicializamos Mercado Pago (Asegúrate de que la variable de entorno esté bien configurada)
 initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, { locale: "es-AR" });
 
-const CartModal = ({ show, handleClose, cart, total }) => {
+const CartModal = ({ show, handleClose, cart, total, removeFromCart }) => {
+  
   const [preferenceId, setPreferenceId] = useState(null);
   const [cargando, setCargando] = useState(false);
-
-  // 🔎 Estados para el formulario
   const [telefono, setTelefono] = useState("");
   const [direccion, setDireccion] = useState("");
+  const [validated, setValidated] = useState(false);
 
   useEffect(() => {
-    if (show && cart.length > 0) {
-      // No iniciar pago automáticamente, esperar que el usuario complete el formulario
+    if (show) {
       setPreferenceId(null);
+      setValidated(false);
     }
   }, [show, cart]);
 
   const iniciarPago = async () => {
-    if (!telefono || !direccion) {
+    const phonePattern = /^[\+]?[0-9\s-]{8,25}$/;
+    const isPhoneValid = phonePattern.test(telefono);
+    const isAddressValid = direccion.trim().length >= 10;
+
+    if (!isPhoneValid || !isAddressValid) {
+      setValidated(true); 
       Swal.fire({
         icon: "warning",
-        title: "Datos incompletos",
-        text: "Por favor ingresa tu teléfono y dirección antes de continuar.",
+        title: "Datos incorrectos",
+        text: "Por favor revisa que el teléfono sea válido y la dirección tenga al menos 10 caracteres.",
         confirmButtonColor: "#254630",
       });
-      return;
+      return; 
     }
+
 
     setCargando(true);
 
@@ -73,14 +79,30 @@ const CartModal = ({ show, handleClose, cart, total }) => {
           </div>
         ) : (
           <>
+
             <ListGroup variant="flush">
               {cart.map((item, index) => (
-                <ListGroup.Item key={index} className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <strong>{item.nombre}</strong>
-                    <div className="text-muted" style={{ fontSize: "0.85rem" }}>x{item.quantity}</div>
+                <ListGroup.Item key={index} className="d-flex justify-content-between align-items-center px-0">
+                  <div className="ms-2 me-auto">
+                    <div className="fw-bold">{item.nombre}</div>
+                    <div className="text-muted" style={{ fontSize: "0.85rem" }}>
+                        ${item.precio} x {item.quantity}
+                    </div>
                   </div>
-                  <span className="fw-bold text-success">${item.precio * item.quantity}</span>
+
+                  <span className="fw-bold text-success me-3">
+                      ${item.precio * item.quantity}
+                  </span>
+
+                  <Button 
+                    variant="outline-danger" 
+                    size="sm" 
+                    onClick={() => removeFromCart(index)}
+                    title="Quitar del carrito"
+                    style={{ borderRadius: "50%", width: "30px", height: "30px", padding: "0", lineHeight: "0" }}
+                  >
+                    ✕
+                  </Button>
                 </ListGroup.Item>
               ))}
             </ListGroup>
@@ -90,8 +112,8 @@ const CartModal = ({ show, handleClose, cart, total }) => {
               <h3 className="fw-bold" style={{ color: "#1aaf4b" }}>${total}</h3>
             </div>
 
-            {/* 🔎 Formulario para teléfono y dirección */}
-            <Form className="mt-3">
+            <Form className="mt-3" noValidate validated={validated}>
+              
               <Form.Group className="mb-3" controlId="formTelefono">
                 <Form.Label>Teléfono</Form.Label>
                 <Form.Control
@@ -100,19 +122,29 @@ const CartModal = ({ show, handleClose, cart, total }) => {
                   value={telefono}
                   onChange={(e) => setTelefono(e.target.value)}
                   required
+                  pattern="^[\+]?[0-9\s-]{8,25}$" 
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ingresa un número válido (mínimo 8 dígitos).
+                </Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formDireccion">
                 <Form.Label>Dirección</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Ej: Av. Siempre Viva 742"
+                  placeholder="Ej: Av. Siempre Viva 742 (Casa/Depto)"
                   value={direccion}
                   onChange={(e) => setDireccion(e.target.value)}
                   required
+                  minLength="10" 
+                  maxLength="100"
                 />
+                <Form.Control.Feedback type="invalid">
+                  La dirección es muy corta (mínimo 10 caracteres).
+                </Form.Control.Feedback>
               </Form.Group>
+
             </Form>
           </>
         )}
@@ -129,8 +161,13 @@ const CartModal = ({ show, handleClose, cart, total }) => {
             <Wallet initialization={{ preferenceId: preferenceId }} />
           </div>
         ) : (
-          <Button variant="success" onClick={iniciarPago} className="w-100">
-            Iniciar Pago
+          <Button 
+            variant="success" 
+            onClick={iniciarPago} 
+            className="w-100"
+            disabled={cart.length === 0}
+          >
+            Confirmar e Iniciar Pago
           </Button>
         )}
       </Modal.Footer>

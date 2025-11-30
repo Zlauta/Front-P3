@@ -6,13 +6,18 @@ export const loginUser = async ({ email, password }) => {
       email: email,
       contrasenia: password,
     });
-    console.log(response);
+    
     const token = response.data?.token;
     const usuario = response.data?.payload;
     if (token) {
       localStorage.setItem("token", token);
+   
+      const emailGuardar = usuario?.email || email;
+      localStorage.setItem("userEmail", emailGuardar);
+
       sessionStorage.setItem("usuario", JSON.stringify(usuario));
     }
+      
     return response.data;
   } catch (error) {
     console.log(error);

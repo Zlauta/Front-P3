@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Spinner, Badge, Button, Alert } from "react-bootstrap";
-import { obtenerProductos } from "../../service/products.service.js"; // <--- Tu service de productos
+import { obtenerProductos } from "../../service/products.service.js"; 
 import MenuCard from "./MenuCard.jsx";
 import Swal from "sweetalert2";
 import CartModal from "../carrito/CartModal.jsx";
@@ -9,13 +9,31 @@ const PublicMenu = () => {
   const [menus, setMenus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isLogged, setIsLogged] = useState(false);
-  const [cart, setCart] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [cart, setCart] = useState([]);
+  const [cartKey, setCartKey] = useState("cart_guest"); 
 
+  // 1. CARGA INICIAL (Detectar usuario por EMAIL y cargar SU carrito)
   useEffect(() => {
-    // Verificamos si hay token para saber si mostramos los botones de "Pedir"
     const token = localStorage.getItem("token");
-    setIsLogged(!!token);
+    const userEmail = localStorage.getItem("userEmail"); 
+    
+    setIsLogged(!!token); 
+
+    let currentKey = "cart_guest"; 
+
+    if (token && userEmail) {
+      currentKey = `cart_user_${userEmail}`; 
+    } 
+
+    setCartKey(currentKey);
+
+    const savedCart = localStorage.getItem(currentKey);
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    } else {
+      setCart([]); 
+    }
 
     const fetchMenus = async () => {
       try {
@@ -30,6 +48,12 @@ const PublicMenu = () => {
     fetchMenus();
   }, []);
 
+  useEffect(() => {
+    if (cartKey) {
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+    }
+  }, [cart, cartKey]);
+
   const handleAddToCart = (producto) => {
     setCart((prevCart) => {
       const existe = prevCart.find((item) => item._id === producto._id);
@@ -42,7 +66,6 @@ const PublicMenu = () => {
       }
     });
 
-    // Feedback visual tipo Toast
     Swal.fire({
       position: "top-end",
       icon: "success",
@@ -55,6 +78,10 @@ const PublicMenu = () => {
     });
   };
 
+  const handleRemoveFromCart = (indexToRemove) => {
+    setCart((prevCart) => prevCart.filter((_, index) => index !== indexToRemove));
+  };
+
   const totalCart = cart.reduce((acc, item) => acc + (item.precio * item.quantity), 0);
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -62,15 +89,14 @@ const PublicMenu = () => {
 
   return (
     <Container className="py-5">
-      {/* MODAL (Invisible hasta que se activa) */}
       <CartModal 
         show={showModal} 
         handleClose={() => setShowModal(false)} 
         cart={cart}
         total={totalCart}
+        removeFromCart={handleRemoveFromCart}
       />
 
-      {/* BOTÓN FLOTANTE DEL CARRITO */}
       {cart.length > 0 && (
         <div className="position-fixed bottom-0 end-0 p-3" style={{ zIndex: 1000 }}>
           <Button 
