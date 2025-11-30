@@ -1,9 +1,8 @@
 import React from "react";
-import FormularioAcceso from "../auth/FormularioAcceso";
 import { Container } from "react-bootstrap";
 import "../../style/iniciarSesion.css";
 import { Link } from "react-router-dom";
-import FormularioAcceso from "../auth/FormularioAcceso";
+import FormularioAcceso from "../auth/FormularioAcceso.jsx";
 
 
 const IniciarSesion = () => {
