@@ -9,18 +9,21 @@ import {
 } from "../../service/reservas.service.js";
 
 function formatearFecha(iso) {
-  try {
-    const fecha = new Date(iso);
-    return fecha.toLocaleDateString();
-  } catch {
-    return iso ?? "";
-  }
+  if (!iso) return "";
+  const fecha = new Date(iso);
+
+  const dia = String(fecha.getUTCDate()).padStart(2, "0");
+  const mes = String(fecha.getUTCMonth() + 1).padStart(2, "0"); // meses empiezan en 0
+  const anio = fecha.getUTCFullYear();
+
+  return `${dia}/${mes}/${anio}`;
 }
 
 export default function ReservasAdmin() {
   const [reservas, setReservas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editReserva, setEditReserva] = useState(null);
+  const [minTime, setMinTime] = useState("");
 
   const cargar = async () => {
     try {
@@ -40,6 +43,34 @@ export default function ReservasAdmin() {
   useEffect(() => {
     cargar();
   }, []);
+
+  // Ajustar hora mínima si la reserva es para hoy
+  useEffect(() => {
+    if (!editReserva?.fecha) return;
+    const hoy = new Date();
+    const fechaElegida = new Date(editReserva.fecha + "T00:00:00");
+
+    if (fechaElegida.toDateString() === hoy.toDateString()) {
+      const hh = String(hoy.getHours()).padStart(2, "0");
+      const mm = String(hoy.getMinutes()).padStart(2, "0");
+      setMinTime(`${hh}:${mm}`);
+    } else {
+      setMinTime("");
+    }
+  }, [editReserva?.fecha]);
+
+  const validarHorarioAtencion = (horaString) => {
+    if (!horaString) return true;
+    const [horas, minutos] = horaString.split(":").map(Number);
+    const minutosTotales = horas * 60 + minutos;
+    const esTurnoManana = minutosTotales >= 600 && minutosTotales <= 960; // 10:00–16:00
+    const esTurnoNoche = minutosTotales >= 1260 && minutosTotales <= 1439; // 21:00–23:59
+    const esTurnoMadrugada = minutosTotales >= 0 && minutosTotales <= 120; // 00:00–02:00
+    if (esTurnoManana || esTurnoNoche || esTurnoMadrugada) {
+      return true;
+    }
+    return "Cerrado. Horarios: 10-16hs y 21-02hs";
+  };
 
   const abrirModalEditar = (reserva) => {
     let fechaFormatoInput = "";
@@ -69,9 +100,36 @@ export default function ReservasAdmin() {
   const handleGuardarCambios = async () => {
     if (!editReserva) return;
 
-    try {
-      await actualizarReserva(editReserva._id, editReserva);
+    // Validar fecha
+    const hoy = new Date();
+    const fechaElegida = new Date(editReserva.fecha + "T00:00:00");
+    if (fechaElegida < hoy.setHours(0, 0, 0, 0)) {
+      Swal.fire({
+        title: "Fecha inválida",
+        text: "La fecha debe ser posterior al día de hoy",
+        icon: "error",
+        confirmButtonColor: "#1aaf4b",
+      });
+      return;
+    }
 
+    // Validar hora
+    const horaValida = validarHorarioAtencion(editReserva.hora);
+    if (horaValida !== true) {
+      Swal.fire({
+        title: "Hora inválida",
+        text: horaValida,
+        icon: "error",
+        confirmButtonColor: "#1aaf4b",
+      });
+      return;
+    }
+
+    try {
+      const reservaActualizada = await actualizarReserva(
+        editReserva._id,
+        editReserva
+      );
       await cargar();
       cerrarModal();
 
