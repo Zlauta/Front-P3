@@ -211,17 +211,6 @@ const SidebarAdmin = () => {
                   Contacto
                 </NavLink>
               </li>
-              <li>
-                <NavLink
-                  to="/admin/promociones"
-                  className={({ isActive }) => (isActive ? "active" : "")}
-                >
-                  <span className="nav-icon">
-                    <FiTag />
-                  </span>
-                  Promociones
-                </NavLink>
-              </li>
             </ul>
           </nav>
         </div>
