@@ -29,31 +29,15 @@ const FormularioContacto = () => {
   };
 
   async function onSubmit(data) {
+    const nuevoContacto = {
+      nombre: data.nombreContacto,
+      email: data.email,
+      telefono: data.telefono,
+      mensaje: data.mensajeContacto,
+      estado: "pendiente",
+    };
     try {
-      const nuevoContacto = {
-        nombre: data.nombreContacto,
-        email: data.email,
-        telefono: data.telefono,
-        mensaje: data.mensajeContacto,
-        estado: "pendiente",
-      };
-
       await crearContacto(nuevoContacto);
-
-      const response = await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_CONTACT,
-        {
-          user_name: data.nombreContacto,
-          to_email: data.email,
-          message: data.mensajeContacto,
-          created_at: new Date().toLocaleString(),
-        },
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-      );
-
-      console.log("Correo enviado con éxito", response.status, response.text);
-
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -65,9 +49,6 @@ const FormularioContacto = () => {
         customClass: { popup: "small-alert" },
         timer: 1500,
       });
-
-      reset();
-      navegate("/");
     } catch (error) {
       Swal.fire({
         title: "Error al enviar el mensaje",
@@ -77,8 +58,32 @@ const FormularioContacto = () => {
         cancelButtonColor: "#254630",
         customClass: { popup: "small-alert" },
       });
-      console.error(error);
+      return;
     }
+    try {
+      const response = await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_CONTACT,
+        {
+          user_name: data.nombreContacto,
+          to_email: data.email,
+          message: data.mensajeContacto,
+          created_at: new Date().toLocaleString(),
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+    } catch (error) {
+      Swal.fire({
+        title: "Tu consulta fue registrada, pero no se pudo enviar el correo",
+        icon: "warning",
+        iconColor: "#1aaf4b",
+        confirmButtonColor: "#1aaf4b",
+        cancelButtonColor: "#254630",
+        customClass: { popup: "small-alert" },
+      });
+    }
+    reset();
+    navegate("/");
   }
 
   return (
