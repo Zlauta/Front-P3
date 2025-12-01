@@ -121,15 +121,15 @@ const EditarMenuModal = ({ show, onHide, menu, onUpdated }) => {
                 minLength: {
                   value: 10,
                   message:
-                    "Debe ingresar una descripción entre 10 y 500 caracteres",
+                    "Debe ingresar una descripción entre 10 y 100 caracteres",
                 },
                 maxLength: {
-                  value: 500,
+                  value: 100,
                   message:
-                    "Debe ingresar una descripción entre 10 y 500 caracteres",
+                    "Debe ingresar una descripción entre 10 y 100 caracteres",
                 },
                 pattern: {
-                  value: /^[a-zA-ZÀ-ÿ0-9.,;:¡!¿?\-()'"%°\s]{10,500}$/u,
+                  value: /^[a-zA-ZÀ-ÿ0-9.,;:¡!¿?\-()'"%°\s]{10,100}$/u,
                   message:
                     "La descripción solo puede contener letras, números y espacios",
                 },
@@ -155,9 +155,16 @@ const EditarMenuModal = ({ show, onHide, menu, onUpdated }) => {
                   message:
                     "El precio debe ser un número válido con hasta 2 decimales",
                 },
-                validate: (value) =>
-                  parseFloat(value) >= 0 ||
-                  "Debe ingresar un número válido para el precio",
+                validate: (value) => {
+                  const num = parseFloat(value);
+                  if (isNaN(num) || num < 0) {
+                    return "Debe ingresar un número válido para el precio";
+                  }
+                  if (num > 1000000) {
+                    return "El precio no puede ser mayor a $1.000.000";
+                  }
+                  return true;
+                },
               })}
             />
             <Form.Control.Feedback type="invalid">
