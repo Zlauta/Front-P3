@@ -12,13 +12,11 @@ import Reservas from "../pages/user/Reservas.jsx";
 import NotFound from "../pages/user/NoEncontrado.jsx";
 import Header from "../components/navegacion/Header.jsx";
 import Footer from "../components/navegacion/Footer.jsx";
-import Hero from "../components/Hero.jsx";
 
 const PublicRoute = () => {
   return (
     <>
       <Header />
-      <Hero />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/carta" element={<Carta />} />
