@@ -78,32 +78,29 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
 
       <Modal.Body style={styles.modalContent}>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          {/* --- CAMPO NOMBRE --- */}
           <Form.Group className="mb-3" controlId="formNombre">
             <Form.Label>Tu Nombre</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ej: Juan Perez"
               style={styles.input}
-              // 👇 MAGIA AQUÍ: isInvalid activa el borde rojo de Bootstrap
+              // isInvalid activa el borde rojo de Bootstrap
               isInvalid={!!errors.nombre}
               {...register("nombre", {
                 required: "El nombre es obligatorio",
                 minLength: { value: 2, message: "Mínimo 2 caracteres" },
                 maxLength: { value: 50, message: "Máximo 50 caracteres" },
                 pattern: {
-                  value: /^[a-zA-Z0-9\s]+$/,
-                  message: "Solo letras, números y espacios",
+                  value: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s'-]+$/,
+                  message: "Solo letras y espacios",
                 },
               })}
             />
-            {/* 👇 FEEDBACK VISUAL: Mensaje rojo nativo de Bootstrap */}
+            {/* FEEDBACK VISUAL: Mensaje rojo nativo de Bootstrap */}
             <Form.Control.Feedback type="invalid">
               {errors.nombre?.message}
             </Form.Control.Feedback>
           </Form.Group>
-
-          {/* --- CAMPO CALIFICACIÓN (Custom) --- */}
           <Form.Group className="mb-3 text-center">
             <Form.Label className="d-block">Calificación</Form.Label>
             <div className="d-flex justify-content-center gap-2">
@@ -134,7 +131,7 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
                 );
               })}
             </div>
-            {/* Mensaje de error manual simulando el estilo de Bootstrap */}
+
             {rating === 0 && (
               <div
                 className="text-danger small mt-2"
@@ -144,8 +141,6 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
               </div>
             )}
           </Form.Group>
-
-          {/* --- CAMPO COMENTARIO --- */}
           <Form.Group className="mb-3" controlId="formComentario">
             <Form.Label>Comentario</Form.Label>
             <Form.Control

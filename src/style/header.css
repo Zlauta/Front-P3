@@ -8,11 +8,21 @@
   /* rgb(37,70,48) */
 }
 
+body {
+  padding-top: 103px;
+}
+
 .header-navbar {
   background: linear-gradient(180deg, var(--green-dark) 0%, var(--green-transparent) 100%);
   color: var(--white);
   padding-top: 0.4rem;
   padding-bottom: 0.4rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1050;
+  transition: transform 0.3s ease-in-out;
 }
 
 .header-logo {
@@ -52,6 +62,16 @@
 
 
 @media (max-width: 991px) {
+  body {
+    padding-top: 0;
+    /* en móviles el header es fluido, no hace falta compensar */
+  }
+
+  .header-navbar {
+    position: static;
+    /* deja de ser fijo en pantallas pequeñas */
+  }
+
   .brand-text {
     display: none;
   }
@@ -62,16 +82,13 @@
   }
 
   .navbar-nav {
-    background: transparent;
-    padding-top: 0.5rem;
+    background: var(--green-dark);
+    /* fondo para el collapse */
+    padding: 1rem;
   }
-}
 
-.header-navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1050;
-  transition: transform 0.3s ease-in-out;
+  .navbar-nav .nav-link {
+    display: block;
+    margin: 0.5rem 0;
+  }
 }
