@@ -1,336 +1,224 @@
 import { useEffect, useState } from "react";
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
+import { obtenerReservas, actualizarReserva, eliminarReserva } from "../../service/reservas.service.js";
 import "../../index.css";
-import {
-  obtenerReservas,
-  actualizarReserva,
-  eliminarReserva,
-} from "../../service/reservas.service.js";
 
-function formatearFecha(iso) {
-  if (!iso) return "";
-  const fecha = new Date(iso);
+const convertirAMinutos = (horaString) => {
+  return horaString.split(":").reduce((total, valor) => total * 60 + +valor, 0);
+};
 
-  const dia = String(fecha.getUTCDate()).padStart(2, "0");
-  const mes = String(fecha.getUTCMonth() + 1).padStart(2, "0"); // meses empiezan en 0
-  const anio = fecha.getUTCFullYear();
+const formatearFecha = (isoString) => {
+  return isoString ? new Date(isoString).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : "";
+};
 
-  return `${dia}/${mes}/${anio}`;
-}
+const notificar = (mensaje, icono = "error") => {
+  Swal.fire({
+    title: mensaje,
+    icon: icono,
+    confirmButtonColor: "#1aaf4b",
+    timer: icono === "success" ? 1500 : undefined
+  });
+};
+
+
+const validarReservaCompleta = (datos, listaReservas, idReservaActual) => {
+  const { fecha, hora, mesa, cantidadPersonas } = datos;
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0); 
+  
+  // 1. Validar Fecha
+  if (new Date(fecha + "T00:00:00") < hoy) return "La fecha no puede ser anterior a hoy.";
+
+  const minutos = convertirAMinutos(hora);
+  const turnoMañana = minutos >= 600 && minutos <= 960; 
+  const turnoNoche = minutos >= 1260 && minutos <= 1439;
+  const turnoMadrugada = minutos >= 0 && minutos <= 120;
+  
+  if (!turnoMañana && !turnoNoche && !turnoMadrugada) {
+    return "Cerrado. Horarios: 10-16hs y 21-02hs";
+  }
+
+  const numMesa = parseInt(mesa);
+  const numPersonas = parseInt(cantidadPersonas);
+
+  if (numPersonas > 10) return "Para más de 10 personas, contactar por teléfono.";
+  if (numMesa <= 10 && numPersonas > 2) return `Mesa ${numMesa} es chica (máx 2p).`;
+  if (numMesa > 10 && numMesa <= 20 && numPersonas > 4) return `Mesa ${numMesa} es estándar (máx 4p).`;
+  if (numMesa > 20 && numMesa <= 25 && numPersonas > 6) return `Mesa ${numMesa} es mediana (máx 6p).`;
+  if (numMesa > 30) return "Número de mesa inválido.";
+
+  const existeConflicto = listaReservas.find((reserva) => {
+    if (reserva._id === idReservaActual) return false; 
+    
+    const fechaReserva = new Date(reserva.fecha).toISOString().split("T")[0];
+    if (fechaReserva !== fecha || String(reserva.mesa) !== String(mesa)) return false;
+    
+    const diferenciaMinutos = Math.abs(minutos - convertirAMinutos(reserva.hora));
+    return diferenciaMinutos < 120;
+  });
+
+  if (existeConflicto) return `Mesa ${mesa} ocupada en ese horario (margen de 2hs).`;
+
+  return null;
+};
+
 
 export default function ReservasAdmin() {
   const [reservas, setReservas] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [editReserva, setEditReserva] = useState(null);
-  const [minTime, setMinTime] = useState("");
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [reservaEditada, setReservaEditada] = useState(null);
+  const [horaMinima, setHoraMinima] = useState("");
 
-  const cargar = async () => {
+  const cargarDatos = async () => {
     try {
-      const respuesta = await obtenerReservas();
-      setReservas(respuesta);
+      const datos = await obtenerReservas();
+      setReservas(datos);
     } catch (error) {
-      console.error("Error al cargar reservas:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "No se pudieron cargar las reservas",
-        confirmButtonColor: "#1aaf4b",
-      });
+      console.error(error);
+      notificar("Error al cargar reservas");
     }
   };
+
+  useEffect(() => { cargarDatos(); }, []);
 
   useEffect(() => {
-    cargar();
-  }, []);
+    if (!reservaEditada?.fecha) return;
+    const fechaInput = new Date(reservaEditada.fecha + "T00:00:00");
+    const esHoy = fechaInput.toDateString() === new Date().toDateString();
+    
+    setHoraMinima(esHoy ? new Date().toTimeString().slice(0, 5) : "");
+  }, [reservaEditada?.fecha]);
 
-  // Ajustar hora mínima si la reserva es para hoy
-  useEffect(() => {
-    if (!editReserva?.fecha) return;
-    const hoy = new Date();
-    const fechaElegida = new Date(editReserva.fecha + "T00:00:00");
-
-    if (fechaElegida.toDateString() === hoy.toDateString()) {
-      const hh = String(hoy.getHours()).padStart(2, "0");
-      const mm = String(hoy.getMinutes()).padStart(2, "0");
-      setMinTime(`${hh}:${mm}`);
-    } else {
-      setMinTime("");
-    }
-  }, [editReserva?.fecha]);
-
-  const validarHorarioAtencion = (horaString) => {
-    if (!horaString) return true;
-    const [horas, minutos] = horaString.split(":").map(Number);
-    const minutosTotales = horas * 60 + minutos;
-    const esTurnoManana = minutosTotales >= 600 && minutosTotales <= 960; // 10:00–16:00
-    const esTurnoNoche = minutosTotales >= 1260 && minutosTotales <= 1439; // 21:00–23:59
-    const esTurnoMadrugada = minutosTotales >= 0 && minutosTotales <= 120; // 00:00–02:00
-    if (esTurnoManana || esTurnoNoche || esTurnoMadrugada) {
-      return true;
-    }
-    return "Cerrado. Horarios: 10-16hs y 21-02hs";
+  const abrirModal = (reserva) => {
+    const fechaInput = new Date(reserva.fecha).toISOString().split("T")[0];
+    setReservaEditada({ ...reserva, fecha: fechaInput });
+    setMostrarModal(true);
   };
 
-  const abrirModalEditar = (reserva) => {
-    let fechaFormatoInput = "";
-    if (reserva.fecha) {
-      fechaFormatoInput = new Date(reserva.fecha).toISOString().split("T")[0];
-    }
-
-    setEditReserva({
-      ...reserva,
-      fecha: fechaFormatoInput,
-    });
-    setShowModal(true);
-  };
-
-  const cerrarModal = () => {
-    setShowModal(false);
-    setEditReserva(null);
-  };
-
-  const handleChangeModal = (e) => {
-    setEditReserva({
-      ...editReserva,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleGuardarCambios = async () => {
-    if (!editReserva) return;
-
-    // Validar fecha
-    const hoy = new Date();
-    const fechaElegida = new Date(editReserva.fecha + "T00:00:00");
-    if (fechaElegida < hoy.setHours(0, 0, 0, 0)) {
-      Swal.fire({
-        title: "Fecha inválida",
-        text: "La fecha debe ser posterior al día de hoy",
-        icon: "error",
-        confirmButtonColor: "#1aaf4b",
-      });
-      return;
-    }
-
-    // Validar hora
-    const horaValida = validarHorarioAtencion(editReserva.hora);
-    if (horaValida !== true) {
-      Swal.fire({
-        title: "Hora inválida",
-        text: horaValida,
-        icon: "error",
-        confirmButtonColor: "#1aaf4b",
-      });
-      return;
+  const guardarCambios = async () => {
+    const errorValidacion = validarReservaCompleta(reservaEditada, reservas, reservaEditada._id);
+    
+    if (errorValidacion) {
+      return notificar(errorValidacion, "warning");
     }
 
     try {
-      const reservaActualizada = await actualizarReserva(
-        editReserva._id,
-        editReserva
-      );
-      await cargar();
-      cerrarModal();
-
-      Swal.fire({
-        title: "Reserva actualizada!",
-        icon: "success",
-        iconColor: "#1aaf4b",
-        confirmButtonColor: "#1aaf4b",
-        timer: 1500,
-        showConfirmButton: false,
-      });
+      await actualizarReserva(reservaEditada._id, reservaEditada);
+      await cargarDatos();
+      setMostrarModal(false);
+      notificar("Reserva actualizada correctamente!", "success");
     } catch (error) {
-      console.error("Error al actualizar:", error);
-      Swal.fire({
-        title: error.response?.data?.message || "Error al actualizar",
-        icon: "error",
-        confirmButtonColor: "#1aaf4b",
-      });
+      notificar(error.response?.data?.message || "Error al actualizar");
     }
   };
 
-  const manejarEliminar = async (id) => {
-    const result = await Swal.fire({
-      title: "¿Eliminar esta reserva?",
-      text: "Esta acción no se puede deshacer",
+  const eliminar = async (id) => {
+    const confirmacion = await Swal.fire({
+      title: "¿Eliminar?",
+      text: "No podrás deshacer esto",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#1aaf4b",
-      cancelButtonColor: "#042d12ff",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar"
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmacion.isConfirmed) return;
 
     try {
       await eliminarReserva(id);
-      await cargar();
-
-      Swal.fire({
-        title: "Reserva eliminada",
-        icon: "success",
-        iconColor: "#1aaf4b",
-        confirmButtonColor: "#1aaf4b",
-        timer: 1500,
-        showConfirmButton: false,
-      });
+      await cargarDatos();
+      notificar("Eliminada correctamente", "success");
     } catch (error) {
-      console.error("Error al eliminar:", error);
-      Swal.fire({
-        title: error.response?.data?.message || "Error al eliminar",
-        icon: "error",
-        confirmButtonColor: "#1aaf4b",
-      });
+      notificar("Error al eliminar");
     }
   };
+  const camposFormulario = [
+    { label: "Mesa", name: "mesa", type: "number" },
+    { label: "Cantidad Personas", name: "cantidadPersonas", type: "number" },
+    { label: "Fecha", name: "fecha", type: "date" },
+    { label: "Hora", name: "hora", type: "time", min: horaMinima }
+  ];
 
   return (
     <div className="p-1">
       <h3 className="text-light fs-1 mt-5 mb-5">Administrador de Reservas</h3>
-
+      
       <Table striped bordered hover responsive>
         <thead>
           <tr>
-            <th className="tabla">Usuario</th>
-            <th className="tabla">Mesa</th>
-            <th className="tabla">Personas</th>
-            <th className="tabla">Fecha</th>
-            <th className="tabla">Hora</th>
-            <th className="tabla">Notas</th>
-            <th className="tabla">Acciones</th>
+            {["Usuario", "Mesa", "Personas", "Fecha", "Hora", "Notas", "Acciones"].map(titulo => (
+              <th key={titulo} className="tabla">{titulo}</th>
+            ))}
           </tr>
         </thead>
         <tbody style={{ background: "#1E2A26" }}>
-          {reservas && reservas.length > 0 ? (
-            reservas.map((res) => (
-              <tr key={res._id}>
-                <td className="tabla">
-                  {res.usuario?.email || "Usuario eliminado"}
-                </td>
-                <td className="tabla">{res.mesa}</td>
-                <td className="tabla">{res.cantidadPersonas}</td>
-                <td className="tabla">{formatearFecha(res.fecha)}</td>
-                <td className="tabla">{res.hora}</td>
-                <td className="tabla">{res.notas || "-"}</td>
-
-                <td className="tabla d-flex flex-column flex-lg-row gap-2 justify-content-center">
-                  <Button
-                    className="btn-tabla"
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => abrirModalEditar(res)}
-                  >
+          {reservas.length > 0 ? (
+            reservas.map((reserva) => (
+              <tr key={reserva._id}>
+                <td className="tabla">{reserva.usuario?.email || "Usuario eliminado"}</td>
+                <td className="tabla">{reserva.mesa}</td>
+                <td className="tabla">{reserva.cantidadPersonas}</td>
+                <td className="tabla">{formatearFecha(reserva.fecha)}</td>
+                <td className="tabla">{reserva.hora}</td>
+                <td className="tabla">{reserva.notas || "-"}</td>
+                <td className="tabla d-flex gap-2 justify-content-center">
+                  <Button size="sm" variant="secondary" onClick={() => abrirModal(reserva)}>
                     Editar
                   </Button>
-
-                  <Button
-                    className="btn-tabla btn-eliminar"
-                    size="sm"
-                    variant="success"
-                    onClick={() => manejarEliminar(res._id)}
-                  >
+                  <Button size="sm" variant="danger" onClick={() => eliminar(reserva._id)}>
                     Eliminar
                   </Button>
                 </td>
               </tr>
             ))
           ) : (
-            <tr>
-              <td colSpan={8} className="text-center py-4 text-light tabla">
-                No hay reservas registradas.
-              </td>
-            </tr>
+            <tr><td colSpan={7} className="text-center text-light py-4">No hay reservas registradas.</td></tr>
           )}
         </tbody>
       </Table>
+      
+      <div className="text-light fs-5">Total: {reservas.length} reservas</div>
 
-      <div className="text-light fs-5">
-        Total: {reservas?.length || 0} reserva{reservas.length === 1 ? "" : "s"}
-      </div>
-
-      <Modal show={showModal} onHide={cerrarModal} centered>
-        <Modal.Header
-          closeButton
-          style={{
-            backgroundColor: "#1E2A26",
-            color: "white",
-            borderBottom: "1px solid #1aaf4b",
-          }}
-        >
+      {/* MODAL DE EDICIÓN */}
+      <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} centered>
+        <Modal.Header closeButton className="bg-dark text-white border-success">
           <Modal.Title>Editar Reserva</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ backgroundColor: "#1E2A26", color: "white" }}>
-          {editReserva && (
+        
+        <Modal.Body className="bg-dark text-white">
+          {reservaEditada && (
             <Form>
-              <Form.Group className="mb-3">
-                <Form.Label>Mesa</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="mesa"
-                  value={editReserva.mesa}
-                  onChange={handleChangeModal}
-                />
-              </Form.Group>
+              {camposFormulario.map((campo) => (
+                <Form.Group className="mb-3" key={campo.name}>
+                  <Form.Label>{campo.label}</Form.Label>
+                  <Form.Control 
+                    type={campo.type} 
+                    name={campo.name} 
+                    min={campo.min} 
+                    value={reservaEditada[campo.name]} 
+                    onChange={e => setReservaEditada({ ...reservaEditada, [e.target.name]: e.target.value })} 
+                  />
+                </Form.Group>
+              ))}
 
-              <Form.Group className="mb-3">
-                <Form.Label>Cantidad de Personas</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="cantidadPersonas"
-                  value={editReserva.cantidadPersonas}
-                  onChange={handleChangeModal}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Fecha</Form.Label>
-                <Form.Control
-                  type="date"
-                  name="fecha"
-                  value={editReserva.fecha}
-                  onChange={handleChangeModal}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Hora</Form.Label>
-                <Form.Control
-                  type="time"
-                  name="hora"
-                  value={editReserva.hora}
-                  onChange={handleChangeModal}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3">
+              <Form.Group>
                 <Form.Label>Notas</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  name="notas"
-                  value={editReserva.notas}
-                  onChange={handleChangeModal}
+                <Form.Control 
+                  as="textarea" 
+                  rows={3} 
+                  name="notas" 
+                  value={reservaEditada.notas} 
+                  onChange={e => setReservaEditada({ ...reservaEditada, notas: e.target.value })} 
                 />
               </Form.Group>
             </Form>
           )}
         </Modal.Body>
-        <Modal.Footer
-          style={{ backgroundColor: "#1E2A26", borderTop: "1px solid #1aaf4b" }}
-        >
-          <Button variant="secondary" onClick={cerrarModal}>
-            Cancelar
-          </Button>
-          <Button
-            variant="success"
-            style={{ backgroundColor: "#1aaf4b", borderColor: "#1aaf4b" }}
-            onClick={handleGuardarCambios}
-          >
-            Guardar Cambios
-          </Button>
+        
+        <Modal.Footer className="bg-dark border-success">
+          <Button variant="secondary" onClick={() => setMostrarModal(false)}>Cancelar</Button>
+          <Button variant="success" onClick={guardarCambios}>Guardar Cambios</Button>
         </Modal.Footer>
       </Modal>
     </div>
