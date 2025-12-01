@@ -33,8 +33,8 @@ const FormularioNuevaContrasenia = () => {
 
     if (!usuarioExistente) {
       Swal.fire({
-        icon: "question",
-        title: "El usuario no existe...",
+        icon: "success",
+      title: "El formulario ha sido enviado",
         iconColor: "#1aaf4b ",
         confirmButtonColor: "#1aaf4b ",
         cancelButtonColor: "#1aaf4b ",

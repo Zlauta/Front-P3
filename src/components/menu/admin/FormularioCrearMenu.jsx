@@ -163,8 +163,8 @@ const FormularioCrearMenu = ({ onMenuCreated }) => {
                         message: "Mínimo 10 caracteres",
                       },
                       maxLength: {
-                        value: 500,
-                        message: "Máximo 500 caracteres",
+                        value: 100,
+                        message: "Máximo 100 caracteres",
                       },
                     })}
                   />
@@ -183,8 +183,16 @@ const FormularioCrearMenu = ({ onMenuCreated }) => {
                     isInvalid={!!errors.precio}
                     {...register("precio", {
                       required: "El precio es obligatorio",
-                      validate: (value) =>
-                        parseFloat(value) >= 0 || "Precio inválido",
+                      validate: (value) => {
+                        const num = parseFloat(value);
+                        if (isNaN(num) || num < 0) {
+                          return "Precio inválido";
+                        }
+                        if (num > 1000000) {
+                          return "El precio no puede ser mayor a $1.000.000";
+                        }
+                        return true;
+                      },
                     })}
                   />
                   <Form.Control.Feedback type="invalid">

@@ -82,7 +82,7 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
 
       const nuevoUsuario = {
         nombre: data.userName,
-        email: data.email,
+        email: data.email.toLowerCase(),
         contrasenia: data.password,
         telefono: data.telefono,
         createdAt: new Date().toISOString(),
@@ -160,13 +160,14 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
               message: "Solo se permiten letras",
             },
             maxLength: {
-              value: 30,
-              message: "El nombre no puede tener más de 30 caracteres",
+              value: 50,
+              message: "El nombre no puede tener más de 50 caracteres",
             },
 
             minLength: {
-              value: 3,
-              message: "El nombre debe tener al menos 3 caracteres message",
+              value: 2,
+              message:
+                "El nombre debe tener al menos 2 caracteres message. Solo se permiten letras.",
             },
           })}
         />
@@ -240,7 +241,7 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
         <Form.Label>Teléfono</Form.Label>
         <Form.Control
           type="tel"
-          placeholder="Ingrese su número de teléfono"
+          placeholder="Ingrese su número de teléfono: ej +5493811234567"
           isInvalid={errors.telefono}
           {...register("telefono", {
             required: "El teléfono es un campo requerido",
