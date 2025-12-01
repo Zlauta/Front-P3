@@ -1,0 +1,16 @@
+html {
+  scroll-padding-top: 90px; 
+  scroll-behavior: smooth; 
+}
+
+body {
+  background-color: #122117;
+  margin: 0;
+  padding: 0;
+  padding-top: 100px;
+  min-height: 100vh;
+}
+.tabla {
+  background-color: #254630 !important;
+  color: #ffffff !important;
+}

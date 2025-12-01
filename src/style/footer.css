@@ -1,0 +1,129 @@
+.footer-container {
+    background: linear-gradient(180deg, var(--green-dark) 0%, var(--green-transparent) 100%);
+    color: var(--white);
+    padding: 40px 20px 20px;
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 250px;
+    margin: 15px;
+}
+
+.footer-center {
+    text-align: center;
+}
+
+.footer-right {
+    text-align: right;
+}
+
+.header-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    background: transparent;
+}
+
+.brand-text {
+    color: var(--white);
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.footer-link {
+    color: var(--white) !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer-link:hover {
+    color: var(--green-light) !important;
+    transform: translateX(5px);
+}
+
+.red-social {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.red-social img {
+    width: 40px;
+    height: 40px;
+    filter: grayscale(0.3);
+    transition: filter 0.3s ease;
+}
+
+.red-social a:hover img {
+    filter: grayscale(0);
+}
+
+.grupo-2 {
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--white);
+}
+
+.grupo-2 b {
+    color: var(--green-light);
+}
+
+@media screen and (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-right {
+        text-align: center;
+    }
+
+    .red-social {
+        justify-content: center;
+    }
+}
+
+.footer-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-nav-list li,
+.footer-nav-list a {
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.social-icon {
+    color: var(--white);
+    font-size: 40px;
+}
+
+.footer-brand {
+    justify-content: center;
+}
+
+@media (max-width: 991px) {
+    .footer-brand {
+        width: 100%;
+        justify-content: center;
+    }
+}
