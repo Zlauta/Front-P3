@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Table, Spinner } from "react-bootstrap";
-import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 import {
   obtenerProductos,
   eliminarProducto,
@@ -21,7 +21,11 @@ const ListadoMenu = () => {
       setMenus(data || []);
     } catch (error) {
       console.error(error);
-      toast.error("Error al cargar los menús");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un problema al cargar los menús",
+      });
     } finally {
       setLoading(false);
     }
@@ -33,6 +37,13 @@ const ListadoMenu = () => {
 
   const handleMenuCreated = () => {
     setReload((prev) => !prev);
+    Swal.fire({
+      icon: "success",
+      title: "Creado",
+      text: "El menú se creó correctamente",
+      timer: 2000,
+      showConfirmButton: false,
+    });
   };
 
   const handleEdit = (menu) => {
@@ -40,51 +51,52 @@ const ListadoMenu = () => {
     setShowModal(true);
   };
 
-  const confirmDelete = (menu) => {
-    toast.info(
-      <div>
-        <p className="p-2">
-          ¿Seguro que deseas eliminar <b>{menu.nombre}</b>?
-        </p>
-        <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => handleDelete(menu._id)}
-          >
-            Sí, eliminar
-          </Button>
-          <Button variant="secondary" size="sm" onClick={() => toast.dismiss()}>
-            Cancelar
-          </Button>
-        </div>
-      </div>,
-      {
-        position: "top-center",
-        autoClose: false,
-        closeOnClick: false,
-        draggable: false,
-        hideProgressBar: true,
+  const handleDelete = (id, nombre) => {
+    Swal.fire({
+      title: `¿Estás seguro de eliminar "${nombre}"?`,
+      text: "No podrás revertir esta acción",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await eliminarProducto(id);
+          setMenus((prev) => prev.filter((m) => m._id !== id));
+          
+          Swal.fire({
+            icon: "success",
+            title: "Eliminado",
+            text: "El menú ha sido eliminado.",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        } catch (error) {
+          console.error(error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo eliminar el menú.",
+          });
+        }
       }
-    );
-  };
-
-  const handleDelete = async (id) => {
-    toast.dismiss();
-    try {
-      await eliminarProducto(id);
-      setMenus((prev) => prev.filter((m) => m._id !== id));
-      toast.success("Menú eliminado correctamente");
-    } catch (error) {
-      console.error(error);
-      toast.error("Error al eliminar el menú");
-    }
+    });
   };
 
   const handleUpdate = (updatedMenu) => {
     setMenus((prev) =>
       prev.map((menu) => (menu._id === updatedMenu._id ? updatedMenu : menu))
     );
+    Swal.fire({
+        icon: "success",
+        title: "Actualizado",
+        text: "Menú actualizado con éxito",
+        timer: 1500,
+        showConfirmButton: false
+    });
   };
 
   if (loading) {
@@ -143,6 +155,7 @@ const ListadoMenu = () => {
                         width: "70px",
                         height: "70px",
                         borderRadius: "8px",
+                        objectFit: "cover",
                       }}
                     />
                   </td>
@@ -162,7 +175,7 @@ const ListadoMenu = () => {
                     <Button
                       variant="danger"
                       size="sm"
-                      onClick={() => confirmDelete(menu)}
+                      onClick={() => handleDelete(menu._id, menu.nombre)}
                     >
                       Eliminar
                     </Button>
