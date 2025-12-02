@@ -246,9 +246,10 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
           {...register("telefono", {
             required: "El teléfono es un campo requerido",
             pattern: {
-              value: /^\+?[1-9]\d{1,14}$/,
+              value: /^\+?[1-9]\d{7,14}$/,
+
               message:
-                "El teléfono debe estar en formato internacional, por ejemplo: +5493811234567",
+                "El número de teléfono debe tener entre 8 y 15 dígitos, puede comenzar con “+” y no debe iniciar con 0.",
             },
           })}
         />
