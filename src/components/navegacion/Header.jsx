@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Navbar, Container, Nav, Button } from "react-bootstrap";
 import "../../style/header.css";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
 
 import logopng from "/images/logo.png";
 
@@ -23,9 +22,7 @@ const Header = () => {
       iconColor: "#1aaf4b",
       confirmButtonColor: "#1aaf4b",
       cancelButtonColor: "#254630",
-      customClass: {
-        popup: "small-alert",
-      },
+      customClass: { popup: "small-alert" },
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire({
@@ -33,9 +30,7 @@ const Header = () => {
           icon: "success",
           iconColor: "#254630",
           confirmButtonColor: "#1aaf4b",
-          customClass: {
-            popup: "small-alert",
-          },
+          customClass: { popup: "small-alert" },
           timer: 1200,
           showConfirmButton: false,
         });
@@ -48,6 +43,32 @@ const Header = () => {
       }
     });
   }
+
+  // 🔎 Links comunes para todos
+  const commonLinks = (
+    <>
+      <Nav.Link as={Link} to="/" onClick={() => setExpanded(false)}>
+        Inicio
+      </Nav.Link>
+      <Nav.Link as={Link} to="/carta" onClick={() => setExpanded(false)}>
+        Carta
+      </Nav.Link>
+      {/* <Nav.Link
+        href="/#galeria"
+        className="scroll"
+        onClick={() => setExpanded(false)}
+      >
+        Galería
+      </Nav.Link> */}
+      <Nav.Link
+        href="/#sobre-nosotros"
+        className="scroll"
+        onClick={() => setExpanded(false)}
+      >
+        Sobre Nosotros
+      </Nav.Link>
+    </>
+  );
 
   return (
     <header>
@@ -66,76 +87,94 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto mb-2 mb-lg-0 align-items-lg-center">
-              <Nav.Link as={Link} to="/" onClick={() => setExpanded(false)}>
-                Inicio
-              </Nav.Link>
-              <Nav.Link
-                as={Link}
-                to="/carta"
-                onClick={() => setExpanded(false)}
-              >
-                Carta
-              </Nav.Link>
-              <Nav.Link
-                href="/#galeria"
-                className="scroll"
-                onClick={() => setExpanded(false)}
-              >
-                Galería
-              </Nav.Link>
-              <Nav.Link
-                href="/#sobre-nosotros"
-                className="scroll"
-                onClick={() => setExpanded(false)}
-              >
-                Sobre Nosotros
-              </Nav.Link>
-              <Nav.Link
-                href="/#resenias"
-                className="scroll"
-                onClick={() => setExpanded(false)}
-              >
-                Reseñas
-              </Nav.Link>
-              <Nav.Link
-                as={Link}
-                to="/contacto"
-                onClick={() => setExpanded(false)}
-              >
-                Contacto
-              </Nav.Link>
-              <Nav.Link
-                as={Link}
-                to="/reservas"
-                onClick={() => setExpanded(false)}
-              >
-                Reservas
-              </Nav.Link>
-              {isActiveUser ? (
+              {/* Caso 1: No logueado */}
+              {!isActiveUser && (
                 <>
-                  {user.rol === "admin" && (
-                    <Nav.Link
-                      as={Link}
-                      to="/admin"
-                      onClick={() => setExpanded(false)}
-                    >
-                      Admin
-                    </Nav.Link>
-                  )}
-
-                  <Button variant="success" onClick={logout} className="ms-2">
-                    Salir
-                  </Button>
-                </>
-              ) : (
-                <>
+                  {commonLinks}
+                  <Nav.Link
+                    href="/#resenias"
+                    className="scroll"
+                    onClick={() => setExpanded(false)}
+                  >
+                    Reseñas
+                  </Nav.Link>
+                  <Nav.Link
+                    as={Link}
+                    to="/contacto"
+                    onClick={() => setExpanded(false)}
+                  >
+                    Contacto
+                  </Nav.Link>
+                  <Nav.Link
+                    onClick={() => {
+                      setExpanded(false);
+                      navigate("/login"); // redirige a login si no hay usuario
+                    }}
+                  >
+                    Reservas
+                  </Nav.Link>
                   <Button
                     as={Link}
                     to="/login"
                     className="btn-cta ms-lg-3"
                     onClick={() => setExpanded(false)}
                   >
-                    Iniciar Sesion
+                    Iniciar Sesión
+                  </Button>
+                </>
+              )}
+
+              {/* Caso 2: Logueado como cliente */}
+              {isActiveUser && user.rol === "cliente" && (
+                <>
+                  {commonLinks}
+                  <Nav.Link
+                    href="/#resenias"
+                    className="scroll"
+                    onClick={() => setExpanded(false)}
+                  >
+                    Reseñas
+                  </Nav.Link>
+                  <Nav.Link
+                    as={Link}
+                    to="/contacto"
+                    onClick={() => setExpanded(false)}
+                  >
+                    Contacto
+                  </Nav.Link>
+                  <Nav.Link
+                    as={Link}
+                    to="/reservas"
+                    onClick={() => setExpanded(false)}
+                  >
+                    Reservas
+                  </Nav.Link>
+                  <Button variant="success" onClick={logout} className="ms-2">
+                    Salir
+                  </Button>
+                </>
+              )}
+
+              {/* Caso 3: Logueado como admin */}
+              {isActiveUser && user.rol === "admin" && (
+                <>
+                  {commonLinks}
+                  <Nav.Link
+                    as={Link}
+                    to="/reservas"
+                    onClick={() => setExpanded(false)}
+                  >
+                    Reservas
+                  </Nav.Link>
+                  <Nav.Link
+                    as={Link}
+                    to="/admin"
+                    onClick={() => setExpanded(false)}
+                  >
+                    Admin
+                  </Nav.Link>
+                  <Button variant="success" onClick={logout} className="ms-2">
+                    Salir
                   </Button>
                 </>
               )}
