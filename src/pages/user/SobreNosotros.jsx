@@ -15,60 +15,31 @@ export const SobreNosotros = () => {
       nombre: "Nadia Medina",
       rol: "Scrum Master",
       img: "/images/personaMujer.svg",
-      social: {
-        instagram: "https://instagram.com/alguien",
-        facebook: "https://facebook.com/in/alguien",
-        github: "https://github.com/alguien",
-        whatsapp: "https://wa.me/1234567890",
-      },
     },
+
     {
       id: 2,
       nombre: "Lautaro Zarate",
       rol: "Desarrollador Full Stack",
       img: "/images/personaHombre.svg",
-      social: {
-        instagram: "https://instagram.com/alguien",
-        facebook: "https://facebook.com/in/alguien",
-        github: "https://github.com/alguien",
-        whatsapp: "https://wa.me/1234567890",
-      },
     },
     {
       id: 3,
       nombre: "Amelia Antoni",
       rol: "Desarrolladora Full Stack",
       img: "/images/personaMujer.svg",
-      social: {
-        instagram: "https://instagram.com/alguien",
-        facebook: "https://facebook.com/in/alguien",
-        github: "https://github.com/alguien",
-        whatsapp: "https://wa.me/1234567890",
-      },
     },
     {
       id: 4,
       nombre: "Felipe Marrone",
       rol: "Desarrollador Full Stack",
       img: "/images/personaHombre.svg",
-      social: {
-        instagram: "https://instagram.com/alguien",
-        facebook: "https://facebook.com/in/alguien",
-        github: "https://github.com/alguien",
-        whatsapp: "https://wa.me/1234567890",
-      },
     },
     {
       id: 5,
       nombre: "Matias Soria",
       rol: "Desarrollador Full Stack",
       img: "/images/personaHombre.svg",
-      social: {
-        instagram: "https://instagram.com/alguien",
-        facebook: "https://facebook.com/in/alguien",
-        github: "https://github.com/alguien",
-        whatsapp: "https://wa.me/1234567890",
-      },
     },
   ];
 
