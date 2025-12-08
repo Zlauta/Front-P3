@@ -47,3 +47,20 @@ export const eliminarProducto = async (id) => {
     console.error("Error al eliminar el producto:", error);
   }
 };
+
+// Función para obtener productos con filtros y paginación
+export const obtenerProductosFiltrados = async (
+  category = "",
+  page = 1,
+  limit = 10
+) => {
+  try {
+    const response = await clientAxios.get("/productos/filtrados", {
+      params: { category, page, limit },
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error("Error en obtenerProductosFiltrados:", error);
+    return { items: [], meta: {} };
+  }
+};

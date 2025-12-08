@@ -8,7 +8,10 @@ import {
   Button,
   Alert,
 } from "react-bootstrap";
-import { obtenerProductos } from "../../../service/producto.service.js";
+import {
+  obtenerProductos,
+  obtenerProductosFiltrados,
+} from "../../../service/producto.service.js";
 import MenuCard from "./TarjetaMenu.jsx";
 import Swal from "sweetalert2";
 import CartModal from "../../carrito/CarritoModal.jsx";
@@ -20,6 +23,11 @@ const MenuPublico = () => {
   const [showModal, setShowModal] = useState(false);
   const [cart, setCart] = useState([]);
   const [cartKey, setCartKey] = useState("cart_guest");
+
+  // 🔎 Estados para filtros y paginación
+  const [category, setCategory] = useState("");
+  const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState({});
 
   // 1. CARGA INICIAL (Detectar usuario por EMAIL y cargar SU carrito)
   useEffect(() => {
@@ -42,20 +50,26 @@ const MenuPublico = () => {
     } else {
       setCart([]);
     }
+  }, []);
 
+  // 2. Cargar productos con filtros y paginación
+  useEffect(() => {
     const fetchMenus = async () => {
+      setLoading(true);
       try {
-        const data = await obtenerProductos();
-        setMenus(data || []);
+        const data = await obtenerProductosFiltrados(category, page, 6);
+        setMenus(data.items || []);
+        setMeta(data.meta || {});
       } catch (err) {
-        console.error("Error cargando menú");
+        console.error("Error cargando menú", err);
       } finally {
         setLoading(false);
       }
     };
     fetchMenus();
-  }, []);
+  }, [category, page]);
 
+  // 3. Guardar carrito en localStorage
   useEffect(() => {
     if (cartKey) {
       localStorage.setItem(cartKey, JSON.stringify(cart));
@@ -139,6 +153,23 @@ const MenuPublico = () => {
         Nuestra Carta
       </h2>
 
+      {/* 🔎 Botones de categoría */}
+      <div className="text-center mb-4">
+        {["entrada", "principal", "bebida", "postre"].map((cat) => (
+          <Button
+            key={cat}
+            variant={category === cat ? "success" : "outline-success"}
+            className="mx-2"
+            onClick={() => {
+              setCategory(cat);
+              setPage(1);
+            }}
+          >
+            {cat}
+          </Button>
+        ))}
+      </div>
+
       {menus.length === 0 ? (
         <Alert variant="warning" className="text-center">
           No hay menús disponibles.
@@ -155,6 +186,31 @@ const MenuPublico = () => {
             </Col>
           ))}
         </Row>
+      )}
+
+      {/* 🔎 Paginación */}
+      {meta.totalPages > 1 && (
+        <div className="text-center mt-4">
+          <Button
+            variant="success"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => p - 1)}
+            className="mx-2"
+          >
+            ← Anterior
+          </Button>
+          <span>
+            Página {meta.currentPage} de {meta.totalPages}
+          </span>
+          <Button
+            variant="success"
+            disabled={page >= meta.totalPages}
+            onClick={() => setPage((p) => p + 1)}
+            className="mx-2"
+          >
+            Siguiente →
+          </Button>
+        </div>
       )}
     </Container>
   );
