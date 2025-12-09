@@ -44,7 +44,6 @@ const Header = () => {
     });
   }
 
-  // 🔎 Links comunes para todos
   const commonLinks = (
     <>
       <Nav.Link as={Link} to="/" onClick={() => setExpanded(false)}>
@@ -53,13 +52,6 @@ const Header = () => {
       <Nav.Link as={Link} to="/carta" onClick={() => setExpanded(false)}>
         Carta
       </Nav.Link>
-      {/* <Nav.Link
-        href="/#galeria"
-        className="scroll"
-        onClick={() => setExpanded(false)}
-      >
-        Galería
-      </Nav.Link> */}
       <Nav.Link
         href="/#sobre-nosotros"
         className="scroll"
@@ -87,7 +79,7 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto mb-2 mb-lg-0 align-items-lg-center">
-              {/* Caso 1: No logueado */}
+              {/* usuario no logueado */}
               {!isActiveUser && (
                 <>
                   {commonLinks}
@@ -108,7 +100,7 @@ const Header = () => {
                   <Nav.Link
                     onClick={() => {
                       setExpanded(false);
-                      navigate("/login"); // redirige a login si no hay usuario
+                      navigate("/login");
                     }}
                   >
                     Reservas
@@ -123,8 +115,6 @@ const Header = () => {
                   </Button>
                 </>
               )}
-
-              {/* Caso 2: Logueado como cliente */}
               {isActiveUser && user.rol === "cliente" && (
                 <>
                   {commonLinks}
@@ -154,8 +144,6 @@ const Header = () => {
                   </Button>
                 </>
               )}
-
-              {/* Caso 3: Logueado como admin */}
               {isActiveUser && user.rol === "admin" && (
                 <>
                   {commonLinks}

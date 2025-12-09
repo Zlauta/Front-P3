@@ -6,7 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { crearContacto } from "../../service/contacto.service.js";
 import emailjs from "@emailjs/browser";
 
-const FormularioContacto = () => {
+const FormularioContacto = ({ usuario }) => {
+  const isLogged = !!usuario;
+
   const {
     register,
     handleSubmit,
@@ -15,8 +17,10 @@ const FormularioContacto = () => {
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      nombreContacto: "",
-      email: "",
+      nombreContacto: isLogged ? usuario?.nombre : "",
+      email: isLogged ? usuario?.email : "",
+      // nombreContacto: "",
+      //email: "",
       telefono: "",
       mensajeContacto: "",
     },
@@ -94,6 +98,8 @@ const FormularioContacto = () => {
           type="text"
           placeholder="Nombre de usuario"
           isInvalid={errors.nombreContacto}
+          readOnly={isLogged}
+          //  {...register("nombreContacto", {
           {...register("nombreContacto", {
             required: "El nombre de usuario es requerido",
 
@@ -124,6 +130,7 @@ const FormularioContacto = () => {
           type="email"
           placeholder="Ingrese su correo electronico"
           isInvalid={errors.email}
+          readOnly={isLogged}
           {...register("email", {
             required: "El correo electronico es requerido",
             pattern: {
