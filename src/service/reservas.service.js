@@ -10,13 +10,12 @@ export const obtenerReservas = async () => {
   try {
     const { data } = await clientAxios.get("/reservas");
     if (Array.isArray(data)) {
-        return data;
+      return data;
     }
     return data?.data || [];
-    
   } catch (error) {
     manejarError(error, "Error al obtener las reservas");
-    return []; 
+    return [];
   }
 };
 
@@ -31,8 +30,8 @@ export const obtenerReservaPorId = async (id) => {
 
 export const crearReserva = async (nuevaReserva) => {
   try {
-    const { data } = await clientAxios.post("/reservas", nuevaReserva);
-    return data?.data;
+    const response = await clientAxios.post("/reservas", nuevaReserva);
+    return response.data;
   } catch (error) {
     manejarError(error, "Error al crear la reserva");
   }
