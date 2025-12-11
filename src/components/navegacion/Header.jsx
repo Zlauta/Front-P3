@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Navbar, Container, Nav, Button } from "react-bootstrap";
 import "../../style/header.css";
 import Swal from "sweetalert2";
-
 import logopng from "/images/logo.png";
+import { Navigate } from "react-router-dom";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -59,6 +59,16 @@ const Header = () => {
       >
         Sobre Nosotros
       </Nav.Link>
+      <Nav.Link
+        href="/#resenias"
+        className="scroll"
+        onClick={() => setExpanded(false)}
+      >
+        Reseñas
+      </Nav.Link>
+      <Nav.Link as={Link} to="/contacto" onClick={() => setExpanded(false)}>
+        Contacto
+      </Nav.Link>
     </>
   );
 
@@ -79,24 +89,28 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto mb-2 mb-lg-0 align-items-lg-center">
-              {/* usuario no logueado */}
-              {!isActiveUser && (
+              {isActiveUser && user.rol === "cliente" && (
                 <>
                   {commonLinks}
                   <Nav.Link
-                    href="/#resenias"
-                    className="scroll"
-                    onClick={() => setExpanded(false)}
-                  >
-                    Reseñas
-                  </Nav.Link>
-                  <Nav.Link
                     as={Link}
-                    to="/contacto"
+                    to="/reservas"
                     onClick={() => setExpanded(false)}
                   >
-                    Contacto
+                    Reservas
                   </Nav.Link>
+                  <Button variant="success" onClick={logout} className="ms-2">
+                    Salir
+                  </Button>
+                </>
+              )}
+              {isActiveUser && user.rol === "admin" && (
+                <Navigate to="/admin" replace />
+              )}
+              {(!isActiveUser ||
+                (user.rol !== "cliente" && user.rol !== "admin")) && (
+                <>
+                  {commonLinks}
                   <Nav.Link
                     onClick={() => {
                       setExpanded(false);
@@ -112,57 +126,6 @@ const Header = () => {
                     onClick={() => setExpanded(false)}
                   >
                     Iniciar Sesión
-                  </Button>
-                </>
-              )}
-              {isActiveUser && user.rol === "cliente" && (
-                <>
-                  {commonLinks}
-                  <Nav.Link
-                    href="/#resenias"
-                    className="scroll"
-                    onClick={() => setExpanded(false)}
-                  >
-                    Reseñas
-                  </Nav.Link>
-                  <Nav.Link
-                    as={Link}
-                    to="/contacto"
-                    onClick={() => setExpanded(false)}
-                  >
-                    Contacto
-                  </Nav.Link>
-                  <Nav.Link
-                    as={Link}
-                    to="/reservas"
-                    onClick={() => setExpanded(false)}
-                  >
-                    Reservas
-                  </Nav.Link>
-                  <Button variant="success" onClick={logout} className="ms-2">
-                    Salir
-                  </Button>
-                </>
-              )}
-              {isActiveUser && user.rol === "admin" && (
-                <>
-                  {commonLinks}
-                  <Nav.Link
-                    as={Link}
-                    to="/reservas"
-                    onClick={() => setExpanded(false)}
-                  >
-                    Reservas
-                  </Nav.Link>
-                  <Nav.Link
-                    as={Link}
-                    to="/admin"
-                    onClick={() => setExpanded(false)}
-                  >
-                    Admin
-                  </Nav.Link>
-                  <Button variant="success" onClick={logout} className="ms-2">
-                    Salir
                   </Button>
                 </>
               )}

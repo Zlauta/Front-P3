@@ -15,8 +15,7 @@ import "../../style/sidebar.css";
 const SidebarAdmin = () => {
   return (
     <>
-      <div className="sidebar-mini d-lg-none" aria-hidden="true">
-      </div>
+      <div className="sidebar-mini d-lg-none" aria-hidden="true"></div>
 
       <Navbar expand="lg" className="d-lg-none sidebar-mobile-navbar">
         <Container fluid>
@@ -32,13 +31,13 @@ const SidebarAdmin = () => {
           >
             <Offcanvas.Header closeButton>
               <Offcanvas.Title id="admin-offcanvas-label">
-                <NavLink to="/" className="brand-link">
+                <div className="brand-link">
                   <img
                     src="/images/logo.png"
                     alt="El Gourmet"
                     className="sidebar-logo"
                   />
-                </NavLink>
+                </div>
               </Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
@@ -131,13 +130,15 @@ const SidebarAdmin = () => {
       <aside className="sidebar-admin d-none d-lg-block">
         <div className="sidebar-inner">
           <div className="sidebar-brand">
-            <NavLink to="/" className="brand-link">
-              <img
-                src="/images/logo.png"
-                alt="El Gourmet"
-                className="sidebar-logo"
-              />
-            </NavLink>
+            <div className="sidebar-brand">
+              <div className="brand-link">
+                <img
+                  src="/images/logo.png"
+                  alt="El Gourmet"
+                  className="sidebar-logo"
+                />
+              </div>
+            </div>
           </div>
           <nav>
             <ul>
