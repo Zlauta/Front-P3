@@ -19,8 +19,6 @@ const FormularioContacto = ({ usuario }) => {
     defaultValues: {
       nombreContacto: isLogged ? usuario?.nombre : "",
       email: isLogged ? usuario?.email : "",
-      // nombreContacto: "",
-      //email: "",
       telefono: "",
       mensajeContacto: "",
     },
@@ -99,7 +97,6 @@ const FormularioContacto = ({ usuario }) => {
           placeholder="Nombre de usuario"
           isInvalid={errors.nombreContacto}
           readOnly={isLogged}
-          //  {...register("nombreContacto", {
           {...register("nombreContacto", {
             required: "El nombre de usuario es requerido",
 
