@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { crearReserva, obtenerReservas } from "../service/reservas.service.js";
-import { enviarCorreo } from "../service/correo.service.js";
 
 export const useReservaLogica = (watch, reset) => {
   const [loading, setLoading] = useState(false);
@@ -121,68 +120,25 @@ export const useReservaLogica = (watch, reset) => {
         ...data,
         fecha: fechaSegura,
       };
-
-      await crearReserva(datosAEnviar);
-
-      const usuarioLogueado = JSON.parse(sessionStorage.getItem("usuario"));
-      const destinatario = usuarioLogueado?.email;
-
-      const correoData = {
-        to: destinatario,
-        subject: "Confirmación de Reserva",
-        text: `Hola ${usuarioLogueado?.nombre || "cliente"}, 
-        Nos alegra informarte que tu reserva ha sido confirmada con éxito. 
-Aquí están los detalles:
-
-📅 Fecha: ${data.fecha}
-⏰ Hora: ${data.hora}
-🍽️ Mesa: ${data.mesa}
-👥 Cantidad de personas: ${data.cantidadPersonas}
-
-Te esperamos para que disfrutes de una experiencia única en nuestro restaurante.  
-Si necesitás modificar o cancelar tu reserva, por favor contáctanos con anticipación.
-
-¡Gracias por elegirnos!  
-El equipo de El Gourmet
-`,
-        html: `
-    <div style="font-family: Arial, sans-serif; color: #333;">
-      <h2 style="color:#1aaf4b;">¡Hola ${
-        usuarioLogueado?.nombre || "cliente"
-      }!</h2>
-      <p>Nos alegra informarte que tu <strong>reserva ha sido confirmada</strong> con éxito. Aquí están los detalles:</p>
-      <ul>
-        <li><strong>📅 Fecha:</strong> ${data.fecha}</li>
-        <li><strong>⏰ Hora:</strong> ${data.hora}</li>
-        <li><strong>🍽️ Mesa:</strong> ${data.mesa}</li>
-        <li><strong>👥 Personas:</strong> ${data.cantidadPersonas}</li>
-      </ul>
-      <p>Te esperamos para que disfrutes de una experiencia única en nuestro restaurante.</p>
-      <p style="margin-top:20px;">Si necesitás modificar o cancelar tu reserva, por favor contáctanos con anticipación.</p>
-      <p style="color:#1aaf4b; font-weight:bold;">¡Gracias por elegirnos!<br/>El equipo de El Gourmet</p>
-    </div>`,
-      };
-      try {
-        await enviarCorreo(correoData);
-
+      const respuesta = await crearReserva(datosAEnviar);
+      console.log("RESPUESTA DEL BACK:", respuesta);
+      if (respuesta.correo?.enviado) {
         Swal.fire({
           icon: "success",
           title: "¡Reserva creada!",
-          text: "Te enviamos un correo con la confirmación de la reserva.",
+          text: "La reserva fue creada y el correo fue enviado correctamente.",
           confirmButtonColor: "#1aaf4b",
           timer: 3000,
         });
-      } catch (error) {
-        // Si ocurre un error, lo capturamos y mostramos alerta
-        console.error("Error al enviar correo:", error);
-
+      } else {
         Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "No se pudo enviar la confirmación de la reserva.",
-          confirmButtonColor: "#d33",
+          icon: "warning",
+          title: "Reserva creada",
+          text: "La reserva se creó, pero no se pudo enviar el correo.",
+          confirmButtonColor: "#e6ad00",
         });
       }
+
       reset();
 
       const dataActualizada = await obtenerReservas();
