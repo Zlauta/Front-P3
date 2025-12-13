@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Table, Spinner } from "react-bootstrap";
 import Swal from "sweetalert2";
+import ConfirmModal from "../../ui/ConfirmModal";
 import {
   obtenerProductos,
   eliminarProducto,
@@ -14,6 +15,8 @@ const ListadoMenu = () => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [reload, setReload] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmTarget, setConfirmTarget] = useState({ id: null, nombre: "" });
 
   const fetchMenus = async () => {
     try {
@@ -52,38 +55,31 @@ const ListadoMenu = () => {
   };
 
   const handleDelete = (id, nombre) => {
-    Swal.fire({
-      title: `¿Estás seguro de eliminar "${nombre}"?`,
-      text: "No podrás revertir esta acción",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await eliminarProducto(id);
-          setMenus((prev) => prev.filter((m) => m._id !== id));
-          
-          Swal.fire({
-            icon: "success",
-            title: "Eliminado",
-            text: "El menú ha sido eliminado.",
-            timer: 2000,
-            showConfirmButton: false,
-          });
-        } catch (error) {
-          console.error(error);
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "No se pudo eliminar el menú.",
-          });
-        }
-      }
-    });
+    setConfirmTarget({ id, nombre });
+    setShowConfirm(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    const { id } = confirmTarget;
+    setShowConfirm(false);
+    try {
+      await eliminarProducto(id);
+      setMenus((prev) => prev.filter((m) => m._id !== id));
+      Swal.fire({
+        icon: "success",
+        title: "Eliminado",
+        text: "El menú ha sido eliminado.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo eliminar el menú.",
+      });
+    }
   };
 
   const handleUpdate = (updatedMenu) => {
@@ -91,11 +87,11 @@ const ListadoMenu = () => {
       prev.map((menu) => (menu._id === updatedMenu._id ? updatedMenu : menu))
     );
     Swal.fire({
-        icon: "success",
-        title: "Actualizado",
-        text: "Menú actualizado con éxito",
-        timer: 1500,
-        showConfirmButton: false
+      icon: "success",
+      title: "Actualizado",
+      text: "Menú actualizado con éxito",
+      timer: 1500,
+      showConfirmButton: false,
     });
   };
 
@@ -204,6 +200,15 @@ const ListadoMenu = () => {
             onUpdated={handleUpdate}
           />
         )}
+        <ConfirmModal
+          show={showConfirm}
+          title={`¿Eliminar ${confirmTarget.nombre}?`}
+          text={`No podrás revertir esta acción.`}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setShowConfirm(false)}
+          confirmText="Sí, eliminar"
+          cancelText="Cancelar"
+        />
       </div>
     </div>
   );
