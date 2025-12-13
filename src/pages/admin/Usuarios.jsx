@@ -1,4 +1,4 @@
-import TablaUsuarios from "../../components/admin/TablaUsuarios";
+import TablaUsuarios from '@/components/admin/TablaUsuarios.jsx';
 
 const Usuarios = () => {
   return (

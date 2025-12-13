@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { Button, ListGroup, Spinner, Form, Card } from "react-bootstrap";
-import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
-import Swal from "sweetalert2";
-import { crearPreferenciaPago } from "../../service/pagos.service.js";
-import { FaTrashAlt } from "react-icons/fa";
+import React, { useState } from 'react';
+import { Button, ListGroup, Spinner, Form, Card } from 'react-bootstrap';
+import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
+import Swal from 'sweetalert2';
+import { crearPreferenciaPago } from '@/service/pagos.service.js';
+import { FaTrashAlt } from 'react-icons/fa';
 
-initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, { locale: "es-AR" });
+initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, { locale: 'es-AR' });
 
 const CarritoDeCompras = ({
   productosEnCarrito,
@@ -13,12 +13,11 @@ const CarritoDeCompras = ({
   eliminarProductoDelCarrito,
   actualizarCantidadProducto,
 }) => {
-  const [idPreferenciaMercadoPago, setIdPreferenciaMercadoPago] =
-    useState(null);
+  const [idPreferenciaMercadoPago, setIdPreferenciaMercadoPago] = useState(null);
   const [estaCargandoPago, setEstaCargandoPago] = useState(false);
   const [datosDelCliente, setDatosDelCliente] = useState({
-    telefono: "",
-    direccion: "",
+    telefono: '',
+    direccion: '',
   });
 
   const iniciarProcesoDePago = async () => {
@@ -28,9 +27,9 @@ const CarritoDeCompras = ({
 
     if (!telefonoValido || !direccionValida) {
       return Swal.fire(
-        "Datos incompletos",
-        "Por favor ingresa un teléfono válido y una dirección detallada (mínimo 10 caracteres).",
-        "warning"
+        'Datos incompletos',
+        'Por favor ingresa un teléfono válido y una dirección detallada (mínimo 10 caracteres).',
+        'warning'
       );
     }
 
@@ -48,7 +47,7 @@ const CarritoDeCompras = ({
         setIdPreferenciaMercadoPago(respuestaPago.id);
       }
     } catch (error) {
-      Swal.fire("Error al procesar", error.message, "error");
+      Swal.fire('Error al procesar', error.message, 'error');
     } finally {
       setEstaCargandoPago(false);
     }
@@ -64,22 +63,19 @@ const CarritoDeCompras = ({
   }
 
   return (
-    <Card
-      className="shadow-sm border-0 bg-light"
-      style={{ borderRadius: "16px" }}
-    >
+    <Card className="shadow-sm border-0 bg-light" style={{ borderRadius: '16px' }}>
       <Card.Header
         className="bg-white border-bottom-0 pt-4 pb-2"
-        style={{ borderTopLeftRadius: "16px", borderTopRightRadius: "16px" }}
+        style={{ borderTopLeftRadius: '16px', borderTopRightRadius: '16px' }}
       >
         <h4 className="text-success fw-bold m-0">Resumen de Pedido</h4>
       </Card.Header>
       <div
         style={{
-          maxHeight: "48vh",
-          overflowY: "auto",
-          overflowX: "hidden",
-          padding: "0 15px",
+          maxHeight: '48vh',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          padding: '0 15px',
         }}
       >
         <Card.Body className="p-0">
@@ -89,14 +85,9 @@ const CarritoDeCompras = ({
                 key={indice}
                 className="d-flex justify-content-between align-items-center bg-transparent px-0 py-3 border-bottom"
               >
-
-                <div style={{ width: "40%" }}>
-                  <span className="fw-bold d-block text-dark">
-                    {producto.nombre}
-                  </span>
-                  <small className="text-muted">
-                    Unitario: ${producto.precio}
-                  </small>
+                <div style={{ width: '40%' }}>
+                  <span className="fw-bold d-block text-dark">{producto.nombre}</span>
+                  <small className="text-muted">Unitario: ${producto.precio}</small>
                 </div>
 
                 <div className="d-flex align-items-center gap-2">
@@ -104,7 +95,7 @@ const CarritoDeCompras = ({
                     variant="outline-secondary"
                     size="sm"
                     className="rounded-circle p-0 d-flex align-items-center justify-content-center"
-                    style={{ width: "28px", height: "28px" }}
+                    style={{ width: '28px', height: '28px' }}
                     onClick={() => actualizarCantidadProducto(producto._id, -1)}
                     disabled={producto.quantity <= 1}
                   >
@@ -117,7 +108,7 @@ const CarritoDeCompras = ({
                     variant="outline-secondary"
                     size="sm"
                     className="rounded-circle p-0 d-flex align-items-center justify-content-center"
-                    style={{ width: "28px", height: "28px" }}
+                    style={{ width: '28px', height: '28px' }}
                     onClick={() => actualizarCantidadProducto(producto._id, 1)}
                   >
                     +
@@ -132,7 +123,7 @@ const CarritoDeCompras = ({
                     variant="outline-danger"
                     size="sm"
                     className="py-0 px-2 border-0"
-                    style={{ fontSize: "1rem" }}
+                    style={{ fontSize: '1rem' }}
                     onClick={() => eliminarProductoDelCarrito(indice)}
                   >
                     <FaTrashAlt />
@@ -144,9 +135,7 @@ const CarritoDeCompras = ({
           <div className="mb-4 p-3 bg-white rounded border shadow-sm">
             <h6 className="text-muted mb-3 fw-bold">Datos de Envío</h6>
             <Form.Group className="mb-3">
-              <Form.Label className="small text-secondary">
-                Teléfono de contacto
-              </Form.Label>
+              <Form.Label className="small text-secondary">Teléfono de contacto</Form.Label>
               <Form.Control
                 type="tel"
                 placeholder="Ej: 381..."
@@ -160,9 +149,7 @@ const CarritoDeCompras = ({
               />
             </Form.Group>
             <Form.Group>
-              <Form.Label className="small text-secondary">
-                Dirección de entrega
-              </Form.Label>
+              <Form.Label className="small text-secondary">Dirección de entrega</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Calle, número y barrio"
@@ -182,8 +169,8 @@ const CarritoDeCompras = ({
       <Card.Footer
         className="bg-white border-top pt-3 pb-4"
         style={{
-          borderBottomLeftRadius: "16px",
-          borderBottomRightRadius: "16px",
+          borderBottomLeftRadius: '16px',
+          borderBottomRightRadius: '16px',
         }}
       >
         <div className="d-flex justify-content-between align-items-center mb-3">

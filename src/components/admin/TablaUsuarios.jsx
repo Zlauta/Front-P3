@@ -1,20 +1,17 @@
-import { useEffect, useState } from "react";
-import { Table, Button, Form, Container } from "react-bootstrap";
-import Swal from "sweetalert2";
-import "../../index.css";
-import "../../api/clientAxios.js";
-import {
-  actualizarUsuario,
-  obtenerUsuarios,
-  eliminarUsuario,
-} from "../../service/usuario.service.js";
-import FormRegister from "../../pages/auth/FormularioRegistro.jsx";
+import { useEffect, useState } from 'react';
+import { Table, Button, Form, Container } from 'react-bootstrap';
+import Swal from 'sweetalert2';
+import '@/index.css';
+import '@/api/clientAxios.js';
+import { actualizarUsuario, obtenerUsuarios, eliminarUsuario } from '@/service/usuario.service.js';
+import ConfirmModal from '@/components/ui/ConfirmModal.jsx';
+import FormRegister from '@/pages/auth/FormularioRegistro.jsx';
 
 function formatearFecha(iso) {
   try {
     return new Date(iso).toLocaleString();
   } catch {
-    return iso ?? "";
+    return iso ?? '';
   }
 }
 
@@ -23,7 +20,7 @@ export default function TablaUsuarios() {
   const [ediciones, setEdiciones] = useState({});
   const [mostrarForm, setMostrarForm] = useState(false);
 
-  const usuarioLogueado = JSON.parse(sessionStorage.getItem("usuario"));
+  const usuarioLogueado = JSON.parse(sessionStorage.getItem('usuario'));
 
   // ahora puedes acceder al email
   const emailLogueado = usuarioLogueado?.email;
@@ -33,17 +30,17 @@ export default function TablaUsuarios() {
       const data = await obtenerUsuarios();
       setUsuarios(data);
     } catch (error) {
-      console.error("Error al cargar usuarios:", error);
+      console.error('Error al cargar usuarios:', error);
     }
   };
 
   useEffect(() => {
     cargar();
     const enAlmacenamiento = (evento) => {
-      if (evento.key === "usuarios") cargar();
+      if (evento.key === 'usuarios') cargar();
     };
-    window.addEventListener("storage", enAlmacenamiento);
-    return () => window.removeEventListener("storage", enAlmacenamiento);
+    window.addEventListener('storage', enAlmacenamiento);
+    return () => window.removeEventListener('storage', enAlmacenamiento);
   }, []);
 
   const manejarCambio = (id, valor) => {
@@ -80,63 +77,56 @@ export default function TablaUsuarios() {
       });
 
       Swal.fire({
-        title: "Usuario actualizado!",
-        icon: "success",
-        iconColor: "#1aaf4b ",
-        confirmButtonColor: "#1aaf4b ",
+        title: 'Usuario actualizado!',
+        icon: 'success',
+        iconColor: '#1aaf4b ',
+        confirmButtonColor: '#1aaf4b ',
         timer: 1200,
         showConfirmButton: false,
         customClass: {
-          popup: "small-alert",
+          popup: 'small-alert',
         },
       });
     } catch (error) {
-      console.error("Error al guardar actualizar usuario:", error);
+      console.error('Error al guardar actualizar usuario:', error);
       Swal.fire({
-        title: error.response.data.msg || "Error al actualizar usuario",
-        icon: "error",
-        confirmButtonColor: "#1aaf4b ",
+        title: error.response.data.msg || 'Error al actualizar usuario',
+        icon: 'error',
+        confirmButtonColor: '#1aaf4b ',
       });
     }
   };
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmTarget, setConfirmTarget] = useState({ id: null });
 
-  const manejarEliminar = async (id) => {
-    const result = await Swal.fire({
-      title: "¿Confirma que quiere eliminar este usuario?",
-      text: "Esta acción no se puede deshacer",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#1aaf4b",
-      cancelButtonColor: "#042d12ff",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    });
+  const manejarEliminar = (id) => {
+    setConfirmTarget({ id });
+    setShowConfirm(true);
+  };
 
-    if (!result.isConfirmed) {
-      return;
-    }
-
+  const handleConfirmDelete = async () => {
+    setShowConfirm(false);
     try {
-      await eliminarUsuario(id);
+      await eliminarUsuario(confirmTarget.id);
       await cargar();
 
       Swal.fire({
-        title: "Usuario eliminado",
-        icon: "success",
-        iconColor: "#1aaf4b ",
-        confirmButtonColor: "#1aaf4b ",
+        title: 'Usuario eliminado',
+        icon: 'success',
+        iconColor: '#1aaf4b ',
+        confirmButtonColor: '#1aaf4b ',
         timer: 1200,
         showConfirmButton: false,
         customClass: {
-          popup: "small-alert",
+          popup: 'small-alert',
         },
       });
     } catch (error) {
-      console.error("Error al eliminar usuario:", error);
+      console.error('Error al eliminar usuario:', error);
       Swal.fire({
-        title: error.response.data.msg || "Error al eliminar usuario",
-        icon: "error",
-        confirmButtonColor: "#1aaf4b ",
+        title: error.response?.data?.msg || 'Error al eliminar usuario',
+        icon: 'error',
+        confirmButtonColor: '#1aaf4b ',
       });
     }
   };
@@ -145,11 +135,7 @@ export default function TablaUsuarios() {
     <div className="p-1">
       <h3 className="text-light fs-1 mt-5 mb-5">Usuarios registrados</h3>
 
-      <Button
-        variant="success"
-        className="ms-lg-3 me-2 mb-4"
-        onClick={() => setMostrarForm(true)}
-      >
+      <Button variant="success" className="ms-lg-3 me-2 mb-4" onClick={() => setMostrarForm(true)}>
         Nuevo Usuario
       </Button>
 
@@ -180,7 +166,7 @@ export default function TablaUsuarios() {
             <th className="tabla">Acciones</th>
           </tr>
         </thead>
-        <tbody style={{ background: "#1E2A26 " }}>
+        <tbody style={{ background: '#1E2A26 ' }}>
           {usuarios.length ? (
             usuarios.map((usuario, idx) => (
               <tr key={usuario._id}>
@@ -216,10 +202,7 @@ export default function TablaUsuarios() {
                     size="sm"
                     variant="secondary"
                     onClick={() => guardarCambios(usuario._id)}
-                    disabled={
-                      !ediciones[usuario._id] ||
-                      usuario.email === usuarioLogueado?.email
-                    }
+                    disabled={!ediciones[usuario._id] || usuario.email === usuarioLogueado?.email}
                   >
                     Guardar
                   </Button>
@@ -245,8 +228,17 @@ export default function TablaUsuarios() {
         </tbody>
       </Table>
       <div className="text-light fs-5">
-        Total: {usuarios.length} usuario{usuarios.length === 1 ? "" : "s"}
+        Total: {usuarios.length} usuario{usuarios.length === 1 ? '' : 's'}
       </div>
+      <ConfirmModal
+        show={showConfirm}
+        title={`¿Eliminar usuario?`}
+        text={`Esta acción no se puede deshacer.`}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setShowConfirm(false)}
+        confirmText="Sí, eliminar"
+        cancelText="Cancelar"
+      />
     </div>
   );
 }

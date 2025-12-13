@@ -1,12 +1,12 @@
 /* Sidebar styles matching header palette */
-:root{
+:root {
   --green-dark: #122117; /* rgb(18,33,23) */
   --green-light: #1aaf4b; /* rgb(26,175,75) */
   --white: #ffffff;
   --green-transparent: #254630; /* rgb(37,70,48) */
 }
 
-.sidebar-admin{
+.sidebar-admin {
   width: 260px;
   background: linear-gradient(180deg, var(--green-dark) 0%, var(--green-transparent) 100%);
   color: var(--white);
@@ -18,18 +18,18 @@
   z-index: 50;
 }
 
-.sidebar-inner{
+.sidebar-inner {
   padding: 0.5rem 0.5rem;
 }
 
-.sidebar-brand{
+.sidebar-brand {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.15rem 0 0.25rem 0;
 }
 
-.sidebar-logo{
+.sidebar-logo {
   width: 96px;
   height: 96px;
   object-fit: cover;
@@ -40,54 +40,194 @@
 }
 
 /* overlay for mobile drawer */
-.sidebar-overlay{
+.sidebar-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
   opacity: 0;
   visibility: hidden;
   transition: opacity 220ms ease;
   z-index: 48;
 }
-.sidebar-overlay.visible{opacity:1;visibility:visible}
-
-.brand-link{ display: inline-block; }
-
-.sidebar-admin nav ul{list-style:none;margin:0;padding:0}
-.sidebar-admin nav li{margin:0.5rem 0}
-
-.sidebar-admin a{display:block;padding:0.8rem 1rem;color:rgba(255,255,255,0.95);text-decoration:none;border-radius:6px;font-weight:500}
-.sidebar-admin a:hover{background:rgba(26,175,75,0.12);color:var(--white)}
-.sidebar-admin a.active{background:var(--green-light);color:var(--white);box-shadow:inset 0 0 0 1px rgba(0,0,0,0.06)}
-
-@media (max-width: 991px){
-  .sidebar-admin{position:fixed; transform:translateX(-100%);transition:transform 260ms ease;width:260px;min-height:100vh;padding-top:8px;box-shadow:2px 0 12px rgba(0,0,0,0.24)}
-  .sidebar-admin.open{transform:translateX(0);z-index:49}
-  .sidebar-toggle{position:fixed;left:10px;top:12px;width:44px;height:44px;background:var(--green-light)!important;border:none!important;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:6px;box-shadow:0 2px 6px rgba(0,0,0,0.18);z-index:60}
-  .sidebar-toggle span{display:block;width:18px;height:2px;background:#fff;border-radius:2px}
-  button.sidebar-toggle.navbar-toggler .navbar-toggler-icon{background-image:none!important;width:18px!important;height:2px!important;display:inline-block!important;background:#fff!important;border-radius:2px!important;box-shadow:0 6px 0 #fff,0 -6px 0 #fff!important}
+.sidebar-overlay.visible {
+  opacity: 1;
+  visibility: visible;
 }
 
-@media (min-width: 992px){.sidebar-toggle{display:none}}
+.brand-link {
+  display: inline-block;
+}
+
+.sidebar-admin nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sidebar-admin nav li {
+  margin: 0.5rem 0;
+}
+
+.sidebar-admin a {
+  display: block;
+  padding: 0.8rem 1rem;
+  color: rgba(255, 255, 255, 0.95);
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+}
+.sidebar-admin a:hover {
+  background: rgba(26, 175, 75, 0.12);
+  color: var(--white);
+}
+.sidebar-admin a.active {
+  background: var(--green-light);
+  color: var(--white);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+@media (max-width: 991px) {
+  .sidebar-admin {
+    position: fixed;
+    transform: translateX(-100%);
+    transition: transform 260ms ease;
+    width: 260px;
+    min-height: 100vh;
+    padding-top: 8px;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.24);
+  }
+  .sidebar-admin.open {
+    transform: translateX(0);
+    z-index: 49;
+  }
+  .sidebar-toggle {
+    position: fixed;
+    left: 10px;
+    top: 12px;
+    width: 44px;
+    height: 44px;
+    background: var(--green-light) !important;
+    border: none !important;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    z-index: 60;
+  }
+  .sidebar-toggle span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+  }
+  button.sidebar-toggle.navbar-toggler .navbar-toggler-icon {
+    background-image: none !important;
+    width: 18px !important;
+    height: 2px !important;
+    display: inline-block !important;
+    background: #fff !important;
+    border-radius: 2px !important;
+    box-shadow:
+      0 6px 0 #fff,
+      0 -6px 0 #fff !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .sidebar-toggle {
+    display: none;
+  }
+}
 
 /* Mini collapsed vertical sidebar visible on mobile when Offcanvas is closed */
-.sidebar-mini{position:fixed;left:0;top:0;height:100vh;width:64px;background:linear-gradient(180deg,var(--green-dark) 0%,var(--green-transparent) 100%);z-index:54;display:flex;align-items:center;justify-content:center}
-.sidebar-mini .sidebar-mini-logo{width:48px;height:48px;border-radius:50%;object-fit:cover;display:block}
-
-.admin-layout .admin-content{margin-left:240px;padding:1.25rem}
-@media (max-width:991px){.admin-layout .admin-content{margin-left:64px;padding:0.75rem}}
-
-.sidebar-offcanvas{background:linear-gradient(180deg,var(--green-dark) 0%,var(--green-transparent) 100%);color:var(--white)}
-.sidebar-offcanvas .offcanvas-header,.sidebar-offcanvas .offcanvas-body{background:transparent;color:var(--white)}
-.sidebar-offcanvas .offcanvas-body{padding-top:0.5rem}
-.sidebar-offcanvas .brand-link{display:flex;justify-content:center;align-items:center}
-.sidebar-offcanvas .sidebar-logo{width:96px;height:96px;margin:0 auto 0.75rem auto}
-.sidebar-offcanvas a,.sidebar-offcanvas .nav-link{display:block;padding:0.6rem 1rem;color:rgba(255,255,255,0.95)!important;text-decoration:none!important;border-radius:6px;font-weight:500}
-.sidebar-admin a .nav-icon,
-.sidebar-offcanvas a .nav-icon{
-  display:inline-flex;align-items:center;justify-content:center;margin-right:1rem;font-size:1.1rem;vertical-align:middle
+.sidebar-mini {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 64px;
+  background: linear-gradient(180deg, var(--green-dark) 0%, var(--green-transparent) 100%);
+  z-index: 54;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.sidebar-admin a .nav-icon svg,.sidebar-offcanvas a .nav-icon svg{color:inherit}
-.sidebar-offcanvas a:hover,.sidebar-offcanvas .nav-link:hover{background:rgba(26,175,75,0.12)!important;color:var(--white)!important}
-.sidebar-offcanvas a.active,.sidebar-offcanvas .nav-link.active{background:var(--green-light)!important;color:var(--white)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.06)!important}
-.sidebar-offcanvas .btn-close{filter:invert(1) brightness(0.9)}
+.sidebar-mini .sidebar-mini-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.admin-layout .admin-content {
+  margin-left: 240px;
+  padding: 1.25rem;
+}
+@media (max-width: 991px) {
+  .admin-layout .admin-content {
+    margin-left: 64px;
+    padding: 0.75rem;
+  }
+}
+
+.sidebar-offcanvas {
+  background: linear-gradient(180deg, var(--green-dark) 0%, var(--green-transparent) 100%);
+  color: var(--white);
+}
+.sidebar-offcanvas .offcanvas-header,
+.sidebar-offcanvas .offcanvas-body {
+  background: transparent;
+  color: var(--white);
+}
+.sidebar-offcanvas .offcanvas-body {
+  padding-top: 0.5rem;
+}
+.sidebar-offcanvas .brand-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sidebar-offcanvas .sidebar-logo {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 0.75rem auto;
+}
+.sidebar-offcanvas a,
+.sidebar-offcanvas .nav-link {
+  display: block;
+  padding: 0.6rem 1rem;
+  color: rgba(255, 255, 255, 0.95) !important;
+  text-decoration: none !important;
+  border-radius: 6px;
+  font-weight: 500;
+}
+.sidebar-admin a .nav-icon,
+.sidebar-offcanvas a .nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  font-size: 1.1rem;
+  vertical-align: middle;
+}
+.sidebar-admin a .nav-icon svg,
+.sidebar-offcanvas a .nav-icon svg {
+  color: inherit;
+}
+.sidebar-offcanvas a:hover,
+.sidebar-offcanvas .nav-link:hover {
+  background: rgba(26, 175, 75, 0.12) !important;
+  color: var(--white) !important;
+}
+.sidebar-offcanvas a.active,
+.sidebar-offcanvas .nav-link.active {
+  background: var(--green-light) !important;
+  color: var(--white) !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06) !important;
+}
+.sidebar-offcanvas .btn-close {
+  filter: invert(1) brightness(0.9);
+}

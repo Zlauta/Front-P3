@@ -1,15 +1,7 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import {
-  Form,
-  Button,
-  Container,
-  Row,
-  Col,
-  Card,
-  Spinner,
-} from "react-bootstrap";
-import { useReservaLogica } from "../../hook/useReservaLogica.js";
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { Form, Button, Container, Row, Col, Card, Spinner } from 'react-bootstrap';
+import { useReservaLogica } from '@/hook/useReservaLogica.js';
 
 const FormularioReserva = () => {
   const {
@@ -18,7 +10,7 @@ const FormularioReserva = () => {
     watch,
     reset,
     formState: { errors, isValid },
-  } = useForm({ mode: "onChange" });
+  } = useForm({ mode: 'onChange' });
 
   const {
     loading,
@@ -39,11 +31,11 @@ const FormularioReserva = () => {
         <Col xs={12} md={8} lg={6}>
           <Card
             style={{
-              backgroundColor: "#254630",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: "16px",
-              boxShadow: "0 4px 30px rgba(0,0,0,0.5)",
+              backgroundColor: '#254630',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '16px',
+              boxShadow: '0 4px 30px rgba(0,0,0,0.5)',
             }}
           >
             <Card.Body className="p-4">
@@ -61,12 +53,11 @@ const FormularioReserva = () => {
                         type="number"
                         placeholder="Cant."
                         isInvalid={!!errors.cantidadPersonas}
-                        {...register("cantidadPersonas", {
-                          required: "Requerido",
+                        {...register('cantidadPersonas', {
+                          required: 'Requerido',
                           valueAsNumber: true,
-                          min: { value: 1, message: "Mín 1" },
-                          validate: (val) =>
-                            validarCapacidadMesa(mesaSeleccionada, val),
+                          min: { value: 1, message: 'Mín 1' },
+                          validate: (val) => validarCapacidadMesa(mesaSeleccionada, val),
                         })}
                       />
                       <Form.Control.Feedback type="invalid">
@@ -82,13 +73,12 @@ const FormularioReserva = () => {
                         type="number"
                         placeholder="#"
                         isInvalid={!!errors.mesa}
-                        {...register("mesa", {
-                          required: "Requerido",
+                        {...register('mesa', {
+                          required: 'Requerido',
                           valueAsNumber: true,
-                          min: { value: 1, message: "Mín 1" },
-                          max: { value: 30, message: "Máx 30" },
-                          validate: (val) =>
-                            validarCapacidadMesa(val, personasSeleccionadas),
+                          min: { value: 1, message: 'Mín 1' },
+                          max: { value: 30, message: 'Máx 30' },
+                          validate: (val) => validarCapacidadMesa(val, personasSeleccionadas),
                         })}
                       />
                       <Form.Control.Feedback type="invalid">
@@ -106,10 +96,9 @@ const FormularioReserva = () => {
                         type="date"
                         min={minDate}
                         isInvalid={!!errors.fecha}
-                        {...register("fecha", {
-                          required: "Requerido",
-                          validate: (val) =>
-                            val >= minDate || "No puede ser pasada",
+                        {...register('fecha', {
+                          required: 'Requerido',
+                          validate: (val) => val >= minDate || 'No puede ser pasada',
                         })}
                       />
                       <Form.Control.Feedback type="invalid">
@@ -125,23 +114,22 @@ const FormularioReserva = () => {
                         type="time"
                         min={minTime}
                         isInvalid={!!errors.hora}
-                        {...register("hora", {
-                          required: "Requerido",
+                        {...register('hora', {
+                          required: 'Requerido',
                           pattern: {
                             value: /^([01]\d|2[0-3]):([0-5]\d)$/,
-                            message: "Hora inválida",
+                            message: 'Hora inválida',
                           },
                           validate: {
                             checkHorario: (val) =>
                               validarHorarioAtencion(val) ||
-                              "Horarios de atencion 10hs a 16hs y 21hs a 02hs",
+                              'Horarios de atencion 10hs a 16hs y 21hs a 02hs',
                             checkPasado: (val) =>
                               fechaSeleccionada === minDate && val < minTime
-                                ? "Hora inválida hoy"
+                                ? 'Hora inválida hoy'
                                 : true,
                             checkDisponibilidad: (val) =>
-                              verificarDisponibilidad(val) ||
-                              "Mesa ocupada (margen 2hs)",
+                              verificarDisponibilidad(val) || 'Mesa ocupada (margen 2hs)',
                           },
                         })}
                       />
@@ -159,8 +147,8 @@ const FormularioReserva = () => {
                     rows={3}
                     placeholder="Preferencias..."
                     isInvalid={!!errors.notas}
-                    {...register("notas", {
-                      maxLength: { value: 200, message: "Máx 200 caracteres" },
+                    {...register('notas', {
+                      maxLength: { value: 200, message: 'Máx 200 caracteres' },
                     })}
                   />
                   <Form.Control.Feedback type="invalid">
@@ -174,15 +162,11 @@ const FormularioReserva = () => {
                     disabled={!isValid || loading}
                     className="w-100"
                     style={{
-                      backgroundColor: isValid ? "#1aaf4b" : "#5a5a5a",
-                      border: "none",
+                      backgroundColor: isValid ? '#1aaf4b' : '#5a5a5a',
+                      border: 'none',
                     }}
                   >
-                    {loading ? (
-                      <Spinner animation="border" size="sm" />
-                    ) : (
-                      "Confirmar Reserva"
-                    )}
+                    {loading ? <Spinner animation="border" size="sm" /> : 'Confirmar Reserva'}
                   </Button>
                 </div>
               </Form>

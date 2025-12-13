@@ -1,5 +1,5 @@
-import React from "react";
-import Index from "./routes/Indice";
+import React from 'react';
+import Index from './routes/Indice';
 
 const App = () => {
   return <Index />;

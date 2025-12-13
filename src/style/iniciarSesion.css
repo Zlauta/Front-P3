@@ -1,70 +1,65 @@
 .forms-boton {
-    background: linear-gradient(45deg, rgb(26, 175, 75), #367635);
-    color: white;
-    box-shadow: 0 18px 40px rgba(26, 175, 75, 0.3);
-    border: 2px solid rgb(18, 33, 23);
-    min-width: 150px;
-    max-width: 200px;
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    transition: all 0.3s ease;
+  background: linear-gradient(45deg, rgb(26, 175, 75), #367635);
+  color: white;
+  box-shadow: 0 18px 40px rgba(26, 175, 75, 0.3);
+  border: 2px solid rgb(18, 33, 23);
+  min-width: 150px;
+  max-width: 200px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  transition: all 0.3s ease;
 }
 
 .forms-boton:hover {
-
-    background: #1aaf4b;
-    box-shadow: 0 12px 30px rgba(42, 100, 121, 0.4);
-    color: black;
-    border: 2px solid #1aaf4b;
+  background: #1aaf4b;
+  box-shadow: 0 12px 30px rgba(42, 100, 121, 0.4);
+  color: black;
+  border: 2px solid #1aaf4b;
 }
 
 .custom-form {
-    background-color: #122117;
-    color: #254630;
-    border: 2px solid #2a6479;
-    box-shadow: 0 0 25px rgba(42, 100, 121, 0.4);
+  background-color: #122117;
+  color: #254630;
+  border: 2px solid #2a6479;
+  box-shadow: 0 0 25px rgba(42, 100, 121, 0.4);
 }
 
 .text-form {
-    color: #ffffff !important;
+  color: #ffffff !important;
 }
 
-
-
 .titulos-form {
-    text-align: center;
-    color: white !important;
-    font-size: 25px;
-    padding-top: 40px;
-    padding-bottom: 20px;
+  text-align: center;
+  color: white !important;
+  font-size: 25px;
+  padding-top: 40px;
+  padding-bottom: 20px;
 }
 
 .label {
-    text-align: left;
-    display: block;
-    color: #ffffff
+  text-align: left;
+  display: block;
+  color: #ffffff;
 }
 
 .link-color {
-    color: #ffffff;
-    text-decoration: none;
+  color: #ffffff;
+  text-decoration: none;
 }
-
 
 .custom-navbar {
-    max-width: 100%;
-    background-color: #5e2d07 !important;
+  max-width: 100%;
+  background-color: #5e2d07 !important;
 }
 
-
 .page-wrapper {
-    background-color: #122117;
-    min-height: 100vh;
-    /* Para que cubra toda la pantalla */
+  background-color: #122117;
+  min-height: 100vh;
+  /* Para que cubra toda la pantalla */
 }
 
 .custom-form {
-    max-width: 500px;
-    margin: 0 auto;
+  max-width: 500px;
+  margin: 0 auto;
 }
