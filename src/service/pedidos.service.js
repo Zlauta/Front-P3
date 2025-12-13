@@ -1,12 +1,12 @@
-import clientAxios from "@/api/clientAxios.js";
+import clientAxios from '@/api/clientAxios.js';
 
 // Crear un pedido
 export const crearPedido = async (nuevoPedido) => {
   try {
-    const response = await clientAxios.post("/pedidos", nuevoPedido);
+    const response = await clientAxios.post('/pedidos', nuevoPedido);
     return response.data; // backend devuelve el pedido creado
   } catch (error) {
-    console.error("Error al crear pedido:", error);
+    console.error('Error al crear pedido:', error);
     throw error;
   }
 };
@@ -14,10 +14,10 @@ export const crearPedido = async (nuevoPedido) => {
 // Obtener todos los pedidos
 export const obtenerPedidos = async () => {
   try {
-    const response = await clientAxios.get("/pedidos");
+    const response = await clientAxios.get('/pedidos');
     return response.data; // backend devuelve array directo
   } catch (error) {
-    console.error("Error al obtener pedidos:", error);
+    console.error('Error al obtener pedidos:', error);
     throw error;
   }
 };
@@ -28,7 +28,7 @@ export const obtenerPedidoPorId = async (id) => {
     const response = await clientAxios.get(`/pedidos/${id}`);
     return response.data;
   } catch (error) {
-    console.error("Error al obtener pedido por ID:", error);
+    console.error('Error al obtener pedido por ID:', error);
     throw error;
   }
 };
@@ -41,7 +41,7 @@ export const actualizarEstadoPedido = async (id, nuevoEstado) => {
     });
     return response.data; // backend devuelve el pedido actualizado
   } catch (error) {
-    console.error("Error al actualizar estado del pedido:", error);
+    console.error('Error al actualizar estado del pedido:', error);
     throw error;
   }
 };
@@ -52,7 +52,7 @@ export const eliminarPedido = async (id) => {
     const response = await clientAxios.delete(`/pedidos/${id}`);
     return response.data; // { mensaje: "Pedido eliminado" }
   } catch (error) {
-    console.error("Error al eliminar pedido:", error);
+    console.error('Error al eliminar pedido:', error);
     throw error;
   }
 };

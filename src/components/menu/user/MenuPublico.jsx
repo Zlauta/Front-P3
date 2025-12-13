@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Spinner, Button, Alert } from "react-bootstrap";
-import { obtenerProductosFiltrados } from "@/service/producto.service.js";
-import MenuCard from "./TarjetaMenu.jsx";
-import CarritoDeCompras from "@/components/carrito/CarritoDeCompras.jsx";
+import React, { useEffect, useState } from 'react';
+import { Container, Row, Col, Spinner, Button, Alert } from 'react-bootstrap';
+import { obtenerProductosFiltrados } from '@/service/producto.service.js';
+import MenuCard from './TarjetaMenu.jsx';
+import CarritoDeCompras from '@/components/carrito/CarritoDeCompras.jsx';
 
 const MenuPublico = () => {
   const [listaDeProductos, setListaDeProductos] = useState([]);
@@ -11,15 +11,13 @@ const MenuPublico = () => {
   const [carritoDeCompras, setCarritoDeCompras] = useState([]);
   const [carritoCargado, setCarritoCargado] = useState(false);
 
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
   const [numeroDePagina, setNumeroDePagina] = useState(1);
   const [metadatosPaginacion, setMetadatosPaginacion] = useState({});
 
-  const token = localStorage.getItem("token");
-  const email = localStorage.getItem("userEmail");
-  const claveLocalStorage = `carrito_compras_${
-    token ? `usuario_${email}` : "invitado"
-  }`;
+  const token = localStorage.getItem('token');
+  const email = localStorage.getItem('userEmail');
+  const claveLocalStorage = `carrito_compras_${token ? `usuario_${email}` : 'invitado'}`;
 
   useEffect(() => {
     const carritoGuardado = JSON.parse(localStorage.getItem(claveLocalStorage));
@@ -42,21 +40,17 @@ const MenuPublico = () => {
         setListaDeProductos(respuesta.items || []);
         setMetadatosPaginacion(respuesta.meta || {});
       })
-      .catch((error) => console.error("Error al cargar menú:", error))
+      .catch((error) => console.error('Error al cargar menú:', error))
       .finally(() => setEstaCargandoMenu(false));
   }, [categoriaSeleccionada, numeroDePagina]);
 
   const agregarProductoAlCarrito = (productoNuevo) => {
     setCarritoDeCompras((carritoActual) => {
-      const yaExisteEnCarrito = carritoActual.find(
-        (item) => item._id === productoNuevo._id
-      );
+      const yaExisteEnCarrito = carritoActual.find((item) => item._id === productoNuevo._id);
 
       if (yaExisteEnCarrito) {
         return carritoActual.map((item) =>
-          item._id === productoNuevo._id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
+          item._id === productoNuevo._id ? { ...item, quantity: item.quantity + 1 } : item
         );
       } else {
         return [...carritoActual, { ...productoNuevo, quantity: 1 }];
@@ -64,11 +58,11 @@ const MenuPublico = () => {
     });
 
     Swal.fire({
-      title: "¡Producto Agregado!",
+      title: '¡Producto Agregado!',
       text: productoNuevo.nombre,
-      icon: "success",
+      icon: 'success',
       toast: true,
-      position: "top-end",
+      position: 'top-end',
       timer: 1500,
       showConfirmButton: false,
     });
@@ -111,14 +105,10 @@ const MenuPublico = () => {
         <Col lg={8} md={7} className="mb-5">
           <h2 className="text-success fw-bold mb-4">Nuestra Carta</h2>
           <div className="mb-4 d-flex gap-2 flex-wrap">
-            {["entrada", "principal", "bebida", "postre"].map((categoria) => (
+            {['entrada', 'principal', 'bebida', 'postre'].map((categoria) => (
               <Button
                 key={categoria}
-                variant={
-                  categoriaSeleccionada === categoria
-                    ? "success"
-                    : "outline-success"
-                }
+                variant={categoriaSeleccionada === categoria ? 'success' : 'outline-success'}
                 onClick={() => {
                   setCategoriaSeleccionada(categoria);
                   setNumeroDePagina(1);
@@ -131,23 +121,21 @@ const MenuPublico = () => {
               <Button
                 variant="link"
                 className="text-decoration-none text-light"
-                onClick={() => setCategoriaSeleccionada("")}
+                onClick={() => setCategoriaSeleccionada('')}
               >
                 Ver todo
               </Button>
             )}
           </div>
           {listaDeProductos.length === 0 ? (
-            <Alert variant="warning">
-              No encontramos productos en esta categoría.
-            </Alert>
+            <Alert variant="warning">No encontramos productos en esta categoría.</Alert>
           ) : (
             <Row className="g-4">
               {listaDeProductos.map((producto) => (
                 <Col key={producto._id} sm={12}>
                   <MenuCard
                     {...producto}
-                    isLogged={localStorage.getItem("token") ? true : false}
+                    isLogged={localStorage.getItem('token') ? true : false}
                     agregarProductoAlCarrito={agregarProductoAlCarrito}
                   />
                 </Col>
@@ -181,7 +169,7 @@ const MenuPublico = () => {
         </Col>
 
         <Col lg={4} md={5}>
-          <div className="sticky-top" style={{ top: "120px", zIndex: 10 }}>
+          <div className="sticky-top" style={{ top: '120px', zIndex: 10 }}>
             <CarritoDeCompras
               productosEnCarrito={carritoDeCompras}
               totalAPagar={totalAPagar}

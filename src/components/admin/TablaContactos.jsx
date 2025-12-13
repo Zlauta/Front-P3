@@ -1,20 +1,20 @@
-import { useEffect, useState } from "react";
-import { Table, Button, Form, Container } from "react-bootstrap";
-import Swal from "sweetalert2";
-import "@/index.css";
-import "@/api/clientAxios.js";
+import { useEffect, useState } from 'react';
+import { Table, Button, Form, Container } from 'react-bootstrap';
+import Swal from 'sweetalert2';
+import '@/index.css';
+import '@/api/clientAxios.js';
 import {
   actualizarContacto,
   obtenerContactos,
   eliminarContacto,
-} from "@/service/contacto.service.js";
-import ConfirmModal from "@/components/ui/ConfirmModal.jsx";
+} from '@/service/contacto.service.js';
+import ConfirmModal from '@/components/ui/ConfirmModal.jsx';
 
 function formatearFecha(iso) {
   try {
     return new Date(iso).toLocaleString();
   } catch {
-    return iso ?? "";
+    return iso ?? '';
   }
 }
 
@@ -27,17 +27,17 @@ export default function TablaContactos() {
       const data = await obtenerContactos();
       setContatos(data);
     } catch (error) {
-      console.error("Error al cargar contactos:", error);
+      console.error('Error al cargar contactos:', error);
     }
   };
 
   useEffect(() => {
     cargar();
     const enAlmacenamiento = (evento) => {
-      if (evento.key === "contactos") cargar();
+      if (evento.key === 'contactos') cargar();
     };
-    window.addEventListener("storage", enAlmacenamiento);
-    return () => window.removeEventListener("storage", enAlmacenamiento);
+    window.addEventListener('storage', enAlmacenamiento);
+    return () => window.removeEventListener('storage', enAlmacenamiento);
   }, []);
 
   const manejarEstado = (id, valor) => {
@@ -64,22 +64,22 @@ export default function TablaContactos() {
       });
 
       Swal.fire({
-        title: "Contacto actualizado!",
-        icon: "success",
-        iconColor: "#1aaf4b ",
-        confirmButtonColor: "#1aaf4b ",
+        title: 'Contacto actualizado!',
+        icon: 'success',
+        iconColor: '#1aaf4b ',
+        confirmButtonColor: '#1aaf4b ',
         timer: 1200,
         showConfirmButton: false,
         customClass: {
-          popup: "small-alert",
+          popup: 'small-alert',
         },
       });
     } catch (error) {
-      console.error("Error al guardar actualizar contacto:", error);
+      console.error('Error al guardar actualizar contacto:', error);
       Swal.fire({
-        title: "Error al actualizar contacto",
-        icon: "error",
-        confirmButtonColor: "#1aaf4b ",
+        title: 'Error al actualizar contacto',
+        icon: 'error',
+        confirmButtonColor: '#1aaf4b ',
       });
     }
   };
@@ -98,22 +98,22 @@ export default function TablaContactos() {
       await cargar();
 
       Swal.fire({
-        title: "Contacto eliminado",
-        icon: "success",
-        iconColor: "#1aaf4b ",
-        confirmButtonColor: "#1aaf4b ",
+        title: 'Contacto eliminado',
+        icon: 'success',
+        iconColor: '#1aaf4b ',
+        confirmButtonColor: '#1aaf4b ',
         timer: 1200,
         showConfirmButton: false,
         customClass: {
-          popup: "small-alert",
+          popup: 'small-alert',
         },
       });
     } catch (error) {
-      console.error("Error al eliminar contacto:", error);
+      console.error('Error al eliminar contacto:', error);
       Swal.fire({
-        title: "Error al eliminar contacto",
-        icon: "error",
-        confirmButtonColor: "#1aaf4b ",
+        title: 'Error al eliminar contacto',
+        icon: 'error',
+        confirmButtonColor: '#1aaf4b ',
       });
     }
   };
@@ -134,7 +134,7 @@ export default function TablaContactos() {
             <th className="tabla">Accion </th>
           </tr>
         </thead>
-        <tbody style={{ background: "#1E2A26 " }}>
+        <tbody style={{ background: '#1E2A26 ' }}>
           {contactos.length ? (
             contactos.map((contacto, idx) => (
               <tr key={contacto._id}>
@@ -147,9 +147,7 @@ export default function TablaContactos() {
                 <td className="tabla">
                   <Form.Select
                     value={ediciones[contacto._id]?.estado ?? contacto.estado}
-                    onChange={(e) =>
-                      manejarEstado(contacto._id, e.target.value)
-                    }
+                    onChange={(e) => manejarEstado(contacto._id, e.target.value)}
                   >
                     <option value="pendiente">pendiente</option>
                     <option value="resuelto">resuelto</option>
@@ -188,7 +186,7 @@ export default function TablaContactos() {
         </tbody>
       </Table>
       <div className="text-light fs-5">
-        Total: {contactos.length} contacto{contactos.length === 1 ? "" : "s"}
+        Total: {contactos.length} contacto{contactos.length === 1 ? '' : 's'}
       </div>
 
       <ConfirmModal

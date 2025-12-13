@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
-import { useForm } from "react-hook-form";
-import { FaStar } from "react-icons/fa";
-import { crearResenia } from "@/service/resenias.service.js";
-import Swal from "sweetalert2";
+import React, { useState } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
+import { FaStar } from 'react-icons/fa';
+import { crearResenia } from '@/service/resenias.service.js';
+import Swal from 'sweetalert2';
 
 const CrearReseniaModal = ({ show, handleClose, updateList }) => {
   const {
@@ -20,24 +20,24 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
   // Estilos (Tus colores)
   const styles = {
     modalContent: {
-      backgroundColor: "#254630",
-      color: "#fff",
-      border: "1px solid #1aaf4b",
+      backgroundColor: '#254630',
+      color: '#fff',
+      border: '1px solid #1aaf4b',
     },
     // Nota: El borde se sobrescribe automáticamente a rojo si hay error gracias a 'isInvalid'
     input: {
-      backgroundColor: "#122117",
-      color: "#fff",
-      border: "1px solid #1aaf4b",
+      backgroundColor: '#122117',
+      color: '#fff',
+      border: '1px solid #1aaf4b',
     },
     btnPrimary: {
-      backgroundColor: "#1aaf4b",
-      borderColor: "#1aaf4b",
-      color: "#fff",
-      fontWeight: "bold",
+      backgroundColor: '#1aaf4b',
+      borderColor: '#1aaf4b',
+      color: '#fff',
+      fontWeight: 'bold',
     },
-    btnSecondary: { backgroundColor: "#6c757d", border: "none", color: "#fff" },
-    star: { cursor: "pointer", transition: "color 200ms" },
+    btnSecondary: { backgroundColor: '#6c757d', border: 'none', color: '#fff' },
+    star: { cursor: 'pointer', transition: 'color 200ms' },
   };
 
   const onSubmit = async (data) => {
@@ -51,11 +51,11 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
       await crearResenia({ ...data, calificacion: rating });
 
       Swal.fire({
-        icon: "success",
-        title: "¡Reseña creada!",
-        background: "#254630",
-        color: "#fff",
-        confirmButtonColor: "#1aaf4b",
+        icon: 'success',
+        title: '¡Reseña creada!',
+        background: '#254630',
+        color: '#fff',
+        confirmButtonColor: '#1aaf4b',
       });
 
       reset();
@@ -69,10 +69,7 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
 
   return (
     <Modal show={show} onHide={handleClose} centered backdrop="static">
-      <Modal.Header
-        closeButton
-        style={{ ...styles.modalContent, borderBottom: "none" }}
-      >
+      <Modal.Header closeButton style={{ ...styles.modalContent, borderBottom: 'none' }}>
         <Modal.Title>Dejar una Reseña</Modal.Title>
       </Modal.Header>
 
@@ -86,20 +83,18 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
               style={styles.input}
               // isInvalid activa el borde rojo de Bootstrap
               isInvalid={!!errors.nombre}
-              {...register("nombre", {
-                required: "El nombre es obligatorio",
-                minLength: { value: 2, message: "Mínimo 2 caracteres" },
-                maxLength: { value: 50, message: "Máximo 50 caracteres" },
+              {...register('nombre', {
+                required: 'El nombre es obligatorio',
+                minLength: { value: 2, message: 'Mínimo 2 caracteres' },
+                maxLength: { value: 50, message: 'Máximo 50 caracteres' },
                 pattern: {
                   value: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s'-]+$/,
-                  message: "Solo letras y espacios",
+                  message: 'Solo letras y espacios',
                 },
               })}
             />
             {/* FEEDBACK VISUAL: Mensaje rojo nativo de Bootstrap */}
-            <Form.Control.Feedback type="invalid">
-              {errors.nombre?.message}
-            </Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">{errors.nombre?.message}</Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-3 text-center">
             <Form.Label className="d-block">Calificación</Form.Label>
@@ -114,16 +109,14 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
                       value={ratingValue}
                       onClick={() => {
                         setRating(ratingValue);
-                        setValue("calificacion", ratingValue);
+                        setValue('calificacion', ratingValue);
                       }}
-                      style={{ display: "none" }}
+                      style={{ display: 'none' }}
                     />
                     <FaStar
                       size={35}
                       style={styles.star}
-                      color={
-                        ratingValue <= (hover || rating) ? "#ffc107" : "#4a5d50"
-                      }
+                      color={ratingValue <= (hover || rating) ? '#ffc107' : '#4a5d50'}
                       onMouseEnter={() => setHover(ratingValue)}
                       onMouseLeave={() => setHover(0)}
                     />
@@ -133,10 +126,7 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
             </div>
 
             {rating === 0 && (
-              <div
-                className="text-danger small mt-2"
-                style={{ fontSize: "0.875em" }}
-              >
+              <div className="text-danger small mt-2" style={{ fontSize: '0.875em' }}>
                 * Selecciona una calificación
               </div>
             )}
@@ -150,13 +140,13 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
               style={styles.input}
               // 👇 Activa el borde rojo
               isInvalid={!!errors.comentario}
-              {...register("comentario", {
-                required: "El comentario es obligatorio",
-                minLength: { value: 5, message: "Mínimo 5 caracteres" },
-                maxLength: { value: 300, message: "Máximo 300 caracteres" },
+              {...register('comentario', {
+                required: 'El comentario es obligatorio',
+                minLength: { value: 5, message: 'Mínimo 5 caracteres' },
+                maxLength: { value: 300, message: 'Máximo 300 caracteres' },
                 pattern: {
                   value: /^[a-zA-Z0-9\s.,!?]+$/,
-                  message: "Solo letras, números y puntuación básica (.,!?)",
+                  message: 'Solo letras, números y puntuación básica (.,!?)',
                 },
               })}
             />
@@ -170,11 +160,7 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
             <Button style={styles.btnSecondary} onClick={handleClose}>
               Cancelar
             </Button>
-            <Button
-              style={styles.btnPrimary}
-              type="submit"
-              disabled={rating === 0}
-            >
+            <Button style={styles.btnPrimary} type="submit" disabled={rating === 0}>
               Enviar Reseña
             </Button>
           </div>

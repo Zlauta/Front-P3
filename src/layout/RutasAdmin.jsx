@@ -1,48 +1,48 @@
-import React from "react";
-import { Routes, Route, Navigate, Outlet, useNavigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
-import Swal from "sweetalert2";
-import SidebarAdmin from "@/components/navegacion/SidebarAdmin.jsx";
+import React from 'react';
+import { Routes, Route, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
+import Swal from 'sweetalert2';
+import SidebarAdmin from '@/components/navegacion/SidebarAdmin.jsx';
 
-import Usuarios from "@/pages/admin/Usuarios.jsx";
-import Menu from "@/pages/admin/Menu.jsx";
-import Pedidos from "@/pages/admin/Pedidos.jsx";
-import Resenias from "@/pages/admin/Resenias.jsx";
-import Reservas from "@/pages/admin/Reservas.jsx";
-import Contacto from "@/pages/admin/Contacto.jsx";
-import ProtectedRoute from "@/routes/RutasProtegidas.jsx";
-import NotFound from "@/pages/user/NoEncontrado.jsx";
+import Usuarios from '@/pages/admin/Usuarios.jsx';
+import Menu from '@/pages/admin/Menu.jsx';
+import Pedidos from '@/pages/admin/Pedidos.jsx';
+import Resenias from '@/pages/admin/Resenias.jsx';
+import Reservas from '@/pages/admin/Reservas.jsx';
+import Contacto from '@/pages/admin/Contacto.jsx';
+import ProtectedRoute from '@/routes/RutasProtegidas.jsx';
+import NotFound from '@/pages/user/NoEncontrado.jsx';
 
 const AdminLayout = () => {
   const navigate = useNavigate();
 
   function logout() {
     Swal.fire({
-      title: "¿Estás seguro de cerrar sesión?",
-      icon: "warning",
+      title: '¿Estás seguro de cerrar sesión?',
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: "Salir",
-      iconColor: "#1aaf4b",
-      confirmButtonColor: "#1aaf4b",
-      cancelButtonColor: "#254630",
-      customClass: { popup: "small-alert" },
+      confirmButtonText: 'Salir',
+      iconColor: '#1aaf4b',
+      confirmButtonColor: '#1aaf4b',
+      cancelButtonColor: '#254630',
+      customClass: { popup: 'small-alert' },
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire({
-          title: "Sesión cerrada!",
-          icon: "success",
-          iconColor: "#254630",
-          confirmButtonColor: "#1aaf4b",
-          customClass: { popup: "small-alert" },
+          title: 'Sesión cerrada!',
+          icon: 'success',
+          iconColor: '#254630',
+          confirmButtonColor: '#1aaf4b',
+          customClass: { popup: 'small-alert' },
           timer: 1200,
           showConfirmButton: false,
         });
 
-        localStorage.removeItem("token");
-        localStorage.removeItem("userEmail");
-        sessionStorage.removeItem("usuario");
+        localStorage.removeItem('token');
+        localStorage.removeItem('userEmail');
+        sessionStorage.removeItem('usuario');
 
-        navigate("/");
+        navigate('/');
       }
     });
   }

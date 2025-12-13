@@ -1,10 +1,10 @@
-import React from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import { useForm } from "react-hook-form";
-import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
-import { obtenerUsuarios } from "@/service/usuario.service";
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import { useForm } from 'react-hook-form';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import { obtenerUsuarios } from '@/service/usuario.service';
 
 const FormularioNuevaContrasenia = () => {
   const {
@@ -13,33 +13,31 @@ const FormularioNuevaContrasenia = () => {
     reset,
     formState: { errors },
   } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      email: "",
+      email: '',
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoHome = () => {
-    navigate("/");
+    navigate('/');
   };
 
   async function onSubmit(data) {
     const usuariosDeLaDb = await obtenerUsuarios();
-    const usuarioExistente = usuariosDeLaDb.find(
-      (usuario) => usuario.email === data.email
-    );
+    const usuarioExistente = usuariosDeLaDb.find((usuario) => usuario.email === data.email);
 
     if (!usuarioExistente) {
       Swal.fire({
-        icon: "success",
-        title: "El formulario ha sido enviado",
-        iconColor: "#1aaf4b ",
-        confirmButtonColor: "#1aaf4b ",
-        cancelButtonColor: "#1aaf4b ",
+        icon: 'success',
+        title: 'El formulario ha sido enviado',
+        iconColor: '#1aaf4b ',
+        confirmButtonColor: '#1aaf4b ',
+        cancelButtonColor: '#1aaf4b ',
         customClass: {
-          popup: "small-alert",
+          popup: 'small-alert',
         },
       });
 
@@ -47,21 +45,21 @@ const FormularioNuevaContrasenia = () => {
       return;
     }
     Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "El formulario ha sido enviado",
+      position: 'top-end',
+      icon: 'success',
+      title: 'El formulario ha sido enviado',
       showConfirmButton: false,
       timer: 1500,
-      iconColor: "#1aaf4b ",
-      confirmButtonColor: "#1aaf4b ",
-      cancelButtonColor: "#d33",
+      iconColor: '#1aaf4b ',
+      confirmButtonColor: '#1aaf4b ',
+      cancelButtonColor: '#d33',
       customClass: {
-        popup: "small-alert",
+        popup: 'small-alert',
       },
     });
 
     reset();
-    navigate("/");
+    navigate('/');
   }
 
   return (
@@ -72,18 +70,16 @@ const FormularioNuevaContrasenia = () => {
           type="email"
           placeholder="Ingrese su correo electrónico"
           isInvalid={errors.email}
-          {...register("email", {
-            required: "El correo electrónico es requerido",
+          {...register('email', {
+            required: 'El correo electrónico es requerido',
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
               message:
-                "El correo electrónico debe tener texto antes de la @ y, después de @, debe tener texto y . seguido de texto",
+                'El correo electrónico debe tener texto antes de la @ y, después de @, debe tener texto y . seguido de texto',
             },
           })}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.email?.message}
-        </Form.Control.Feedback>
+        <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
       </Form.Group>
 
       <div className="text-center mt-5 d-flex flex-column justify-content-center gap-2 flex-md-row">

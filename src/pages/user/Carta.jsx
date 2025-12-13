@@ -1,4 +1,4 @@
-import MenuPublico from "@/components/menu/user/MenuPublico.jsx";
+import MenuPublico from '@/components/menu/user/MenuPublico.jsx';
 
 const Carta = () => {
   return (

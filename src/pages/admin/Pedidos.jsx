@@ -1,4 +1,4 @@
-import TablaPedidos from "@/components/admin/TablaPedidos.jsx";
+import TablaPedidos from '@/components/admin/TablaPedidos.jsx';
 
 const Pedidos = () => {
   return (

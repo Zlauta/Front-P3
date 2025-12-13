@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
-import { Container } from "react-bootstrap";
-import "@/style/iniciarSesion.css";
-import FormNewPass from "@/pages/auth/FormularioNuevaContrasenia.jsx";
+import { Container } from 'react-bootstrap';
+import '@/style/iniciarSesion.css';
+import FormNewPass from '@/pages/auth/FormularioNuevaContrasenia.jsx';
 
 const NuevaContrasenia = () => {
   return (

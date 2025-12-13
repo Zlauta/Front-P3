@@ -1,8 +1,8 @@
-import { useEffect } from "react";
-import AOS from "aos";
-import "aos/dist/aos.css";
-import { Container } from "react-bootstrap";
-import "@/style/galeria.css";
+import { useEffect } from 'react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+import { Container } from 'react-bootstrap';
+import '@/style/galeria.css';
 
 export const Galeria = () => {
   useEffect(() => {
@@ -10,19 +10,19 @@ export const Galeria = () => {
   }, []);
 
   const images = [
-    "/images/CazuelaDeMariscos.jpg",
-    "/images/negroni.jpg",
-    "/images/merluzaEnPapillote.jpg",
-    "/images/paella.jpg",
-    "/images/saltimbocca.webp",
-    "/images/strudelDeManzana.jpg",
-    "/images/ginTonic.jpg",
-    "/images/ojoDeBife.jpg",
-    "/images/volcanDeChocolate.jpg",
-    "/images/solomilloWellington.png",
-    "/images/sorentinos.jpg",
-    "/images/panaCotta.jpg",
-    "/images/EnsaladaCesar.webp",
+    '/images/CazuelaDeMariscos.jpg',
+    '/images/negroni.jpg',
+    '/images/merluzaEnPapillote.jpg',
+    '/images/paella.jpg',
+    '/images/saltimbocca.webp',
+    '/images/strudelDeManzana.jpg',
+    '/images/ginTonic.jpg',
+    '/images/ojoDeBife.jpg',
+    '/images/volcanDeChocolate.jpg',
+    '/images/solomilloWellington.png',
+    '/images/sorentinos.jpg',
+    '/images/panaCotta.jpg',
+    '/images/EnsaladaCesar.webp',
   ];
 
   return (

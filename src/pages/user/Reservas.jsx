@@ -1,4 +1,4 @@
-import FormReserva from "@/components/reserva/FormularioReserva.jsx";
+import FormReserva from '@/components/reserva/FormularioReserva.jsx';
 
 export default function Reservas() {
   return (

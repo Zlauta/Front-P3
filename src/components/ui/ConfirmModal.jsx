@@ -1,5 +1,5 @@
-import React from "react";
-import { Modal, Button } from "react-bootstrap";
+import React from 'react';
+import { Modal, Button } from 'react-bootstrap';
 
 const ConfirmModal = ({
   show,
@@ -7,8 +7,8 @@ const ConfirmModal = ({
   text,
   onConfirm,
   onCancel,
-  confirmText = "Confirmar",
-  cancelText = "Cancelar",
+  confirmText = 'Confirmar',
+  cancelText = 'Cancelar',
 }) => {
   return (
     <Modal show={show} onHide={onCancel} centered>

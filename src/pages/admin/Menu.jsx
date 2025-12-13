@@ -1,4 +1,4 @@
-import ListadoMenu from "@/components/menu/admin/ListadoMenu.jsx";
+import ListadoMenu from '@/components/menu/admin/ListadoMenu.jsx';
 
 const Menu = () => {
   return (

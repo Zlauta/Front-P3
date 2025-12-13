@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Button, Table, Spinner } from "react-bootstrap";
-import Swal from "sweetalert2";
-import ConfirmModal from "@/components/ui/ConfirmModal.jsx";
-import {
-  obtenerProductos,
-  eliminarProducto,
-} from "@/service/producto.service.js";
-import ModalEditMenu from "./EditarMenuModal.jsx";
-import FormularioCrearMenu from "./FormularioCrearMenu.jsx";
+import React, { useEffect, useState } from 'react';
+import { Button, Table, Spinner } from 'react-bootstrap';
+import Swal from 'sweetalert2';
+import ConfirmModal from '@/components/ui/ConfirmModal.jsx';
+import { obtenerProductos, eliminarProducto } from '@/service/producto.service.js';
+import ModalEditMenu from './EditarMenuModal.jsx';
+import FormularioCrearMenu from './FormularioCrearMenu.jsx';
 
 const ListadoMenu = () => {
   const [menus, setMenus] = useState([]);
@@ -16,7 +13,7 @@ const ListadoMenu = () => {
   const [showModal, setShowModal] = useState(false);
   const [reload, setReload] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [confirmTarget, setConfirmTarget] = useState({ id: null, nombre: "" });
+  const [confirmTarget, setConfirmTarget] = useState({ id: null, nombre: '' });
 
   const fetchMenus = async () => {
     try {
@@ -25,9 +22,9 @@ const ListadoMenu = () => {
     } catch (error) {
       console.error(error);
       Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Hubo un problema al cargar los menús",
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un problema al cargar los menús',
       });
     } finally {
       setLoading(false);
@@ -41,9 +38,9 @@ const ListadoMenu = () => {
   const handleMenuCreated = () => {
     setReload((prev) => !prev);
     Swal.fire({
-      icon: "success",
-      title: "Creado",
-      text: "El menú se creó correctamente",
+      icon: 'success',
+      title: 'Creado',
+      text: 'El menú se creó correctamente',
       timer: 2000,
       showConfirmButton: false,
     });
@@ -66,30 +63,28 @@ const ListadoMenu = () => {
       await eliminarProducto(id);
       setMenus((prev) => prev.filter((m) => m._id !== id));
       Swal.fire({
-        icon: "success",
-        title: "Eliminado",
-        text: "El menú ha sido eliminado.",
+        icon: 'success',
+        title: 'Eliminado',
+        text: 'El menú ha sido eliminado.',
         timer: 2000,
         showConfirmButton: false,
       });
     } catch (error) {
       console.error(error);
       Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "No se pudo eliminar el menú.",
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo eliminar el menú.',
       });
     }
   };
 
   const handleUpdate = (updatedMenu) => {
-    setMenus((prev) =>
-      prev.map((menu) => (menu._id === updatedMenu._id ? updatedMenu : menu))
-    );
+    setMenus((prev) => prev.map((menu) => (menu._id === updatedMenu._id ? updatedMenu : menu)));
     Swal.fire({
-      icon: "success",
-      title: "Actualizado",
-      text: "Menú actualizado con éxito",
+      icon: 'success',
+      title: 'Actualizado',
+      text: 'Menú actualizado con éxito',
       timer: 1500,
       showConfirmButton: false,
     });
@@ -107,28 +102,23 @@ const ListadoMenu = () => {
   return (
     <div
       style={{
-        backgroundColor: "#122117",
-        minHeight: "100vh",
-        padding: "40px 0",
+        backgroundColor: '#122117',
+        minHeight: '100vh',
+        padding: '40px 0',
       }}
     >
       <div className="container">
         <h2
           style={{
-            color: "#ffffff",
-            textAlign: "center",
-            marginBottom: "2rem",
+            color: '#ffffff',
+            textAlign: 'center',
+            marginBottom: '2rem',
           }}
         >
           Listado de Menús
         </h2>
 
-        <Table
-          striped
-          bordered
-          responsive
-          style={{ borderRadius: "12px", overflow: "hidden" }}
-        >
+        <Table striped bordered responsive style={{ borderRadius: '12px', overflow: 'hidden' }}>
           <thead>
             <tr>
               <th className="tabla">Imagen</th>
@@ -139,19 +129,19 @@ const ListadoMenu = () => {
               <th className="tabla">Acciones</th>
             </tr>
           </thead>
-          <tbody style={{ background: "#1E2A26 " }}>
+          <tbody style={{ background: '#1E2A26 ' }}>
             {menus.length > 0 ? (
               menus.map((menu) => (
                 <tr key={menu._id}>
                   <td className="tabla">
                     <img
-                      src={menu.imagen || "/images/placeholder.svg"}
+                      src={menu.imagen || '/images/placeholder.svg'}
                       alt={menu.nombre}
                       style={{
-                        width: "70px",
-                        height: "70px",
-                        borderRadius: "8px",
-                        objectFit: "cover",
+                        width: '70px',
+                        height: '70px',
+                        borderRadius: '8px',
+                        objectFit: 'cover',
                       }}
                     />
                   </td>

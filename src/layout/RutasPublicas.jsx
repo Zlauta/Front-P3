@@ -1,17 +1,17 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 
-import Carta from "@/pages/user/Carta.jsx";
-import Contacto from "@/pages/user/Contacto.jsx";
-import Home from "@/pages/user/Inicio.jsx";
+import Carta from '@/pages/user/Carta.jsx';
+import Contacto from '@/pages/user/Contacto.jsx';
+import Home from '@/pages/user/Inicio.jsx';
 
-import Login from "@/pages/user/IniciarSesion.jsx";
-import Register from "@/pages/user/Registro.jsx";
-import NewPassword from "@/pages/user/NuevaContrasenia.jsx";
-import Reservas from "@/pages/user/Reservas.jsx";
-import NotFound from "@/pages/user/NoEncontrado.jsx";
-import Header from "@/components/navegacion/Header.jsx";
-import Footer from "@/components/navegacion/Footer.jsx";
+import Login from '@/pages/user/IniciarSesion.jsx';
+import Register from '@/pages/user/Registro.jsx';
+import NewPassword from '@/pages/user/NuevaContrasenia.jsx';
+import Reservas from '@/pages/user/Reservas.jsx';
+import NotFound from '@/pages/user/NoEncontrado.jsx';
+import Header from '@/components/navegacion/Header.jsx';
+import Footer from '@/components/navegacion/Footer.jsx';
 
 const PublicRoute = () => {
   return (

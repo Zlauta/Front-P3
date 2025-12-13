@@ -1,20 +1,20 @@
-import { useEffect, useState } from "react";
-import { Table, Button, Form } from "react-bootstrap";
-import Swal from "sweetalert2";
-import "@/index.css";
-import ConfirmModal from "@/components/ui/ConfirmModal.jsx";
+import { useEffect, useState } from 'react';
+import { Table, Button, Form } from 'react-bootstrap';
+import Swal from 'sweetalert2';
+import '@/index.css';
+import ConfirmModal from '@/components/ui/ConfirmModal.jsx';
 
 import {
   obtenerPedidos,
   actualizarEstadoPedido,
   eliminarPedido,
-} from "@/service/pedidos.service.js";
+} from '@/service/pedidos.service.js';
 
 function formatearFecha(iso) {
   try {
     return new Date(iso).toLocaleString();
   } catch {
-    return iso ?? "";
+    return iso ?? '';
   }
 }
 const TablaPedidos = () => {
@@ -26,7 +26,7 @@ const TablaPedidos = () => {
       const data = await obtenerPedidos();
       setPedidos(data);
     } catch (error) {
-      console.error("Error al cargar pedidos:", error);
+      console.error('Error al cargar pedidos:', error);
     }
   };
 
@@ -59,16 +59,16 @@ const TablaPedidos = () => {
       });
 
       Swal.fire({
-        title: "Pedido actualizado",
-        icon: "success",
+        title: 'Pedido actualizado',
+        icon: 'success',
         timer: 1200,
         showConfirmButton: false,
       });
     } catch (error) {
-      console.error("Error al actualizar pedido:", error);
+      console.error('Error al actualizar pedido:', error);
       Swal.fire({
-        title: "Error al actualizar pedido",
-        icon: "error",
+        title: 'Error al actualizar pedido',
+        icon: 'error',
       });
     }
   };
@@ -88,16 +88,16 @@ const TablaPedidos = () => {
       await cargar();
 
       Swal.fire({
-        title: "Pedido eliminado",
-        icon: "success",
+        title: 'Pedido eliminado',
+        icon: 'success',
         timer: 1200,
         showConfirmButton: false,
       });
     } catch (error) {
-      console.error("Error al eliminar pedido:", error);
+      console.error('Error al eliminar pedido:', error);
       Swal.fire({
-        title: "Error al eliminar pedido",
-        icon: "error",
+        title: 'Error al eliminar pedido',
+        icon: 'error',
       });
     }
   };
@@ -121,15 +121,13 @@ const TablaPedidos = () => {
           </tr>
         </thead>
 
-        <tbody style={{ background: "#1E2A26" }}>
+        <tbody style={{ background: '#1E2A26' }}>
           {pedidos.length ? (
             pedidos.map((pedido, idx) => (
               <tr key={pedido._id}>
                 <td className="tabla">{idx + 1}</td>
 
-                <td className="tabla">
-                  {pedido.cliente?.nombre ?? "Sin cliente"}
-                </td>
+                <td className="tabla">{pedido.cliente?.nombre ?? 'Sin cliente'}</td>
 
                 <td className="tabla">
                   {pedido.items?.map((item, i) => (
@@ -194,7 +192,7 @@ const TablaPedidos = () => {
       </Table>
 
       <div className="text-light fs-5">
-        Total: {pedidos.length} pedido{pedidos.length === 1 ? "" : "s"}
+        Total: {pedidos.length} pedido{pedidos.length === 1 ? '' : 's'}
       </div>
 
       <ConfirmModal
