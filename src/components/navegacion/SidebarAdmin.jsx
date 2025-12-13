@@ -12,6 +12,7 @@ import {
 } from 'react-icons/fi';
 import '@/style/sidebar.css';
 import Swal from 'sweetalert2';
+import { FaWindowClose } from 'react-icons/fa';
 
 const SidebarAdmin = () => {
   const navigate = useNavigate();
@@ -138,7 +139,8 @@ const SidebarAdmin = () => {
                 </ul>
               </nav>
               <div>
-                <Button variant="danger" className="mt-5 w-100" onClick={logout}>
+                <Button variant="outline-danger" className="mt-5 w-100" onClick={logout}>
+                 <FaWindowClose className="me-2 mb-1" />
                   Cerrar sesión
                 </Button>
               </div>
@@ -224,7 +226,8 @@ const SidebarAdmin = () => {
             </ul>
           </nav>
           <div>
-            <Button variant="danger" className="mt-5 w-100" onClick={logout}>
+            <Button variant="outline-danger" className="mt-5 w-100" onClick={logout}>
+              <FaWindowClose className="me-2 mb-1" />
               Cerrar sesión
             </Button>
           </div>
