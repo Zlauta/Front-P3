@@ -145,7 +145,7 @@ const ListadoMenu = () => {
                 <tr key={menu._id}>
                   <td className="tabla">
                     <img
-                      src={menu.imagen || "/placeholder.png"}
+                      src={menu.imagen || "/images/placeholder.svg"}
                       alt={menu.nombre}
                       style={{
                         width: "70px",
