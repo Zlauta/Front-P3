@@ -52,7 +52,7 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
 
       Swal.fire({
         icon: "success",
-        title: "¡Reseña creada!",
+        title: "¡Gracias! Tu reseña ha sido enviada!",
         background: "#254630",
         color: "#fff",
         confirmButtonColor: "#1aaf4b",
