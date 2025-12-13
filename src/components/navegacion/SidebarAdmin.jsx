@@ -1,6 +1,6 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { Navbar, Container, Offcanvas } from 'react-bootstrap';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { Navbar, Container, Offcanvas, Button } from 'react-bootstrap';
 import {
   FiUsers,
   FiBookOpen,
@@ -11,8 +11,41 @@ import {
   FiTag,
 } from 'react-icons/fi';
 import '@/style/sidebar.css';
+import Swal from 'sweetalert2';
 
 const SidebarAdmin = () => {
+  const navigate = useNavigate();
+
+  function logout() {
+    Swal.fire({
+      title: '¿Estás seguro de cerrar sesión?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Salir',
+      iconColor: '#1aaf4b',
+      confirmButtonColor: '#1aaf4b',
+      cancelButtonColor: '#254630',
+      customClass: { popup: 'small-alert' },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: 'Sesión cerrada!',
+          icon: 'success',
+          iconColor: '#254630',
+          confirmButtonColor: '#1aaf4b',
+          customClass: { popup: 'small-alert' },
+          timer: 1200,
+          showConfirmButton: false,
+        });
+
+        localStorage.removeItem('token');
+        localStorage.removeItem('userEmail');
+        sessionStorage.removeItem('usuario');
+
+        navigate('/');
+      }
+    });
+  }
   return (
     <>
       <div className="sidebar-mini d-lg-none" aria-hidden="true"></div>
@@ -102,19 +135,13 @@ const SidebarAdmin = () => {
                       Contacto
                     </NavLink>
                   </li>
-                  <li>
-                    <NavLink
-                      to="/admin/promociones"
-                      className={({ isActive }) => (isActive ? 'active' : '')}
-                    >
-                      <span className="nav-icon">
-                        <FiTag />
-                      </span>
-                      Promociones
-                    </NavLink>
-                  </li>
                 </ul>
               </nav>
+              <div>
+                <Button variant="danger" className="mt-5 w-100" onClick={logout}>
+                  Cerrar sesión
+                </Button>
+              </div>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
         </Container>
@@ -196,6 +223,11 @@ const SidebarAdmin = () => {
               </li>
             </ul>
           </nav>
+          <div>
+            <Button variant="danger" className="mt-5 w-100" onClick={logout}>
+              Cerrar sesión
+            </Button>
+          </div>
         </div>
       </aside>
     </>
