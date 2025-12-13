@@ -1,4 +1,4 @@
-import clientAxios from "../api/clientAxios.js";
+import clientAxios from "@/api/clientAxios.js";
 
 const manejarError = (error, mensaje) => {
   const detalle = error?.response?.data || error.message;

@@ -1,58 +1,58 @@
-import clientAxios from "../api/clientAxios.js";
+import clientAxios from "@/api/clientAxios.js";
 
 // Crear un pedido
 export const crearPedido = async (nuevoPedido) => {
-    try {
-        const response = await clientAxios.post("/pedidos", nuevoPedido);
-        return response.data; // backend devuelve el pedido creado
-    } catch (error) {
-        console.error("Error al crear pedido:", error);
-        throw error;
-    }
+  try {
+    const response = await clientAxios.post("/pedidos", nuevoPedido);
+    return response.data; // backend devuelve el pedido creado
+  } catch (error) {
+    console.error("Error al crear pedido:", error);
+    throw error;
+  }
 };
 
 // Obtener todos los pedidos
 export const obtenerPedidos = async () => {
-    try {
-        const response = await clientAxios.get("/pedidos");
-        return response.data; // backend devuelve array directo
-    } catch (error) {
-        console.error("Error al obtener pedidos:", error);
-        throw error;
-    }
+  try {
+    const response = await clientAxios.get("/pedidos");
+    return response.data; // backend devuelve array directo
+  } catch (error) {
+    console.error("Error al obtener pedidos:", error);
+    throw error;
+  }
 };
 
 // Obtener un pedido por ID
 export const obtenerPedidoPorId = async (id) => {
-    try {
-        const response = await clientAxios.get(`/pedidos/${id}`);
-        return response.data;
-    } catch (error) {
-        console.error("Error al obtener pedido por ID:", error);
-        throw error;
-    }
+  try {
+    const response = await clientAxios.get(`/pedidos/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener pedido por ID:", error);
+    throw error;
+  }
 };
 
 // Actualizar estado del pedido
 export const actualizarEstadoPedido = async (id, nuevoEstado) => {
-    try {
-        const response = await clientAxios.patch(`/pedidos/${id}/estado`, {
-            estado: nuevoEstado,
-        });
-        return response.data; // backend devuelve el pedido actualizado
-    } catch (error) {
-        console.error("Error al actualizar estado del pedido:", error);
-        throw error;
-    }
+  try {
+    const response = await clientAxios.patch(`/pedidos/${id}/estado`, {
+      estado: nuevoEstado,
+    });
+    return response.data; // backend devuelve el pedido actualizado
+  } catch (error) {
+    console.error("Error al actualizar estado del pedido:", error);
+    throw error;
+  }
 };
 
 // Eliminar un pedido
 export const eliminarPedido = async (id) => {
-    try {
-        const response = await clientAxios.delete(`/pedidos/${id}`);
-        return response.data; // { mensaje: "Pedido eliminado" }
-    } catch (error) {
-        console.error("Error al eliminar pedido:", error);
-        throw error;
-    }
+  try {
+    const response = await clientAxios.delete(`/pedidos/${id}`);
+    return response.data; // { mensaje: "Pedido eliminado" }
+  } catch (error) {
+    console.error("Error al eliminar pedido:", error);
+    throw error;
+  }
 };

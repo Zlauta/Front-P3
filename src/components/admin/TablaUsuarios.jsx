@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { Table, Button, Form, Container } from "react-bootstrap";
 import Swal from "sweetalert2";
-import "../../index.css";
-import "../../api/clientAxios.js";
+import "@/index.css";
+import "@/api/clientAxios.js";
 import {
   actualizarUsuario,
   obtenerUsuarios,
   eliminarUsuario,
-} from "../../service/usuario.service.js";
-import FormRegister from "../../pages/auth/FormularioRegistro.jsx";
+} from "@/service/usuario.service.js";
+import ConfirmModal from "@/components/ui/ConfirmModal.jsx";
+import FormRegister from "@/pages/auth/FormularioRegistro.jsx";
 
 function formatearFecha(iso) {
   try {
@@ -99,25 +100,18 @@ export default function TablaUsuarios() {
       });
     }
   };
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmTarget, setConfirmTarget] = useState({ id: null });
 
-  const manejarEliminar = async (id) => {
-    const result = await Swal.fire({
-      title: "¿Confirma que quiere eliminar este usuario?",
-      text: "Esta acción no se puede deshacer",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#1aaf4b",
-      cancelButtonColor: "#042d12ff",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    });
+  const manejarEliminar = (id) => {
+    setConfirmTarget({ id });
+    setShowConfirm(true);
+  };
 
-    if (!result.isConfirmed) {
-      return;
-    }
-
+  const handleConfirmDelete = async () => {
+    setShowConfirm(false);
     try {
-      await eliminarUsuario(id);
+      await eliminarUsuario(confirmTarget.id);
       await cargar();
 
       Swal.fire({
@@ -134,7 +128,7 @@ export default function TablaUsuarios() {
     } catch (error) {
       console.error("Error al eliminar usuario:", error);
       Swal.fire({
-        title: error.response.data.msg || "Error al eliminar usuario",
+        title: error.response?.data?.msg || "Error al eliminar usuario",
         icon: "error",
         confirmButtonColor: "#1aaf4b ",
       });
@@ -247,6 +241,15 @@ export default function TablaUsuarios() {
       <div className="text-light fs-5">
         Total: {usuarios.length} usuario{usuarios.length === 1 ? "" : "s"}
       </div>
+      <ConfirmModal
+        show={showConfirm}
+        title={`¿Eliminar usuario?`}
+        text={`Esta acción no se puede deshacer.`}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setShowConfirm(false)}
+        confirmText="Sí, eliminar"
+        cancelText="Cancelar"
+      />
     </div>
   );
 }

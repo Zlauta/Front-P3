@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import {
   obtenerUsuarios,
   registrarUsuario,
-} from "../../service/usuario.service.js";
+} from "@/service/usuario.service.js";
 import emailjs from "@emailjs/browser";
 
 const FormularioRegistro = ({ fromAdmin = false }) => {

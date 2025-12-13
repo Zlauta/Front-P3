@@ -1,4 +1,4 @@
-import clientAxios from "../api/clientAxios.js";
+import clientAxios from "@/api/clientAxios.js";
 
 export const obtenerUsuarios = async () => {
   try {

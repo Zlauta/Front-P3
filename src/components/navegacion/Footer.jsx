@@ -1,7 +1,7 @@
 import logopng from "/images/logo.png";
 import { NavLink, Link } from "react-router-dom";
 import { Nav, Navbar } from "react-bootstrap";
-import "../../style/footer.css";
+import "@/style/footer.css";
 import { FaXTwitter } from "react-icons/fa6";
 
 export default function Footer() {

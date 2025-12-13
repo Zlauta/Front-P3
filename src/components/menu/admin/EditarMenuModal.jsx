@@ -2,12 +2,12 @@ import React, { useCallback, useState } from "react";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { actualizarProducto } from "../../../service/producto.service.js";
+import { actualizarProducto } from "@/service/producto.service.js";
 import { useDropzone } from "react-dropzone";
 import {
   deleteImageByURL,
   uploadImageAndGetURL,
-} from "../../../service/almacenamiento.service.js";
+} from "@/service/almacenamiento.service.js";
 
 const EditarMenuModal = ({ show, onHide, menu, onUpdated }) => {
   const {

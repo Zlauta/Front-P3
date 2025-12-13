@@ -9,7 +9,7 @@ import {
   Card,
   Spinner,
 } from "react-bootstrap";
-import { useReservaLogica } from "../../hook/useReservaLogica.js";
+import { useReservaLogica } from "@/hook/useReservaLogica.js";
 
 const FormularioReserva = () => {
   const {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import { crearReserva, obtenerReservas } from "../service/reservas.service.js";
+import { crearReserva, obtenerReservas } from "@/service/reservas.service.js";
 
 export const useReservaLogica = (watch, reset) => {
   const [loading, setLoading] = useState(false);

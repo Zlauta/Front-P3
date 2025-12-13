@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, ListGroup, Spinner, Form, Card } from "react-bootstrap";
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 import Swal from "sweetalert2";
-import { crearPreferenciaPago } from "../../service/pagos.service.js";
+import { crearPreferenciaPago } from "@/service/pagos.service.js";
 import { FaTrashAlt } from "react-icons/fa";
 
 initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, { locale: "es-AR" });
@@ -89,7 +89,6 @@ const CarritoDeCompras = ({
                 key={indice}
                 className="d-flex justify-content-between align-items-center bg-transparent px-0 py-3 border-bottom"
               >
-
                 <div style={{ width: "40%" }}>
                   <span className="fw-bold d-block text-dark">
                     {producto.nombre}

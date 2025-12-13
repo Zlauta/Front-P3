@@ -12,8 +12,8 @@ import {
   Spinner,
 } from "react-bootstrap";
 import PreviewMenu from "./VistaPreviaMenu.jsx";
-import { uploadImageAndGetURL } from "../../../service/almacenamiento.service.js";
-import { crearProducto } from "../../../service/producto.service.js";
+import { uploadImageAndGetURL } from "@/service/almacenamiento.service.js";
+import { crearProducto } from "@/service/producto.service.js";
 
 const FormularioCrearMenu = ({ onMenuCreated }) => {
   const {

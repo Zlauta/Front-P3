@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../../service/autenticacion.service";
+import { loginUser } from "@/service/autenticacion.service.js";
 
 const FormularioAcceso = () => {
   const {

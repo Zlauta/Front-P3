@@ -10,7 +10,7 @@ import {
   FiMail,
   FiTag,
 } from "react-icons/fi";
-import "../../style/sidebar.css";
+import "@/style/sidebar.css";
 
 const SidebarAdmin = () => {
   return (

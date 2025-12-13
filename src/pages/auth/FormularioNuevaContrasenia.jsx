@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { obtenerUsuarios } from "../../service/usuario.service";
+import { obtenerUsuarios } from "@/service/usuario.service";
 
 const FormularioNuevaContrasenia = () => {
   const {
@@ -34,7 +34,7 @@ const FormularioNuevaContrasenia = () => {
     if (!usuarioExistente) {
       Swal.fire({
         icon: "success",
-      title: "El formulario ha sido enviado",
+        title: "El formulario ha sido enviado",
         iconColor: "#1aaf4b ",
         confirmButtonColor: "#1aaf4b ",
         cancelButtonColor: "#1aaf4b ",

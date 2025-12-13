@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Spinner, Button, Alert } from "react-bootstrap";
-import { obtenerProductosFiltrados } from "../../../service/producto.service.js";
+import { obtenerProductosFiltrados } from "@/service/producto.service.js";
 import MenuCard from "./TarjetaMenu.jsx";
-import CarritoDeCompras from "../../carrito/CarritoDeCompras.jsx";
+import CarritoDeCompras from "@/components/carrito/CarritoDeCompras.jsx";
 
 const MenuPublico = () => {
   const [listaDeProductos, setListaDeProductos] = useState([]);

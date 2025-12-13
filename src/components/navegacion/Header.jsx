@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Navbar, Container, Nav, Button } from "react-bootstrap";
-import "../../style/header.css";
+import "@/style/header.css";
 import Swal from "sweetalert2";
 import logopng from "/images/logo.png";
 import { Navigate } from "react-router-dom";

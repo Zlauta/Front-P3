@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Table, Button, Form, Container } from "react-bootstrap";
 import Swal from "sweetalert2";
-import "../../index.css";
-import "../../api/clientAxios.js";
+import "@/index.css";
+import "@/api/clientAxios.js";
 import {
   actualizarContacto,
   obtenerContactos,
   eliminarContacto,
-} from "../../service/contacto.service.js";
+} from "@/service/contacto.service.js";
+import ConfirmModal from "@/components/ui/ConfirmModal.jsx";
 
 function formatearFecha(iso) {
   try {
@@ -20,7 +21,6 @@ function formatearFecha(iso) {
 export default function TablaContactos() {
   const [contactos, setContatos] = useState([]);
   const [ediciones, setEdiciones] = useState({});
-
 
   const cargar = async () => {
     try {
@@ -39,7 +39,6 @@ export default function TablaContactos() {
     window.addEventListener("storage", enAlmacenamiento);
     return () => window.removeEventListener("storage", enAlmacenamiento);
   }, []);
-
 
   const manejarEstado = (id, valor) => {
     setEdiciones((prev) => ({
@@ -84,25 +83,18 @@ export default function TablaContactos() {
       });
     }
   };
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmTarget, setConfirmTarget] = useState({ id: null });
 
-  const manejarEliminar = async (id) => {
-    const result = await Swal.fire({
-      title: "¿Confirma que quiere eliminar este contacto?",
-      text: "Esta acción no se puede deshacer",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#1aaf4b",
-      cancelButtonColor: "#042d12ff",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    });
+  const manejarEliminar = (id) => {
+    setConfirmTarget({ id });
+    setShowConfirm(true);
+  };
 
-    if (!result.isConfirmed) {
-      return;
-    }
-
+  const handleConfirmDelete = async () => {
+    setShowConfirm(false);
     try {
-      await eliminarContacto(id);
+      await eliminarContacto(confirmTarget.id);
       await cargar();
 
       Swal.fire({
@@ -198,6 +190,16 @@ export default function TablaContactos() {
       <div className="text-light fs-5">
         Total: {contactos.length} contacto{contactos.length === 1 ? "" : "s"}
       </div>
+
+      <ConfirmModal
+        show={showConfirm}
+        title={`¿Eliminar contacto?`}
+        text={`Esta acción no se puede deshacer.`}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setShowConfirm(false)}
+        confirmText="Sí, eliminar"
+        cancelText="Cancelar"
+      />
     </div>
   );
 }

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Button, Table, Spinner } from "react-bootstrap";
 import Swal from "sweetalert2";
-import ConfirmModal from "../../ui/ConfirmModal";
+import ConfirmModal from "@/components/ui/ConfirmModal.jsx";
 import {
   obtenerProductos,
   eliminarProducto,
-} from "../../../service/producto.service.js";
+} from "@/service/producto.service.js";
 import ModalEditMenu from "./EditarMenuModal.jsx";
 import FormularioCrearMenu from "./FormularioCrearMenu.jsx";
 

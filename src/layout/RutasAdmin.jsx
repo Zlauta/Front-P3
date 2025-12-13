@@ -2,16 +2,16 @@ import React from "react";
 import { Routes, Route, Navigate, Outlet, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import Swal from "sweetalert2";
-import SidebarAdmin from "../components/navegacion/SidebarAdmin.jsx";
+import SidebarAdmin from "@/components/navegacion/SidebarAdmin.jsx";
 
-import Usuarios from "../pages/admin/Usuarios.jsx";
-import Menu from "../pages/admin/Menu.jsx";
-import Pedidos from "../pages/admin/Pedidos.jsx";
-import Resenias from "../pages/admin/Resenias.jsx";
-import Reservas from "../pages/admin/Reservas.jsx";
-import Contacto from "../pages/admin/Contacto.jsx";
-import ProtectedRoute from "../routes/RutasProtegidas.jsx";
-import NotFound from "../pages/user/NoEncontrado.jsx";
+import Usuarios from "@/pages/admin/Usuarios.jsx";
+import Menu from "@/pages/admin/Menu.jsx";
+import Pedidos from "@/pages/admin/Pedidos.jsx";
+import Resenias from "@/pages/admin/Resenias.jsx";
+import Reservas from "@/pages/admin/Reservas.jsx";
+import Contacto from "@/pages/admin/Contacto.jsx";
+import ProtectedRoute from "@/routes/RutasProtegidas.jsx";
+import NotFound from "@/pages/user/NoEncontrado.jsx";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
