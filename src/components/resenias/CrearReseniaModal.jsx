@@ -51,11 +51,11 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
       await crearResenia({ ...data, calificacion: rating });
 
       Swal.fire({
-        icon: 'success',
-        title: '¡Reseña creada!',
-        background: '#254630',
-        color: '#fff',
-        confirmButtonColor: '#1aaf4b',
+        icon: "success",
+        title: "¡Gracias! Tu reseña ha sido enviada!",
+        background: "#254630",
+        color: "#fff",
+        confirmButtonColor: "#1aaf4b",
       });
 
       reset();
