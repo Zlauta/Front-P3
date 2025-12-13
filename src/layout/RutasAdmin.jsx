@@ -12,14 +12,13 @@ import ProtectedRoute from '@/routes/RutasProtegidas.jsx';
 import NotFound from '@/pages/user/NoEncontrado.jsx';
 
 const AdminLayout = () => {
-
   return (
     <div className="admin-layout">
       <SidebarAdmin />
-        <main className="admin-content">
-          <Outlet />
-        </main>
-      </div>
+      <main className="admin-content">
+        <Outlet />
+      </main>
+    </div>
   );
 };
 
@@ -40,7 +39,6 @@ const AdminRoute = () => {
 
       <Route path="*" element={<NotFound />} />
     </Routes>
-
   );
 };
 
