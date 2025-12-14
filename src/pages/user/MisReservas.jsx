@@ -205,7 +205,7 @@ export default function MisReservas({ reloadFlag }) {
     return () => clearInterval(intervalo);
   }, [reservas]);
 
-  return (
+  /* return (
     <div className="p-1">
       <h5
         className="text-light fs-1 mt-5 mb-5 text-center"
@@ -277,6 +277,179 @@ export default function MisReservas({ reloadFlag }) {
           </p>
         </div>
       )}
+      <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Editar Reserva</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            {camposFormulario.map((campo) => (
+              <Form.Group key={campo.name} className="mb-3">
+                <Form.Label>{campo.label}</Form.Label>
+                <Form.Control
+                  type={campo.type}
+                  min={campo.min}
+                  value={reservaEditada?.[campo.name] || ""}
+                  onChange={(e) =>
+                    setReservaEditada({
+                      ...reservaEditada,
+                      [campo.name]: e.target.value,
+                    })
+                  }
+                />
+              </Form.Group>
+            ))}
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setMostrarModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={guardarCambios}>
+            Guardar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
+}
+ */
+
+  return (
+    <div className="p-1">
+      <h5
+        className="text-light fs-1 mt-5 mb-5 text-center"
+        style={{ width: "auto", margin: "0 auto" }}
+      >
+        Reservas
+      </h5>
+
+      {tiempoRestante && reservas.length > 0 && (
+        <p className="text-center text-success fs-5 mb-4">
+          Tiempo restante hasta tu próxima reserva: {tiempoRestante}
+        </p>
+      )}
+
+      {reservas.length > 0 ? (
+        <Table
+          striped
+          bordered
+          hover
+          responsive
+          style={{ tableLayout: "auto", width: "auto", margin: "0 auto" }}
+        >
+          <thead>
+            <tr>
+              {[
+                "Usuario",
+                "Mesa",
+                "Personas",
+                "Fecha",
+                "Hora",
+                // "Notas",
+                "Acciones",
+              ].map((titulo) => (
+                <th key={titulo} className="tabla">
+                  {titulo}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody style={{ background: "#1E2A26" }}>
+            {reservas.map((reserva) => (
+              <tr key={reserva._id}>
+                <td className="tabla">
+                  {reserva.usuario?.email || "Usuario eliminado"}
+                </td>
+                <td className="tabla">{reserva.mesa}</td>
+                <td className="tabla">{reserva.cantidadPersonas}</td>
+                <td className="tabla">{formatearFecha(reserva.fecha)}</td>
+                <td className="tabla">{reserva.hora}</td>
+                {/* <td className="tabla">{reserva.notas || "-"}</td> */}
+                <td className="tabla d-flex gap-2 justify-content-center">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => abrirModal(reserva)}
+                  >
+                    Editar
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    onClick={() => eliminar(reserva._id)}
+                  >
+                    Eliminar
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      ) : (
+        <div className="text-center text-light fs-4 mt-4">
+          <p>No tienes reservas pendientes.</p>
+          <p className="fs-5 text-success">
+            ¡Anímate a solicitar tu próxima reserva y disfruta con nosotros!
+          </p>
+        </div>
+      )}
+
+      {/* MODAL DE EDICIÓN */}
+      <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} centered>
+        <Modal.Header closeButton className="bg-dark text-white border-success">
+          <Modal.Title>Editar Reserva</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body className="bg-dark text-white">
+          {reservaEditada && (
+            <Form>
+              {camposFormulario.map((campo) => (
+                <Form.Group className="mb-3" key={campo.name}>
+                  <Form.Label>{campo.label}</Form.Label>
+                  <Form.Control
+                    type={campo.type}
+                    name={campo.name}
+                    min={campo.min}
+                    value={reservaEditada[campo.name]}
+                    onChange={(e) =>
+                      setReservaEditada({
+                        ...reservaEditada,
+                        [e.target.name]: e.target.value,
+                      })
+                    }
+                  />
+                </Form.Group>
+              ))}
+
+             {/*  <Form.Group>
+                <Form.Label>Notas</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  name="notas"
+                  value={reservaEditada.notas}
+                  onChange={(e) =>
+                    setReservaEditada({
+                      ...reservaEditada,
+                      notas: e.target.value,
+                    })
+                  }
+                />
+              </Form.Group> */}
+            </Form>
+          )}
+        </Modal.Body>
+
+        <Modal.Footer className="bg-dark border-success">
+          <Button variant="secondary" onClick={() => setMostrarModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="success" onClick={guardarCambios}>
+            Guardar Cambios
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
