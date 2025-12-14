@@ -77,7 +77,7 @@ const validarReservaCompleta = (datos, listaReservas, idReservaActual) => {
   return null;
 };
 
-export default function MisReservas() {
+export default function MisReservas({ reloadFlag }) {
   const [reservas, setReservas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [reservaEditada, setReservaEditada] = useState(null);
@@ -101,6 +101,10 @@ export default function MisReservas() {
   useEffect(() => {
     cargarDatos();
   }, []);
+
+  useEffect(() => {
+    cargarDatos();
+  }, [reloadFlag]);
 
   useEffect(() => {
     if (!reservaEditada?.fecha) return;

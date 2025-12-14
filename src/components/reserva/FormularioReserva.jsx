@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 import { useReservaLogica } from "../../hook/useReservaLogica.js";
 
-const FormularioReserva = () => {
+const FormularioReserva = ({ onReservaCreada }) => {
   const {
     register,
     handleSubmit,
@@ -36,6 +36,13 @@ const FormularioReserva = () => {
 
   const personas = watch("cantidadPersonas");
   const mesasDisponibles = obtenerMesasDisponibles(personas);
+
+  const onSubmit = async (data) => {
+    await handleReservaSubmit(data);
+    if (onReservaCreada) {
+      onReservaCreada();
+    }
+  };
 
   return (
     <Container className="mt-5 mb-5">
@@ -66,7 +73,7 @@ const FormularioReserva = () => {
                 .
               </p>
 
-              <Form noValidate onSubmit={handleSubmit(handleReservaSubmit)}>
+              <Form noValidate onSubmit={handleSubmit(onSubmit)}>
                 <Row>
                   <Col xs={6}>
                     <Form.Group className="mb-3" controlId="cantidadPersonas">
