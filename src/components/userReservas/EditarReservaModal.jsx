@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+// Importamos el helper
+import { obtenerMesasDisponibles } from "@/utils/reservasUtil.js";
 
 export default function EditarReservaModal({ show, onHide, reserva, onGuardar }) {
-  // Estado local para manejar el formulario mientras se edita
   const [datos, setDatos] = useState(reserva || {});
   const [horaMinima, setHoraMinima] = useState("");
+  const [mesasDisponibles, setMesasDisponibles] = useState([]);
 
-  // Actualizar datos locales cuando cambia la reserva seleccionada
+  // Cargar datos iniciales
   useEffect(() => {
     if (reserva) {
-        // Formatear fecha para el input type="date"
         const fechaInput = new Date(reserva.fecha).toISOString().split("T")[0];
         setDatos({ ...reserva, fecha: fechaInput });
     }
@@ -23,20 +24,31 @@ export default function EditarReservaModal({ show, onHide, reserva, onGuardar })
     setHoraMinima(esHoy ? new Date().toTimeString().slice(0, 5) : "");
   }, [datos.fecha]);
 
+  // Actualizar lista de mesas cuando cambian las personas
+  useEffect(() => {
+    if (datos.cantidadPersonas) {
+        const mesas = obtenerMesasDisponibles(datos.cantidadPersonas);
+        setMesasDisponibles(mesas);
+    } else {
+        setMesasDisponibles([]);
+    }
+  }, [datos.cantidadPersonas]);
+
   const handleChange = (e) => {
-    setDatos({ ...datos, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setDatos(prev => {
+        const nuevosDatos = { ...prev, [name]: value };
+        // Si cambia personas, reseteamos mesa para forzar nueva selección válida
+        if (name === "cantidadPersonas") {
+            nuevosDatos.mesa = ""; 
+        }
+        return nuevosDatos;
+    });
   };
 
   const handleSubmit = () => {
-    onGuardar(datos); // Enviamos los datos al padre
+    onGuardar(datos); 
   };
-
-  const camposFormulario = [
-    { label: "Mesa", name: "mesa", type: "number" },
-    { label: "Cantidad Personas", name: "cantidadPersonas", type: "number" },
-    { label: "Fecha", name: "fecha", type: "date" },
-    { label: "Hora", name: "hora", type: "time", min: horaMinima },
-  ];
 
   return (
     <Modal show={show} onHide={onHide} centered>
@@ -45,18 +57,59 @@ export default function EditarReservaModal({ show, onHide, reserva, onGuardar })
       </Modal.Header>
       <Modal.Body className="bg-dark text-white">
         <Form>
-          {camposFormulario.map((campo) => (
-            <Form.Group className="mb-3" key={campo.name}>
-              <Form.Label>{campo.label}</Form.Label>
+          <Form.Group className="mb-3">
+              <Form.Label>Cantidad Personas</Form.Label>
               <Form.Control
-                type={campo.type}
-                min={campo.min}
-                name={campo.name}
-                value={datos[campo.name] || ""}
+                type="number"
+                name="cantidadPersonas"
+                min="1" max="10"
+                value={datos.cantidadPersonas || ""}
                 onChange={handleChange}
               />
-            </Form.Group>
-          ))}
+          </Form.Group>
+
+          {/* SELECT DINÁMICO */}
+          <Form.Group className="mb-3">
+              <Form.Label>Mesa</Form.Label>
+              <Form.Select
+                name="mesa"
+                value={datos.mesa || ""}
+                onChange={handleChange}
+                className="bg-secondary text-white border-secondary"
+                disabled={!datos.cantidadPersonas}
+              >
+                <option value="">Seleccione mesa...</option>
+                {mesasDisponibles.map(m => (
+                    <option key={m} value={m}>Mesa {m}</option>
+                ))}
+                {datos.mesa && !mesasDisponibles.includes(parseInt(datos.mesa)) && (
+                    <option value={datos.mesa}>Mesa {datos.mesa} (Actual)</option>
+                )}
+              </Form.Select>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+              <Form.Label>Fecha</Form.Label>
+              <Form.Control
+                type="date"
+                name="fecha"
+                min={new Date().toISOString().split("T")[0]}
+                value={datos.fecha || ""}
+                onChange={handleChange}
+              />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+              <Form.Label>Hora</Form.Label>
+              <Form.Control
+                type="time"
+                name="hora"
+                min={horaMinima}
+                value={datos.hora || ""}
+                onChange={handleChange}
+              />
+          </Form.Group>
+
           <Form.Group className="mb-3">
             <Form.Label>Notas especiales</Form.Label>
             <Form.Control
@@ -71,7 +124,7 @@ export default function EditarReservaModal({ show, onHide, reserva, onGuardar })
       </Modal.Body>
       <Modal.Footer className="bg-dark border-success">
         <Button variant="secondary" onClick={onHide}>Cerrar</Button>
-        <Button variant="success" onClick={handleSubmit}>Confirmar Cambios</Button>
+        <Button variant="success" onClick={handleSubmit} disabled={!datos.mesa}>Confirmar Cambios</Button>
       </Modal.Footer>
     </Modal>
   );

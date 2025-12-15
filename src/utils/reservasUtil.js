@@ -12,19 +12,34 @@ export const formatearFecha = (isoString) => {
   return isoString ? new Date(isoString).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : '';
 };
 
-// Valida capacidad según reglas del negocio
+// Valida capacidad según reglas del negocio (Retorna null si es válido, string si error)
 export const validarCapacidadMesa = (mesa, personas) => {
-  const mesaInt = parseInt(mesa);
+  const mesasInt = parseInt(mesa);
   const personasInt = parseInt(personas);
 
-  if (!mesaInt || !personasInt) return null; // Aún no escribe
+  if (!mesasInt || !personasInt) return null; // Aún no escribe
   if (personasInt > 10) return 'Para más de 10 personas, contactar por teléfono.';
-  if (mesaInt <= 10 && personasInt > 2) return `Mesa ${mesaInt} es chica (máx 2per).`;
-  if (mesaInt > 10 && mesaInt <= 20 && personasInt > 4) return `Mesa ${mesaInt} es estándar (máx 4per).`;
-  if (mesaInt > 20 && mesaInt <= 25 && personasInt > 6) return `Mesa ${mesaInt} es mediana (máx 6per).`;
-  if (mesaInt > 30) return 'Número de mesa inválido.';
+  if (mesasInt <= 10 && personasInt > 2) return `Mesa ${mesasInt} es chica (máx 2per).`;
+  if (mesasInt > 10 && mesasInt <= 20 && personasInt > 4) return `Mesa ${mesasInt} es estándar (máx 4per).`;
+  if (mesasInt > 20 && mesasInt <= 25 && personasInt > 6) return `Mesa ${mesasInt} es mediana (máx 6per).`;
+  if (mesasInt > 30) return 'Número de mesa inválido.';
   
-  return null; // Null significa que NO hay error (es válido)
+  return null; // Null significa que es válido
+};
+
+// Nueva función: Genera lista de mesas válidas
+export const obtenerMesasDisponibles = (cantidadPersonas) => {
+  if (!cantidadPersonas) return [];
+  const personasInt = parseInt(cantidadPersonas);
+  const mesasValidas = [];
+
+  for (let mesasInt = 1; mesasInt <= 30; mesasInt++) {
+    const error = validarCapacidadMesa(mesasInt, personasInt);
+    if (!error) { 
+      mesasValidas.push(mesasInt);
+    }
+  }
+  return mesasValidas;
 };
 
 // Valida rangos horarios
@@ -46,19 +61,11 @@ export const validarConflictoReserva = (datosNuevos, listaReservas, idReservaAct
   const minutosNuevos = convertirAMinutos(hora);
 
   const existeConflicto = listaReservas.find((reserva) => {
-    // Si estamos editando, ignoramos la reserva propia
     if (idReservaActual && reserva._id === idReservaActual) return false;
-
-    // Normalizamos fecha para comparar strings YYYY-MM-DD
     const fechaReservaExistente = new Date(reserva.fecha).toISOString().split('T')[0];
-    
-    // Si no es la misma fecha ni la misma mesa, no hay conflicto
     if (fechaReservaExistente !== fecha || String(reserva.mesa) !== String(mesa)) return false;
-
-    // Verificar choque de horas (margen de 2hs / 120 min)
     const minutosExistentes = convertirAMinutos(reserva.hora);
     const diferencia = Math.abs(minutosNuevos - minutosExistentes);
-    
     return diferencia < 120; 
   });
 
