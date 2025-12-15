@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Card, Row, Col, Spinner, Button } from "react-bootstrap";
+import React, { useState } from 'react';
+import { Card, Row, Col, Spinner, Button } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
 const TarjetaMenu = ({
   _id,
@@ -9,37 +10,57 @@ const TarjetaMenu = ({
   categoria,
   imagen,
   isLogged,
-  addToCart,
+  agregarProductoAlCarrito,
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [showFull, setShowFull] = useState(false);
 
+  const handlePedido = () => {
+    if (isLogged === true) {
+      agregarProductoAlCarrito({ _id, nombre, precio, imagen });
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Agregado al pedido',
+        showConfirmButton: false,
+        timer: 1500,
+        toast: true,
+      });
+    } else {
+      Swal.fire({
+        title: '¡Necesitas ingresar!',
+        text: 'Para realizar un pedido, por favor inicia sesión.',
+        icon: 'warning',
+        confirmButtonColor: '#1aaf4b',
+        confirmButtonText: 'Entendido',
+      });
+    }
+  };
+
   return (
     <Card
       style={{
-        backgroundColor: "#254630",
-        color: "#fff",
-        borderRadius: "16px",
-        overflow: "hidden",
-        border: "none",
+        backgroundColor: '#254630',
+        color: '#fff',
+        borderRadius: '16px',
+        overflow: 'hidden',
+        border: 'none',
       }}
     >
       <Row className="g-0 align-items-center">
         <Col xs={12} md={5}>
-          <div
-            style={{ position: "relative", height: "200px", margin: "10px" }}
-          >
+          <div style={{ position: 'relative', height: '200px', margin: '10px' }}>
             {!imageLoaded && (
               <div
                 style={{
-                  position: "absolute",
-                  width: "100%",
-                  height: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  background: "#122117",
-                  borderRadius: "10px",
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  background: '#122117',
+                  borderRadius: '10px',
                 }}
               >
                 <Spinner animation="border" variant="light" size="sm" />
@@ -49,56 +70,48 @@ const TarjetaMenu = ({
               src={imagen}
               onLoad={() => setImageLoaded(true)}
               style={{
-                height: "100%",
-                width: "100%",
-                objectFit: "cover",
-                borderRadius: "10px",
-                display: imageLoaded ? "block" : "none",
+                height: '100%',
+                width: '100%',
+                objectFit: 'cover',
+                borderRadius: '10px',
+                display: imageLoaded ? 'block' : 'none',
               }}
             />
           </div>
         </Col>
         <Col xs={12} md={7}>
           <Card.Body>
-            <Card.Title style={{ fontWeight: "bold" }}>{nombre}</Card.Title>
-            <Card.Subtitle className="mb-2 text-success">
-              {categoria}
-            </Card.Subtitle>
-
-            <Card.Text style={{ fontSize: "0.9rem" }}>
+            <Card.Title style={{ fontWeight: 'bold' }}>{nombre}</Card.Title>
+            <Card.Subtitle className="mb-2 text-success">{categoria}</Card.Subtitle>
+            <Card.Text style={{ fontSize: '0.9rem' }}>
               {showFull
                 ? descripcion
-                : descripcion?.substring(0, 80) +
-                  (descripcion?.length > 80 ? "..." : "")}
+                : descripcion?.substring(0, 80) + (descripcion?.length > 80 ? '...' : '')}
             </Card.Text>
-
             {descripcion?.length > 80 && (
               <Button
                 variant="link"
                 size="sm"
                 onClick={() => setShowFull(!showFull)}
-                style={{ color: "#1aaf4b", padding: 0, textDecoration: "none" }}
+                style={{ color: '#1aaf4b', padding: 0, textDecoration: 'none' }}
               >
-                {showFull ? "Ver menos" : "Ver más"}
+                {showFull ? 'Ver menos' : 'Ver más'}
               </Button>
             )}
-
             <div className="d-flex justify-content-between align-items-center mt-3">
               <h5 className="text-success m-0 fw-bold">${precio}</h5>
 
-              {isLogged && (
-                <Button
-                  onClick={() => addToCart({ _id, nombre, precio, imagen })}
-                  style={{
-                    backgroundColor: "#1aaf4b",
-                    border: "none",
-                    borderRadius: "20px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Pedir
-                </Button>
-              )}
+              <Button
+                onClick={handlePedido}
+                style={{
+                  backgroundColor: '#1aaf4b',
+                  border: 'none',
+                  borderRadius: '20px',
+                  fontWeight: 'bold',
+                }}
+              >
+                Pedir
+              </Button>
             </div>
           </Card.Body>
         </Col>

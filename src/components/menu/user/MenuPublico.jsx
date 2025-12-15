@@ -1,217 +1,184 @@
-import React, { useEffect, useState } from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Spinner,
-  Badge,
-  Button,
-  Alert,
-} from "react-bootstrap";
-import {
-  obtenerProductos,
-  obtenerProductosFiltrados,
-} from "../../../service/producto.service.js";
-import MenuCard from "./TarjetaMenu.jsx";
-import Swal from "sweetalert2";
-import CartModal from "../../carrito/CarritoModal.jsx";
+import React, { useEffect, useState } from 'react';
+import { Container, Row, Col, Spinner, Button, Alert } from 'react-bootstrap';
+import { obtenerProductosFiltrados } from '@/service/producto.service.js';
+import MenuCard from './TarjetaMenu.jsx';
+import CarritoDeCompras from '@/components/carrito/CarritoDeCompras.jsx';
 
 const MenuPublico = () => {
-  const [menus, setMenus] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isLogged, setIsLogged] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [cart, setCart] = useState([]);
-  const [cartKey, setCartKey] = useState("cart_guest");
+  const [listaDeProductos, setListaDeProductos] = useState([]);
+  const [estaCargandoMenu, setEstaCargandoMenu] = useState(true);
 
-  // 🔎 Estados para filtros y paginación
-  const [category, setCategory] = useState("");
-  const [page, setPage] = useState(1);
-  const [meta, setMeta] = useState({});
+  const [carritoDeCompras, setCarritoDeCompras] = useState([]);
+  const [carritoCargado, setCarritoCargado] = useState(false);
 
-  // 1. CARGA INICIAL (Detectar usuario por EMAIL y cargar SU carrito)
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
+  const [numeroDePagina, setNumeroDePagina] = useState(1);
+  const [metadatosPaginacion, setMetadatosPaginacion] = useState({});
+
+  const token = localStorage.getItem('token');
+  const email = localStorage.getItem('userEmail');
+  const claveLocalStorage = `carrito_compras_${token ? `usuario_${email}` : 'invitado'}`;
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userEmail = localStorage.getItem("userEmail");
-
-    setIsLogged(!!token);
-
-    let currentKey = "cart_guest";
-
-    if (token && userEmail) {
-      currentKey = `cart_user_${userEmail}`;
+    const carritoGuardado = JSON.parse(localStorage.getItem(claveLocalStorage));
+    if (carritoGuardado) {
+      setCarritoDeCompras(carritoGuardado);
     }
+    setCarritoCargado(true);
+  }, [claveLocalStorage]);
 
-    setCartKey(currentKey);
-
-    const savedCart = localStorage.getItem(currentKey);
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    } else {
-      setCart([]);
-    }
-  }, []);
-
-  // 2. Cargar productos con filtros y paginación
   useEffect(() => {
-    const fetchMenus = async () => {
-      setLoading(true);
-      try {
-        const data = await obtenerProductosFiltrados(category, page, 6);
-        setMenus(data.items || []);
-        setMeta(data.meta || {});
-      } catch (err) {
-        console.error("Error cargando menú", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchMenus();
-  }, [category, page]);
-
-  // 3. Guardar carrito en localStorage
-  useEffect(() => {
-    if (cartKey) {
-      localStorage.setItem(cartKey, JSON.stringify(cart));
+    if (carritoCargado) {
+      localStorage.setItem(claveLocalStorage, JSON.stringify(carritoDeCompras));
     }
-  }, [cart, cartKey]);
+  }, [carritoDeCompras, claveLocalStorage, carritoCargado]);
 
-  const handleAddToCart = (producto) => {
-    setCart((prevCart) => {
-      const existe = prevCart.find((item) => item._id === producto._id);
-      if (existe) {
-        return prevCart.map((item) =>
-          item._id === producto._id
-            ? { ...item, quantity: (item.quantity || 1) + 1 }
-            : item
+  useEffect(() => {
+    setEstaCargandoMenu(true);
+    obtenerProductosFiltrados(categoriaSeleccionada, numeroDePagina, 6)
+      .then((respuesta) => {
+        setListaDeProductos(respuesta.items || []);
+        setMetadatosPaginacion(respuesta.meta || {});
+      })
+      .catch((error) => console.error('Error al cargar menú:', error))
+      .finally(() => setEstaCargandoMenu(false));
+  }, [categoriaSeleccionada, numeroDePagina]);
+
+  const agregarProductoAlCarrito = (productoNuevo) => {
+    setCarritoDeCompras((carritoActual) => {
+      const yaExisteEnCarrito = carritoActual.find((item) => item._id === productoNuevo._id);
+
+      if (yaExisteEnCarrito) {
+        return carritoActual.map((item) =>
+          item._id === productoNuevo._id ? { ...item, quantity: item.quantity + 1 } : item
         );
       } else {
-        return [...prevCart, { ...producto, quantity: 1 }];
+        return [...carritoActual, { ...productoNuevo, quantity: 1 }];
       }
     });
 
     Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "¡Agregado!",
-      text: `${producto.nombre} al carrito`,
-      showConfirmButton: false,
-      timer: 1500,
+      title: '¡Producto Agregado!',
+      text: productoNuevo.nombre,
+      icon: 'success',
       toast: true,
-      background: "#fff",
+      position: 'top-end',
+      timer: 1500,
+      showConfirmButton: false,
     });
   };
 
-  const handleRemoveFromCart = (indexToRemove) => {
-    setCart((prevCart) =>
-      prevCart.filter((_, index) => index !== indexToRemove)
+  const actualizarCantidadProducto = (idProducto, cantidadAOperar) => {
+    setCarritoDeCompras((carritoActual) =>
+      carritoActual.map((item) => {
+        if (item._id === idProducto) {
+          const nuevaCantidad = Math.max(1, item.quantity + cantidadAOperar);
+          return { ...item, quantity: nuevaCantidad };
+        }
+        return item;
+      })
     );
   };
 
-  const totalCart = cart.reduce(
-    (acc, item) => acc + item.precio * item.quantity,
+  const eliminarProductoDelCarrito = (indiceParaEliminar) => {
+    setCarritoDeCompras((carritoActual) =>
+      carritoActual.filter((_, indice) => indice !== indiceParaEliminar)
+    );
+  };
+
+  const totalAPagar = carritoDeCompras.reduce(
+    (acumulador, producto) => acumulador + producto.precio * producto.quantity,
     0
   );
-  const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
-  if (loading)
+  if (estaCargandoMenu && listaDeProductos.length === 0) {
     return (
       <div className="text-center mt-5">
         <Spinner animation="border" variant="success" />
       </div>
     );
+  }
 
   return (
-    <Container className="py-5">
-      <CartModal
-        show={showModal}
-        handleClose={() => setShowModal(false)}
-        cart={cart}
-        total={totalCart}
-        removeFromCart={handleRemoveFromCart}
-      />
+    <Container fluid className="py-4 px-lg-5">
+      <Row>
+        <Col lg={8} md={7} className="mb-5">
+          <h2 className="text-success fw-bold mb-4">Nuestra Carta</h2>
+          <div className="mb-4 d-flex gap-2 flex-wrap">
+            {['entrada', 'principal', 'bebida', 'postre'].map((categoria) => (
+              <Button
+                key={categoria}
+                variant={categoriaSeleccionada === categoria ? 'success' : 'outline-success'}
+                onClick={() => {
+                  setCategoriaSeleccionada(categoria);
+                  setNumeroDePagina(1);
+                }}
+              >
+                {categoria.charAt(0).toUpperCase() + categoria.slice(1)}
+              </Button>
+            ))}
+            {categoriaSeleccionada && (
+              <Button
+                variant="link"
+                className="text-decoration-none text-light"
+                onClick={() => setCategoriaSeleccionada('')}
+              >
+                Ver todo
+              </Button>
+            )}
+          </div>
+          {listaDeProductos.length === 0 ? (
+            <Alert variant="warning">No encontramos productos en esta categoría.</Alert>
+          ) : (
+            <Row className="g-4">
+              {listaDeProductos.map((producto) => (
+                <Col key={producto._id} sm={12}>
+                  <MenuCard
+                    {...producto}
+                    isLogged={localStorage.getItem('token') ? true : false}
+                    agregarProductoAlCarrito={agregarProductoAlCarrito}
+                  />
+                </Col>
+              ))}
+            </Row>
+          )}
 
-      {cart.length > 0 && (
-        <div
-          className="position-fixed bottom-0 end-0 p-3"
-          style={{ zIndex: 1000 }}
-        >
-          <Button
-            variant="success"
-            onClick={() => setShowModal(true)}
-            style={{ boxShadow: "0 4px 6px rgba(0,0,0,0.2)" }}
-          >
-            Ver Carrito{" "}
-            <Badge bg="light" text="dark" pill className="ms-1">
-              {totalItems}
-            </Badge>
-          </Button>
-        </div>
-      )}
+          {metadatosPaginacion.totalPages > 1 && (
+            <div className="d-flex justify-content-center align-items-center gap-3 mt-5">
+              <Button
+                variant="success"
+                disabled={numeroDePagina <= 1}
+                onClick={() => setNumeroDePagina((p) => p - 1)}
+              >
+                Anterior
+              </Button>
 
-      <h2 className="text-center mb-4" style={{ color: "#1aaf4b" }}>
-        Nuestra Carta
-      </h2>
+              <span className="fw-bold">
+                Página {numeroDePagina} de {metadatosPaginacion.totalPages}
+              </span>
 
-      {/* 🔎 Botones de categoría */}
-      <div className="text-center mb-4">
-        {["entrada", "principal", "bebida", "postre"].map((cat) => (
-          <Button
-            key={cat}
-            variant={category === cat ? "success" : "outline-success"}
-            className="mx-2"
-            onClick={() => {
-              setCategory(cat);
-              setPage(1);
-            }}
-          >
-            {cat}
-          </Button>
-        ))}
-      </div>
+              <Button
+                variant="success"
+                disabled={numeroDePagina >= metadatosPaginacion.totalPages}
+                onClick={() => setNumeroDePagina((p) => p + 1)}
+              >
+                Siguiente
+              </Button>
+            </div>
+          )}
+        </Col>
 
-      {menus.length === 0 ? (
-        <Alert variant="warning" className="text-center">
-          No hay menús disponibles.
-        </Alert>
-      ) : (
-        <Row className="g-4">
-          {menus.map((menu) => (
-            <Col key={menu._id} xs={12} sm={10} lg={8}>
-              <MenuCard
-                {...menu}
-                isLogged={isLogged}
-                addToCart={handleAddToCart}
-              />
-            </Col>
-          ))}
-        </Row>
-      )}
-
-      {/* 🔎 Paginación */}
-      {meta.totalPages > 1 && (
-        <div className="text-center mt-4">
-          <Button
-            variant="success"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => p - 1)}
-            className="mx-2"
-          >
-            ← Anterior
-          </Button>
-          <span>
-            Página {meta.currentPage} de {meta.totalPages}
-          </span>
-          <Button
-            variant="success"
-            disabled={page >= meta.totalPages}
-            onClick={() => setPage((p) => p + 1)}
-            className="mx-2"
-          >
-            Siguiente →
-          </Button>
-        </div>
-      )}
+        <Col lg={4} md={5}>
+          <div className="sticky-top" style={{ top: '120px', zIndex: 10 }}>
+            <CarritoDeCompras
+              productosEnCarrito={carritoDeCompras}
+              totalAPagar={totalAPagar}
+              eliminarProductoDelCarrito={eliminarProductoDelCarrito}
+              actualizarCantidadProducto={actualizarCantidadProducto}
+            />
+          </div>
+        </Col>
+      </Row>
     </Container>
   );
 };

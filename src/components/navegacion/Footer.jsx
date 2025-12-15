@@ -1,8 +1,8 @@
-import logopng from "/images/logo.png";
-import { NavLink, Link } from "react-router-dom";
-import { Nav, Navbar } from "react-bootstrap";
-import "../../style/footer.css";
-import { FaXTwitter } from "react-icons/fa6";
+import logopng from '/images/logo.png';
+import { NavLink, Link } from 'react-router-dom';
+import { Nav, Navbar } from 'react-bootstrap';
+import '@/style/footer.css';
+import { FaXTwitter } from 'react-icons/fa6';
 
 export default function Footer() {
   return (
@@ -13,7 +13,7 @@ export default function Footer() {
             as={Link}
             to="/"
             className="d-flex align-items-center footer-brand"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
             <img src={logopng} alt="El Gourmet" className="header-logo me-2" />
             <span className="brand-text">El Gourmet</span>
@@ -27,7 +27,7 @@ export default function Footer() {
               <Nav.Link
                 as={Link}
                 to="/"
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               >
                 Inicio
               </Nav.Link>

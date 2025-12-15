@@ -1,10 +1,10 @@
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import { useForm } from "react-hook-form";
-import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
-import { crearContacto } from "../../service/contacto.service.js";
-import emailjs from "@emailjs/browser";
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import { useForm } from 'react-hook-form';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import { crearContacto } from '@/service/contacto.service.js';
+import emailjs from '@emailjs/browser';
 
 const FormularioContacto = ({ usuario }) => {
   const isLogged = !!usuario;
@@ -15,7 +15,7 @@ const FormularioContacto = ({ usuario }) => {
     reset,
     formState: { errors, isSubmitting, isValid },
   } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
       nombreContacto: isLogged ? usuario?.nombre : "",
       email: isLogged ? usuario?.email : "",
@@ -27,7 +27,7 @@ const FormularioContacto = ({ usuario }) => {
   const navegate = useNavigate();
 
   const handleCancel = () => {
-    navegate("/");
+    navegate('/');
   };
 
   async function onSubmit(data) {
@@ -36,29 +36,29 @@ const FormularioContacto = ({ usuario }) => {
       email: data.email.toLowerCase(),
       telefono: data.telefono,
       mensaje: data.mensajeContacto,
-      estado: "pendiente",
+      estado: 'pendiente',
     };
     try {
       await crearContacto(nuevoContacto);
       Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Gracias por contactarte con nosotros!",
+        position: 'top-end',
+        icon: 'success',
+        title: 'Gracias por contactarte con nosotros!',
         showConfirmButton: false,
-        iconColor: "#1aaf4b",
-        confirmButtonColor: "#1aaf4b",
-        cancelButtonColor: "#254630",
-        customClass: { popup: "small-alert" },
+        iconColor: '#1aaf4b',
+        confirmButtonColor: '#1aaf4b',
+        cancelButtonColor: '#254630',
+        customClass: { popup: 'small-alert' },
         timer: 1500,
       });
     } catch (error) {
       Swal.fire({
-        title: "Error al enviar el mensaje",
-        icon: "error",
-        iconColor: "#1aaf4b",
-        confirmButtonColor: "#1aaf4b",
-        cancelButtonColor: "#254630",
-        customClass: { popup: "small-alert" },
+        title: 'Error al enviar el mensaje',
+        icon: 'error',
+        iconColor: '#1aaf4b',
+        confirmButtonColor: '#1aaf4b',
+        cancelButtonColor: '#254630',
+        customClass: { popup: 'small-alert' },
       });
       return;
     }
@@ -76,16 +76,16 @@ const FormularioContacto = ({ usuario }) => {
       );
     } catch (error) {
       Swal.fire({
-        title: "Tu consulta fue registrada, pero no se pudo enviar el correo",
-        icon: "warning",
-        iconColor: "#1aaf4b",
-        confirmButtonColor: "#1aaf4b",
-        cancelButtonColor: "#254630",
-        customClass: { popup: "small-alert" },
+        title: 'Tu consulta fue registrada, pero no se pudo enviar el correo',
+        icon: 'warning',
+        iconColor: '#1aaf4b',
+        confirmButtonColor: '#1aaf4b',
+        cancelButtonColor: '#254630',
+        customClass: { popup: 'small-alert' },
       });
     }
     reset();
-    navegate("/");
+    navegate('/');
   }
 
   return (
@@ -102,17 +102,17 @@ const FormularioContacto = ({ usuario }) => {
 
             pattern: {
               value: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s'-]+$/,
-              message: "Solo se permiten letras",
+              message: 'Solo se permiten letras',
             },
             maxLength: {
               value: 50,
-              message: "El nombre no puede tener más de 50 caracteres",
+              message: 'El nombre no puede tener más de 50 caracteres',
             },
 
             minLength: {
               value: 2,
               message:
-                "El nombre debe tener al menos 2 caracteres message. Solo se permiten letras",
+                'El nombre debe tener al menos 2 caracteres message. Solo se permiten letras',
             },
           })}
         />
@@ -128,18 +128,16 @@ const FormularioContacto = ({ usuario }) => {
           placeholder="Ingrese su correo electronico"
           isInvalid={errors.email}
           readOnly={isLogged}
-          {...register("email", {
-            required: "El correo electronico es requerido",
+          {...register('email', {
+            required: 'El correo electronico es requerido',
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
               message:
-                "El correo electronico debe tener texto antes de la @ y, despues de  @,  debe tener texto y . seguido de texto",
+                'El correo electronico debe tener texto antes de la @ y, despues de  @,  debe tener texto y . seguido de texto',
             },
           })}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.email?.message}
-        </Form.Control.Feedback>
+        <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="label mb-3" controlId="formBasicMensaje">
@@ -149,19 +147,19 @@ const FormularioContacto = ({ usuario }) => {
           rows={4}
           placeholder="Ingrese su mensaje"
           isInvalid={errors.mensajeContacto}
-          {...register("mensajeContacto", {
-            required: "El mensaje es obligatorio",
+          {...register('mensajeContacto', {
+            required: 'El mensaje es obligatorio',
             minLength: {
               value: 5,
-              message: "El mensaje debe tener al menos 5 caracteres",
+              message: 'El mensaje debe tener al menos 5 caracteres',
             },
             maxLength: {
               value: 500,
-              message: "El mensaje no puede superar los 500 caracteres",
+              message: 'El mensaje no puede superar los 500 caracteres',
             },
             pattern: {
               value: /^[a-zA-ZÀ-ÿ0-9.,;:¡!¿?\-()'"%°\s]{5,500}$/u,
-              message: "El mensaje contiene caracteres no permitidos",
+              message: 'El mensaje contiene caracteres no permitidos',
             },
           })}
         />
@@ -176,18 +174,16 @@ const FormularioContacto = ({ usuario }) => {
           type="tel"
           placeholder="Ingrese su número de teléfono"
           isInvalid={errors.telefono}
-          {...register("telefono", {
-            required: "El teléfono es un campo requerido",
+          {...register('telefono', {
+            required: 'El teléfono es un campo requerido',
             pattern: {
               value: /^\+?[1-9]\d{7,14}$/,
               message:
-                "El número de teléfono debe tener entre 8 y 15 dígitos, puede comenzar con “+” y no debe iniciar con 0.",
+                'El número de teléfono debe tener entre 8 y 15 dígitos, puede comenzar con “+” y no debe iniciar con 0.',
             },
           })}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.telefono?.message}
-        </Form.Control.Feedback>
+        <Form.Control.Feedback type="invalid">{errors.telefono?.message}</Form.Control.Feedback>
       </Form.Group>
 
       <div className="text-center mt-5 d-flex flex-column justify-content-center gap-2 flex-md-row">

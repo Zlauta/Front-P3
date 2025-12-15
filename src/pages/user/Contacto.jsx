@@ -1,11 +1,11 @@
-import React from "react";
-import { Container } from "react-bootstrap";
-import "../../style/iniciarSesion.css";
-import { Link } from "react-router-dom";
-import FormContacto from "../auth/FormularioContacto";
+import React from 'react';
+import { Container } from 'react-bootstrap';
+import '@/style/iniciarSesion.css';
+import { Link } from 'react-router-dom';
+import FormContacto from '@/pages/auth/FormularioContacto';
 
 const Contacto = () => {
-  const usuario = JSON.parse(sessionStorage.getItem("usuario")) || null;
+  const usuario = JSON.parse(sessionStorage.getItem('usuario')) || null;
   return (
     <>
       <div className="page-wrapper">

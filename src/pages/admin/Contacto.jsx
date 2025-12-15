@@ -1,5 +1,4 @@
-import TablaContactos from "../../components/admin/TablaContactos";
-
+import TablaContactos from '@/components/admin/TablaContactos.jsx';
 
 const Contacto = () => {
   return (
