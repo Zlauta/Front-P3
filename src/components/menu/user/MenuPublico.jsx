@@ -3,6 +3,7 @@ import { Container, Row, Col, Spinner, Button, Alert } from 'react-bootstrap';
 import { obtenerProductosFiltrados } from '@/service/producto.service.js';
 import MenuCard from './TarjetaMenu.jsx';
 import CarritoDeCompras from '@/components/carrito/CarritoDeCompras.jsx';
+import Swal from 'sweetalert2';
 
 const MenuPublico = () => {
   const [listaDeProductos, setListaDeProductos] = useState([]);
