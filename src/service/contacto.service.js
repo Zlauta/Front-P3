@@ -39,3 +39,11 @@ export const eliminarContacto = async (id) => {
     throw error;
   }
 };
+
+export const responderContacto = async (email, datos) => {
+  const response = await clientAxios.post(`/contacto/responder`, { 
+    emailDestino: email, 
+    ...datos 
+  });
+  return response.data;
+};
