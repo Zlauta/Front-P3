@@ -1,36 +1,36 @@
 import { Table, Button } from "react-bootstrap";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import { formatearFecha } from "@/utils/reservasUtil.js";
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
 export default function ReservasTabla({ reservas, onEditar, onEliminar }) {
+  
+  const formatearFecha = (isoString) => {
+    return isoString ? new Date(isoString).toLocaleDateString("es-ES", { timeZone: "UTC" }) : "";
+  };
+
   return (
-    <Table striped bordered hover responsive variant="dark" style={{ verticalAlign: "middle" }}>
+    <Table striped bordered hover responsive variant="dark" style={{ verticalAlign: 'middle' }}>
       <thead>
         <tr>
-          <th className="bg-success text-white">Usuario</th>
-          <th className="bg-success text-white">Mesa</th>
-          <th className="bg-success text-white">Personas</th>
-          <th className="bg-success text-white">Fecha</th>
-          <th className="bg-success text-white">Hora</th>
-          <th className="bg-success text-white">Notas</th>
-          <th className="bg-success text-white text-center">Acciones</th>
+          {['Usuario', 'Mesa', 'Personas', 'Fecha', 'Hora', 'Notas', 'Acciones'].map((t) => (
+             <th key={t} className="bg-success text-white">{t}</th>
+          ))}
         </tr>
       </thead>
       <tbody>
-        {reservas.map((reserva) => (
-          <tr key={reserva._id}>
-            <td>{reserva.usuario?.email || "Usuario eliminado"}</td>
-            <td>{reserva.mesa}</td>
-            <td>{reserva.cantidadPersonas}</td>
-            <td>{formatearFecha(reserva.fecha)}</td>
-            <td>{reserva.hora}</td>
-            <td>{reserva.notas || "-"}</td>
+        {reservas.map((r) => (
+          <tr key={r._id}>
+            <td>{r.usuario?.email || 'N/A'}</td>
+            <td>{r.mesa}</td>
+            <td>{r.cantidadPersonas}</td>
+            <td>{formatearFecha(r.fecha)}</td>
+            <td>{r.hora}</td>
+            <td>{r.notas || "-"}</td>
             <td className="text-center">
-              <Button size="sm" variant="secondary" className="me-2" onClick={() => onEditar(reserva)}>
-                <FaEdit />
+              <Button size="sm" variant="secondary" className="me-2" onClick={() => onEditar(r)}>
+                <FaEdit/>
               </Button>
-              <Button size="sm" variant="danger" onClick={() => onEliminar(reserva._id)}>
-                <FaTrash />
+              <Button size="sm" variant="danger" onClick={() => onEliminar(r._id)}>
+                <FaTrash/>
               </Button>
             </td>
           </tr>
