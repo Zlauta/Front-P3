@@ -1,455 +1,128 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Modal, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
-import {
-  actualizarReserva,
-  eliminarReserva,
-  obtenerMisReservas,
-} from "../../service/reservas.service.js";
-import "../../index.css";
-
-const convertirAMinutos = (horaString) => {
-  return horaString.split(":").reduce((total, valor) => total * 60 + +valor, 0);
-};
-
-const formatearFecha = (isoString) => {
-  return isoString
-    ? new Date(isoString).toLocaleDateString("es-ES", { timeZone: "UTC" })
-    : "";
-};
-
-const notificar = (mensaje, icono = "error") => {
-  Swal.fire({
-    title: mensaje,
-    icon: icono,
-    confirmButtonColor: "#1aaf4b",
-    timer: icono === "success" ? 1500 : undefined,
-  });
-};
-
-const validarReservaCompleta = (datos, listaReservas, idReservaActual) => {
-  const { fecha, hora, mesa, cantidadPersonas } = datos;
-  const hoy = new Date();
-  hoy.setHours(0, 0, 0, 0);
-
-  // Validar Fecha
-  if (new Date(fecha + "T00:00:00") < hoy)
-    return "La fecha no puede ser anterior a hoy.";
-
-  const minutos = convertirAMinutos(hora);
-  const turnoMañana = minutos >= 600 && minutos <= 960;
-  const turnoNoche = minutos >= 1260 && minutos <= 1439;
-  const turnoMadrugada = minutos >= 0 && minutos <= 120;
-
-  if (!turnoMañana && !turnoNoche && !turnoMadrugada) {
-    return "Cerrado. Horarios: 10-16hs y 21-02hs";
-  }
-
-  const numMesa = parseInt(mesa);
-  const numPersonas = parseInt(cantidadPersonas);
-
-  if (numPersonas > 10)
-    return "Para más de 10 personas, contactar por teléfono.";
-  if (numMesa <= 10 && numPersonas > 2)
-    return `Mesa ${numMesa} es chica (máx 2p).`;
-  if (numMesa > 10 && numMesa <= 20 && numPersonas > 4)
-    return `Mesa ${numMesa} es estándar (máx 4p).`;
-  if (numMesa > 20 && numMesa <= 25 && numPersonas > 6)
-    return `Mesa ${numMesa} es mediana (máx 6p).`;
-  if (numMesa > 30) return "Número de mesa inválido.";
-
-  const existeConflicto = listaReservas.find((reserva) => {
-    if (reserva._id === idReservaActual) return false;
-
-    const fechaReserva = new Date(reserva.fecha).toISOString().split("T")[0];
-    if (fechaReserva !== fecha || String(reserva.mesa) !== String(mesa))
-      return false;
-
-    const diferenciaMinutos = Math.abs(
-      minutos - convertirAMinutos(reserva.hora)
-    );
-    return diferenciaMinutos < 120;
-  });
-
-  if (existeConflicto)
-    return `Mesa ${mesa} ocupada en ese horario (margen de 2hs).`;
-
-  return null;
-};
+import { actualizarReserva, eliminarReserva, obtenerMisReservas } from "@/service/reservas.service.js";
+import "@/index.css";
+import { 
+  validarCapacidadMesa, 
+  validarHorarioAtencion 
+} from "@/utils/reservasUtil.js";
+import ReservasClienteGrid from "@/components/userReservas/ReservasClienteGrid.jsx";
+import EditarReservaModal from "@/components/userReservas/EditarReservaModal.jsx";
 
 export default function MisReservas({ reloadFlag }) {
   const [reservas, setReservas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [reservaEditada, setReservaEditada] = useState(null);
-  const [horaMinima, setHoraMinima] = useState("");
-  const [tiempoRestante, setTiempoRestante] = useState(null);
+  const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
 
+  // --- 1. CARGA DE DATOS ---
   const cargarDatos = async () => {
     try {
       const usuario = JSON.parse(sessionStorage.getItem("usuario"));
       const correoUsuario = usuario?.email;
-      const hoy = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-
+      const hoy = new Date().toISOString().split("T")[0];
+      
       const datos = await obtenerMisReservas(correoUsuario, hoy);
-      setReservas(datos);
+      
+      // Ordenamos por fecha más próxima
+      const reservasOrdenadas = datos.sort((a, b) => {
+         const dateA = new Date(`${a.fecha.split('T')[0]}T${a.hora}`);
+         const dateB = new Date(`${b.fecha.split('T')[0]}T${b.hora}`);
+         return dateA - dateB;
+      });
+
+      setReservas(reservasOrdenadas);
     } catch (error) {
       console.error(error);
-      notificar("Error al cargar reservas");
+      Swal.fire({ title: "Error al cargar reservas", icon: "error", confirmButtonColor: "#1aaf4b" });
     }
   };
 
-  useEffect(() => {
-    cargarDatos();
-  }, []);
+  useEffect(() => { cargarDatos(); }, [reloadFlag]);
 
-  useEffect(() => {
-    cargarDatos();
-  }, [reloadFlag]);
-
-  useEffect(() => {
-    if (!reservaEditada?.fecha) return;
-    const fechaInput = new Date(reservaEditada.fecha + "T00:00:00");
-    const esHoy = fechaInput.toDateString() === new Date().toDateString();
-
-    setHoraMinima(esHoy ? new Date().toTimeString().slice(0, 5) : "");
-  }, [reservaEditada?.fecha]);
-
+  // --- 2. ACCIONES DEL MODAL ---
   const abrirModal = (reserva) => {
-    const fechaInput = new Date(reserva.fecha).toISOString().split("T")[0];
-    setReservaEditada({ ...reserva, fecha: fechaInput });
+    setReservaSeleccionada(reserva);
     setMostrarModal(true);
   };
 
-  const guardarCambios = async () => {
-    const errorValidacion = validarReservaCompleta(
-      reservaEditada,
-      reservas,
-      reservaEditada._id
-    );
+  const guardarCambios = async (datosEditados) => {
+    const { fecha, hora, mesa, cantidadPersonas, _id } = datosEditados;
 
-    if (errorValidacion) {
-      return notificar(errorValidacion, "warning");
+    // Validaciones Centralizadas
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    if (new Date(fecha + "T00:00:00") < hoy) {
+      return Swal.fire({ title: "La fecha no puede ser anterior a hoy", icon: "warning", confirmButtonColor: "#1aaf4b" });
     }
 
+    const errHorario = validarHorarioAtencion(hora);
+    if (errHorario) return Swal.fire({ title: errHorario, icon: "warning", confirmButtonColor: "#1aaf4b" });
+
+    const errCapacidad = validarCapacidadMesa(mesa, cantidadPersonas);
+    if (errCapacidad) return Swal.fire({ title: errCapacidad, icon: "warning", confirmButtonColor: "#1aaf4b" });
+
     try {
-      await actualizarReserva(reservaEditada._id, reservaEditada);
+      await actualizarReserva(_id, datosEditados);
       await cargarDatos();
       setMostrarModal(false);
-      notificar("Reserva actualizada correctamente!", "success");
+      Swal.fire({ title: "Reserva actualizada", icon: "success", timer: 1500, showConfirmButton: false });
     } catch (error) {
-      notificar(error.response?.data?.message || "Error al actualizar");
+      Swal.fire({ 
+        title: error.response?.data?.message || "Error al actualizar", 
+        icon: "error", 
+        confirmButtonColor: "#1aaf4b" 
+      });
     }
   };
 
+  // --- 3. ACCIÓN ELIMINAR ---
   const eliminar = async (id) => {
-    const confirmacion = await Swal.fire({
-      title: "¿Eliminar?",
-      text: "No podrás deshacer esto",
+    const result = await Swal.fire({
+      title: "¿Cancelar Reserva?",
+      text: "Esta acción no se puede deshacer",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
+      confirmButtonText: "Sí, cancelar",
+      cancelButtonText: "Volver"
     });
 
-    if (!confirmacion.isConfirmed) return;
+    if (!result.isConfirmed) return;
 
     try {
       await eliminarReserva(id);
       await cargarDatos();
-      notificar("Eliminada correctamente", "success");
+      Swal.fire({ title: "Reserva cancelada", icon: "success", timer: 1500, showConfirmButton: false });
     } catch (error) {
-      notificar("Error al eliminar");
+      Swal.fire({ title: "Error al cancelar", icon: "error", confirmButtonColor: "#1aaf4b" });
     }
   };
-  const camposFormulario = [
-    { label: "Mesa", name: "mesa", type: "number" },
-    { label: "Cantidad Personas", name: "cantidadPersonas", type: "number" },
-    { label: "Fecha", name: "fecha", type: "date" },
-    { label: "Hora", name: "hora", type: "time", min: horaMinima },
-  ];
 
-  //timer
-  useEffect(() => {
-    if (reservas.length === 0) return;
-
-    const primeraReserva = reservas[0];
-    const fechaISO = new Date(primeraReserva.fecha).toISOString().split("T")[0];
-    const [hora, minuto] = primeraReserva.hora.split(":").map(Number);
-
-    const fechaHoraReserva = new Date(
-      `${fechaISO}T${hora.toString().padStart(2, "0")}:${minuto
-        .toString()
-        .padStart(2, "0")}:00`
-    );
-
-    const actualizarTiempo = () => {
-      const ahora = new Date();
-      const diferenciaMs = fechaHoraReserva - ahora;
-
-      if (diferenciaMs <= 0) {
-        setTiempoRestante("¡Ya comenzó la primera reserva!");
-        return;
-      }
-
-      const dias = Math.floor(diferenciaMs / (1000 * 60 * 60 * 24));
-      const horas = Math.floor((diferenciaMs / (1000 * 60 * 60)) % 24);
-      const minutos = Math.floor((diferenciaMs / (1000 * 60)) % 60);
-      const segundos = Math.floor((diferenciaMs / 1000) % 60);
-
-      setTiempoRestante(`${dias}d ${horas}h ${minutos}m ${segundos}s`);
-    };
-
-    actualizarTiempo();
-    const intervalo = setInterval(actualizarTiempo, 1000);
-
-    return () => clearInterval(intervalo);
-  }, [reservas]);
-
-  /* return (
-    <div className="p-1">
-      <h5
-        className="text-light fs-1 mt-5 mb-5 text-center"
-        style={{ width: "auto", margin: "0 auto" }}
-      >
-        Mis Reservas
-      </h5>
-
-      {tiempoRestante && reservas.length > 0 && (
-        <p className="text-center text-success fs-5 mb-4">
-          Tiempo restante hasta tu próxima reserva: {tiempoRestante}
-        </p>
-      )}
-
-      {reservas.length > 0 ? (
-        <Table
-          striped
-          bordered
-          hover
-          responsive
-          style={{ tableLayout: "auto", width: "auto", margin: "0 auto" }}
-        >
-          <thead>
-            <tr>
-              {["Usuario", "Mesa", "Personas", "Fecha", "Hora", "Acciones"].map(
-                (titulo) => (
-                  <th key={titulo} className="tabla">
-                    {titulo}
-                  </th>
-                )
-              )}
-            </tr>
-          </thead>
-          <tbody style={{ background: "#1E2A26" }}>
-            {reservas.map((reserva) => (
-              <tr key={reserva._id}>
-                <td className="tabla">
-                  {reserva.usuario?.email || "Usuario eliminado"}
-                </td>
-                <td className="tabla">{reserva.mesa}</td>
-                <td className="tabla">{reserva.cantidadPersonas}</td>
-                <td className="tabla">{formatearFecha(reserva.fecha)}</td>
-                <td className="tabla">{reserva.hora}</td>
-                <td className="tabla d-flex gap-2 justify-content-center">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => abrirModal(reserva)}
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="danger"
-                    onClick={() => eliminar(reserva._id)}
-                  >
-                    Eliminar
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      ) : (
-        <div className="text-center text-light fs-4 mt-4">
-          <p>No tienes reservas pendientes.</p>
-          <p className="fs-5 text-success">
-            ¡Anímate a solicitar tu próxima reserva y disfruta con nosotros!
-          </p>
-        </div>
-      )}
-      <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Editar Reserva</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            {camposFormulario.map((campo) => (
-              <Form.Group key={campo.name} className="mb-3">
-                <Form.Label>{campo.label}</Form.Label>
-                <Form.Control
-                  type={campo.type}
-                  min={campo.min}
-                  value={reservaEditada?.[campo.name] || ""}
-                  onChange={(e) =>
-                    setReservaEditada({
-                      ...reservaEditada,
-                      [campo.name]: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-            ))}
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setMostrarModal(false)}>
-            Cancelar
-          </Button>
-          <Button variant="primary" onClick={guardarCambios}>
-            Guardar
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
-  );
-}
- */
-
+  // --- RENDERIZADO ---
   return (
-    <div className="p-1">
-      <h5
-        className="text-light fs-1 mt-5 mb-5 text-center"
-        style={{ width: "auto", margin: "0 auto" }}
-      >
-        Reservas
-      </h5>
+    <div className="p-4">
+      <h3 className="text-light fs-1 mt-5 mb-5 text-center">Mis Reservas</h3>
 
-      {tiempoRestante && reservas.length > 0 && (
-        <p className="text-center text-success fs-5 mb-4">
-          Tiempo restante hasta tu próxima reserva: {tiempoRestante}
-        </p>
-      )}
-
-      {reservas.length > 0 ? (
-        <Table
-          striped
-          bordered
-          hover
-          responsive
-          style={{ tableLayout: "auto", width: "auto", margin: "0 auto" }}
-        >
-          <thead>
-            <tr>
-              {[
-                "Usuario",
-                "Mesa",
-                "Personas",
-                "Fecha",
-                "Hora",
-                // "Notas",
-                "Acciones",
-              ].map((titulo) => (
-                <th key={titulo} className="tabla">
-                  {titulo}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody style={{ background: "#1E2A26" }}>
-            {reservas.map((reserva) => (
-              <tr key={reserva._id}>
-                <td className="tabla">
-                  {reserva.usuario?.email || "Usuario eliminado"}
-                </td>
-                <td className="tabla">{reserva.mesa}</td>
-                <td className="tabla">{reserva.cantidadPersonas}</td>
-                <td className="tabla">{formatearFecha(reserva.fecha)}</td>
-                <td className="tabla">{reserva.hora}</td>
-                {/* <td className="tabla">{reserva.notas || "-"}</td> */}
-                <td className="tabla d-flex gap-2 justify-content-center">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => abrirModal(reserva)}
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="danger"
-                    onClick={() => eliminar(reserva._id)}
-                  >
-                    Eliminar
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      ) : (
-        <div className="text-center text-light fs-4 mt-4">
-          <p>No tienes reservas pendientes.</p>
-          <p className="fs-5 text-success">
-            ¡Anímate a solicitar tu próxima reserva y disfruta con nosotros!
-          </p>
+      {reservas.length === 0 ? (
+        <div className="text-center text-light py-5 border rounded bg-dark mx-auto" style={{maxWidth: '600px'}}>
+          <p className="fs-4">No tienes reservas pendientes.</p>
+          <p className="fs-5 text-success">¡Haz tu primera reserva hoy!</p>
         </div>
+      ) : (
+        <ReservasClienteGrid 
+          reservas={reservas} 
+          onEditar={abrirModal} 
+          onEliminar={eliminar} 
+        />
       )}
 
-      {/* MODAL DE EDICIÓN */}
-      <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} centered>
-        <Modal.Header closeButton className="bg-dark text-white border-success">
-          <Modal.Title>Editar Reserva</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body className="bg-dark text-white">
-          {reservaEditada && (
-            <Form>
-              {camposFormulario.map((campo) => (
-                <Form.Group className="mb-3" key={campo.name}>
-                  <Form.Label>{campo.label}</Form.Label>
-                  <Form.Control
-                    type={campo.type}
-                    name={campo.name}
-                    min={campo.min}
-                    value={reservaEditada[campo.name]}
-                    onChange={(e) =>
-                      setReservaEditada({
-                        ...reservaEditada,
-                        [e.target.name]: e.target.value,
-                      })
-                    }
-                  />
-                </Form.Group>
-              ))}
-
-             {/*  <Form.Group>
-                <Form.Label>Notas</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  name="notas"
-                  value={reservaEditada.notas}
-                  onChange={(e) =>
-                    setReservaEditada({
-                      ...reservaEditada,
-                      notas: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group> */}
-            </Form>
-          )}
-        </Modal.Body>
-
-        <Modal.Footer className="bg-dark border-success">
-          <Button variant="secondary" onClick={() => setMostrarModal(false)}>
-            Cancelar
-          </Button>
-          <Button variant="success" onClick={guardarCambios}>
-            Guardar Cambios
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {/* MODAL (Ahora es un componente aparte) */}
+      <EditarReservaModal 
+        show={mostrarModal} 
+        onHide={() => setMostrarModal(false)}
+        reserva={reservaSeleccionada}
+        onGuardar={guardarCambios}
+      />
     </div>
   );
 }
