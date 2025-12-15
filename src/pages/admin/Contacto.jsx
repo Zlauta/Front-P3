@@ -98,9 +98,13 @@ export default function Contactos() {
   const enviarRespuesta = async (datosEmail) => {
     try {
       // Llamamos al servicio
-      await responderContacto(replyTarget.email, datosEmail);
-      
-      // Opcional: Marcar como resuelto automáticamente si respondes
+      const datosCompletos = {
+        ...datosEmail,
+        nombre: replyTarget.nombre,
+
+      }
+      await responderContacto(replyTarget.email, datosCompletos);
+
       if(replyTarget.estado === 'pendiente'){
          await actualizarContacto(replyTarget._id, { estado: 'resuelto' });
          await cargar(); 
