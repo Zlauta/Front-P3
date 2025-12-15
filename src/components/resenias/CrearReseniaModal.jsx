@@ -17,6 +17,15 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
 
+  const nombreUsuario =
+    JSON.parse(sessionStorage.getItem("usuario") || "{}")?.nombre || "";
+
+  React.useEffect(() => {
+    if (nombreUsuario) {
+      setValue("nombre", nombreUsuario);
+    }
+  }, [nombreUsuario, setValue]);
+
   // Estilos (Tus colores)
   const styles = {
     modalContent: {
@@ -81,7 +90,6 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
               type="text"
               placeholder="Ej: Juan Perez"
               style={styles.input}
-              // isInvalid activa el borde rojo de Bootstrap
               isInvalid={!!errors.nombre}
               {...register('nombre', {
                 required: 'El nombre es obligatorio',

@@ -60,6 +60,21 @@ export const useReservaLogica = (watch, reset) => {
     return true;
   };
 
+  const obtenerMesasDisponibles = (personas) => {
+    if (!personas) return [];
+    const p = parseInt(personas);
+    const mesas = [];
+
+    for (let m = 1; m <= 30; m++) {
+      const validacion = validarCapacidadMesa(m, p);
+      if (validacion === true) {
+        mesas.push(m);
+      }
+    }
+
+    return mesas;
+  };
+
   const validarHorarioAtencion = (horaString) => {
     if (!horaString) return true;
     const [horas, minutos] = horaString.split(':').map(Number);
@@ -163,5 +178,6 @@ export const useReservaLogica = (watch, reset) => {
     verificarDisponibilidad,
     handleReservaSubmit,
     validarHorarioAtencion,
+    obtenerMesasDisponibles,
   };
 };

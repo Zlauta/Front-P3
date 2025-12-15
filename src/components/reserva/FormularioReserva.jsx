@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Form, Button, Container, Row, Col, Card, Spinner } from 'react-bootstrap';
 import { useReservaLogica } from '@/hook/useReservaLogica.js';
 
-const FormularioReserva = () => {
+const FormularioReserva = ({ onReservaCreada }) => {
   const {
     register,
     handleSubmit,
@@ -23,7 +23,18 @@ const FormularioReserva = () => {
     verificarDisponibilidad,
     handleReservaSubmit,
     validarHorarioAtencion,
+    obtenerMesasDisponibles,
   } = useReservaLogica(watch, reset);
+
+  const personas = watch("cantidadPersonas");
+  const mesasDisponibles = obtenerMesasDisponibles(personas);
+
+  const onSubmit = async (data) => {
+    await handleReservaSubmit(data);
+    if (onReservaCreada) {
+      onReservaCreada();
+    }
+  };
 
   return (
     <Container className="mt-5 mb-5">
@@ -40,11 +51,21 @@ const FormularioReserva = () => {
           >
             <Card.Body className="p-4">
               <h3 className="text-center mb-4">Nueva Reserva</h3>
-              <p className="text-center text-light small mb-4 opacity-75">
-                Mesas 1-10 (2p) | 11-20 (4p) | 21-25 (6p) | 26-30 (10p)
+              <p className="text-center text-light mb-3">
+                Para reservas hasta <strong>10 personas</strong>, completa este
+                formulario.
+                <br />
+                Si son más de 10 personas, hacenos tu pedido en el{" "}
+                <a
+                  href="/contacto"
+                  style={{ color: "#ffc107", textDecoration: "underline" }}
+                >
+                  formulario de contactos
+                </a>
+                .
               </p>
 
-              <Form noValidate onSubmit={handleSubmit(handleReservaSubmit)}>
+              <Form noValidate onSubmit={handleSubmit(onSubmit)}>
                 <Row>
                   <Col xs={6}>
                     <Form.Group className="mb-3" controlId="cantidadPersonas">
@@ -69,18 +90,23 @@ const FormularioReserva = () => {
                   <Col xs={6}>
                     <Form.Group className="mb-3" controlId="mesa">
                       <Form.Label>Mesa</Form.Label>
-                      <Form.Control
-                        type="number"
-                        placeholder="#"
+                      <Form.Select
                         isInvalid={!!errors.mesa}
-                        {...register('mesa', {
-                          required: 'Requerido',
-                          valueAsNumber: true,
-                          min: { value: 1, message: 'Mín 1' },
-                          max: { value: 30, message: 'Máx 30' },
-                          validate: (val) => validarCapacidadMesa(val, personasSeleccionadas),
+                        {...register("mesa", {
+                          required: "Requerido",
+                          validate: (val) =>
+                            validarCapacidadMesa(val, personasSeleccionadas) ===
+                              true ||
+                            validarCapacidadMesa(val, personasSeleccionadas),
                         })}
-                      />
+                      >
+                        <option value="">Seleccione una mesa</option>
+                        {mesasDisponibles.map((m) => (
+                          <option key={m} value={m}>
+                            Mesa {m}
+                          </option>
+                        ))}
+                      </Form.Select>
                       <Form.Control.Feedback type="invalid">
                         {errors.mesa?.message}
                       </Form.Control.Feedback>

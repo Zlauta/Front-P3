@@ -54,3 +54,16 @@ export const eliminarReserva = async (id) => {
     manejarError(error, 'Error al eliminar la reserva');
   }
 };
+
+export const obtenerMisReservas = async (email, fechaDesde) => {
+  try {
+    const { data } = await clientAxios.get("/reservas/mis", {
+      params: { email, fecha: fechaDesde },
+    });
+
+    return Array.isArray(data) ? data : data?.data || [];
+  } catch (error) {
+    manejarError(error, "Error al obtener mis reservas");
+    return [];
+  }
+};
