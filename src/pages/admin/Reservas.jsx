@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
-import { Table, Button, Modal, Form } from 'react-bootstrap';
+import { Button, Modal, Form, ButtonGroup } from 'react-bootstrap';
+import { FaThLarge, FaList, FaTable } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import { obtenerReservas, actualizarReserva, eliminarReserva } from '@/service/reservas.service.js';
 import '@/index.css';
-
-const convertirAMinutos = (horaString) => {
-  return horaString.split(':').reduce((total, valor) => total * 60 + +valor, 0);
-};
-
-const formatearFecha = (isoString) => {
-  return isoString ? new Date(isoString).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : '';
-};
+import {
+  obtenerMesasDisponibles,
+  validarCapacidadMesa,
+  validarHorarioAtencion,
+  validarConflictoReserva,
+} from '@/utils/reservasUtil.js';
+import ReservasGrid from '@/components/adminReserva/ReservaGrid.jsx';
+import ReservasTabla from '@/components/adminReserva/ReservaTabla.jsx';
+import { FiGrid } from 'react-icons/fi';
 
 const notificar = (mensaje, icono = 'error') => {
   Swal.fire({
@@ -21,54 +23,12 @@ const notificar = (mensaje, icono = 'error') => {
   });
 };
 
-const validarReservaCompleta = (datos, listaReservas, idReservaActual) => {
-  const { fecha, hora, mesa, cantidadPersonas } = datos;
-  const hoy = new Date();
-  hoy.setHours(0, 0, 0, 0);
-
-  // 1. Validar Fecha
-  if (new Date(fecha + 'T00:00:00') < hoy) return 'La fecha no puede ser anterior a hoy.';
-
-  const minutos = convertirAMinutos(hora);
-  const turnoMañana = minutos >= 600 && minutos <= 960;
-  const turnoNoche = minutos >= 1260 && minutos <= 1439;
-  const turnoMadrugada = minutos >= 0 && minutos <= 120;
-
-  if (!turnoMañana && !turnoNoche && !turnoMadrugada) {
-    return 'Cerrado. Horarios: 10-16hs y 21-02hs';
-  }
-
-  const numMesa = parseInt(mesa);
-  const numPersonas = parseInt(cantidadPersonas);
-
-  if (numPersonas > 10) return 'Para más de 10 personas, contactar por teléfono.';
-  if (numMesa <= 10 && numPersonas > 2) return `Mesa ${numMesa} es chica (máx 2p).`;
-  if (numMesa > 10 && numMesa <= 20 && numPersonas > 4)
-    return `Mesa ${numMesa} es estándar (máx 4p).`;
-  if (numMesa > 20 && numMesa <= 25 && numPersonas > 6)
-    return `Mesa ${numMesa} es mediana (máx 6p).`;
-  if (numMesa > 30) return 'Número de mesa inválido.';
-
-  const existeConflicto = listaReservas.find((reserva) => {
-    if (reserva._id === idReservaActual) return false;
-
-    const fechaReserva = new Date(reserva.fecha).toISOString().split('T')[0];
-    if (fechaReserva !== fecha || String(reserva.mesa) !== String(mesa)) return false;
-
-    const diferenciaMinutos = Math.abs(minutos - convertirAMinutos(reserva.hora));
-    return diferenciaMinutos < 120;
-  });
-
-  if (existeConflicto) return `Mesa ${mesa} ocupada en ese horario (margen de 2hs).`;
-
-  return null;
-};
-
 export default function ReservasAdmin() {
   const [reservas, setReservas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [reservaEditada, setReservaEditada] = useState(null);
   const [horaMinima, setHoraMinima] = useState('');
+  const [vista, setVista] = useState('table'); // Switch table/grid
 
   const cargarDatos = async () => {
     try {
@@ -88,7 +48,6 @@ export default function ReservasAdmin() {
     if (!reservaEditada?.fecha) return;
     const fechaInput = new Date(reservaEditada.fecha + 'T00:00:00');
     const esHoy = fechaInput.toDateString() === new Date().toDateString();
-
     setHoraMinima(esHoy ? new Date().toTimeString().slice(0, 5) : '');
   }, [reservaEditada?.fecha]);
 
@@ -99,14 +58,24 @@ export default function ReservasAdmin() {
   };
 
   const guardarCambios = async () => {
-    const errorValidacion = validarReservaCompleta(reservaEditada, reservas, reservaEditada._id);
+    const { fecha, hora, mesa, cantidadPersonas, _id } = reservaEditada;
 
-    if (errorValidacion) {
-      return notificar(errorValidacion, 'warning');
-    }
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    if (new Date(fecha + 'T00:00:00') < hoy)
+      return notificar('La fecha no puede ser anterior a hoy.', 'warning');
+
+    const errorHorario = validarHorarioAtencion(hora);
+    if (errorHorario) return notificar(errorHorario, 'warning');
+
+    const errorCapacidad = validarCapacidadMesa(mesa, cantidadPersonas);
+    if (errorCapacidad) return notificar(errorCapacidad, 'warning');
+
+    const errorConflicto = validarConflictoReserva(reservaEditada, reservas, _id);
+    if (errorConflicto) return notificar(errorConflicto, 'warning');
 
     try {
-      await actualizarReserva(reservaEditada._id, reservaEditada);
+      await actualizarReserva(_id, reservaEditada);
       await cargarDatos();
       setMostrarModal(false);
       notificar('Reserva actualizada correctamente!', 'success');
@@ -124,7 +93,6 @@ export default function ReservasAdmin() {
       confirmButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
     });
-
     if (!confirmacion.isConfirmed) return;
 
     try {
@@ -135,111 +103,131 @@ export default function ReservasAdmin() {
       notificar('Error al eliminar');
     }
   };
-  const camposFormulario = [
-    { label: 'Mesa', name: 'mesa', type: 'number' },
-    { label: 'Cantidad Personas', name: 'cantidadPersonas', type: 'number' },
-    { label: 'Fecha', name: 'fecha', type: 'date' },
-    { label: 'Hora', name: 'hora', type: 'time', min: horaMinima },
-  ];
+
+  const commonProps = { reservas, onEditar: abrirModal, onEliminar: eliminar };
+
+  // Lógica del Select: Calcular mesas disponibles
+  const mesasOpciones = reservaEditada?.cantidadPersonas
+    ? obtenerMesasDisponibles(reservaEditada.cantidadPersonas)
+    : [];
 
   return (
-    <div className="p-1">
-      <h3 className="text-light fs-1 mt-5 mb-5">Administrador de Reservas</h3>
+    <div className="p-4">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 mt-4">
+        <h3 className="text-light fs-1 m-0">Administrar Reservas</h3>
+        <ButtonGroup>
+          <Button
+            variant={vista === 'grid' ? 'success' : 'outline-secondary'}
+            onClick={() => setVista('grid')}
+          >
+            <FiGrid />
+          </Button>
+          <Button
+            variant={vista === 'table' ? 'success' : 'outline-secondary'}
+            onClick={() => setVista('table')}
+          >
+            <FaTable />
+          </Button>
+        </ButtonGroup>
+      </div>
 
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            {['Usuario', 'Mesa', 'Personas', 'Fecha', 'Hora', 'Notas', 'Acciones'].map((titulo) => (
-              <th key={titulo} className="tabla">
-                {titulo}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody style={{ background: '#1E2A26' }}>
-          {reservas.length > 0 ? (
-            reservas.map((reserva) => (
-              <tr key={reserva._id}>
-                <td className="tabla">{reserva.usuario?.email || 'Usuario eliminado'}</td>
-                <td className="tabla">{reserva.mesa}</td>
-                <td className="tabla">{reserva.cantidadPersonas}</td>
-                <td className="tabla">{formatearFecha(reserva.fecha)}</td>
-                <td className="tabla">{reserva.hora}</td>
-                <td className="tabla">{reserva.notas || '-'}</td>
-                <td className="tabla d-flex gap-2 justify-content-center">
-                  <Button size="sm" variant="secondary" onClick={() => abrirModal(reserva)}>
-                    Editar
-                  </Button>
-                  <Button size="sm" variant="danger" onClick={() => eliminar(reserva._id)}>
-                    Eliminar
-                  </Button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={7} className="text-center text-light py-4">
-                No hay reservas registradas.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
+      {reservas.length === 0 ? (
+        <div className="text-center text-light py-5 border rounded bg-dark">
+          <h4>No hay reservas registradas.</h4>
+        </div>
+      ) : vista === 'grid' ? (
+        <ReservasGrid {...commonProps} />
+      ) : (
+        <ReservasTabla {...commonProps} />
+      )}
 
-      <div className="text-light fs-5">Total: {reservas.length} reservas</div>
+      <div className="text-light fs-5 mt-3 text-end">Total: {reservas.length} reservas</div>
 
       {/* MODAL DE EDICIÓN */}
       <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} centered>
         <Modal.Header closeButton className="bg-dark text-white border-success">
           <Modal.Title>Editar Reserva</Modal.Title>
         </Modal.Header>
-
         <Modal.Body className="bg-dark text-white">
           {reservaEditada && (
             <Form>
-              {camposFormulario.map((campo) => (
-                <Form.Group className="mb-3" key={campo.name}>
-                  <Form.Label>{campo.label}</Form.Label>
-                  <Form.Control
-                    type={campo.type}
-                    name={campo.name}
-                    min={campo.min}
-                    value={reservaEditada[campo.name]}
-                    onChange={(e) =>
-                      setReservaEditada({
-                        ...reservaEditada,
-                        [e.target.name]: e.target.value,
-                      })
-                    }
-                  />
-                </Form.Group>
-              ))}
+              {/* PERSONAS */}
+              <Form.Group className="mb-3">
+                <Form.Label>Cantidad Personas</Form.Label>
+                <Form.Control
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={reservaEditada.cantidadPersonas}
+                  onChange={(e) =>
+                    setReservaEditada({
+                      ...reservaEditada,
+                      cantidadPersonas: e.target.value,
+                      mesa: '',
+                    })
+                  }
+                />
+              </Form.Group>
 
+              {/* MESA (Select Inteligente) */}
+              <Form.Group className="mb-3">
+                <Form.Label>Mesa</Form.Label>
+                <Form.Select
+                  value={reservaEditada.mesa}
+                  onChange={(e) => setReservaEditada({ ...reservaEditada, mesa: e.target.value })}
+                  className="bg-secondary text-white border-secondary"
+                  disabled={!reservaEditada.cantidadPersonas}
+                >
+                  <option value="">Seleccione una mesa...</option>
+                  {mesasOpciones.map((m) => (
+                    <option key={m} value={m}>
+                      Mesa {m}
+                    </option>
+                  ))}
+                  {reservaEditada.mesa &&
+                    !mesasOpciones.includes(parseInt(reservaEditada.mesa)) && (
+                      <option value={reservaEditada.mesa}>
+                        Mesa {reservaEditada.mesa} (Actual)
+                      </option>
+                    )}
+                </Form.Select>
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Fecha</Form.Label>
+                <Form.Control
+                  type="date"
+                  value={reservaEditada.fecha}
+                  onChange={(e) => setReservaEditada({ ...reservaEditada, fecha: e.target.value })}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Hora</Form.Label>
+                <Form.Control
+                  type="time"
+                  min={horaMinima}
+                  value={reservaEditada.hora}
+                  onChange={(e) => setReservaEditada({ ...reservaEditada, hora: e.target.value })}
+                />
+              </Form.Group>
               <Form.Group>
                 <Form.Label>Notas</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={3}
-                  name="notas"
-                  value={reservaEditada.notas}
-                  onChange={(e) =>
-                    setReservaEditada({
-                      ...reservaEditada,
-                      notas: e.target.value,
-                    })
-                  }
+                  value={reservaEditada.notas || ''}
+                  onChange={(e) => setReservaEditada({ ...reservaEditada, notas: e.target.value })}
                 />
               </Form.Group>
             </Form>
           )}
         </Modal.Body>
-
         <Modal.Footer className="bg-dark border-success">
           <Button variant="secondary" onClick={() => setMostrarModal(false)}>
             Cancelar
           </Button>
-          <Button variant="success" onClick={guardarCambios}>
-            Guardar Cambios
+          <Button variant="success" onClick={guardarCambios} disabled={!reservaEditada?.mesa}>
+            Guardar
           </Button>
         </Modal.Footer>
       </Modal>
