@@ -1,3 +1,4 @@
+import { formatearDinero } from '@/utils/FormatearPrecio.js';
 import { Row, Col, Card, Badge, Form, Button } from 'react-bootstrap';
 import {
   FaCheck,
@@ -9,22 +10,36 @@ import {
 } from 'react-icons/fa';
 
 export default function PedidosGrid({ pedidos, ediciones, onEstadoChange, onGuardar, onEliminar }) {
-  const obtenerColorEstado = (estado) => {
-    switch (estado) {
-      case 'entregado':
-        return 'success';
-      case 'cancelado':
-        return 'danger';
-      case 'pendiente':
-        return 'warning';
-      default:
-        return 'primary';
+  
+  const formatearFecha = (iso) => {
+    if (!iso) return 'Fecha desconocida';
+    try {
+      return new Date(iso).toLocaleDateString();
+    } catch {
+      return 'Error fecha';
     }
   };
 
+  const obtenerColorEstado = (estado) => {
+    switch (estado) {
+      case 'entregado': return 'success';
+      case 'cancelado': return 'danger';
+      case 'pendiente': return 'warning';
+      default: return 'primary';
+    }
+  };
+
+  const listaPedidos = pedidos || [];
+
+  if (listaPedidos.length === 0) {
+      return <div className="text-white text-center mt-5 p-4">No hay pedidos disponibles.</div>;
+  }
+
   return (
     <Row xs={1} md={2} xl={3} xxl={4} className="g-4">
-      {pedidos.map((pedido) => {
+      {listaPedidos.map((pedido) => {
+        if (!pedido || !pedido._id) return null;
+
         const tieneCambios = !!ediciones[pedido._id];
         const estadoActual = ediciones[pedido._id]?.estado ?? pedido.estado;
 
@@ -35,7 +50,7 @@ export default function PedidosGrid({ pedidos, ediciones, onEstadoChange, onGuar
                 <Badge bg="dark" className="border border-secondary">
                   #{pedido._id.slice(-6)}
                 </Badge>
-                <Badge bg={obtenerColorEstado(estadoActual)}>{estadoActual.toUpperCase()}</Badge>
+                <Badge bg={obtenerColorEstado(estadoActual)}>{estadoActual ? estadoActual.toUpperCase() : 'ESTADO'}</Badge>
               </Card.Header>
 
               <Card.Body className="text-white pt-0">
@@ -79,12 +94,12 @@ export default function PedidosGrid({ pedidos, ediciones, onEstadoChange, onGuar
                     </div>
                     <div>
                       <FaCalendarAlt className="me-1" />{' '}
-                      {new Date(pedido.createdAt).toLocaleDateString()}
+                      {formatearFecha(pedido.createdAt)}
                     </div>
                   </div>
                   <div className="text-end">
                     <div className="text-white-50 small">Total</div>
-                    <div className="fs-3 fw-bold text-success">${pedido.total}</div>
+                    <div className="fs-3 fw-bold text-success">{formatearDinero(pedido.total)}</div>
                   </div>
                 </div>
                 <Form.Group>
