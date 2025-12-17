@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { obtenerResenias } from "../../service/resenias.service.js";
-import CarruselResenia from "../../components/resenias/CarruselResenias.jsx";
+import { useEffect, useState } from 'react';
+import { obtenerResenias } from '@/service/resenias.service.js';
+import CarruselResenia from '@/components/userResenias/CarruselResenias.jsx';
 
 const Resenias = () => {
   const [resenias, setResenias] = useState([]);

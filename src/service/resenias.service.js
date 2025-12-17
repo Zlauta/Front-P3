@@ -1,4 +1,4 @@
-import clientAxios from '../api/clientAxios';
+import clientAxios from '@/api/clientAxios.js';
 
 export const obtenerResenias = async () => {
   const response = await clientAxios.get('/resenias');

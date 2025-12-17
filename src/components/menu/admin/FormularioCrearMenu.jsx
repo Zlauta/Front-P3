@@ -1,19 +1,11 @@
-import React, { useCallback, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useDropzone } from "react-dropzone";
-import Swal from "sweetalert2"; // 🔹 Importamos SweetAlert2
-import {
-  Form,
-  Button,
-  Container,
-  Row,
-  Col,
-  Card,
-  Spinner,
-} from "react-bootstrap";
-import PreviewMenu from "./VistaPreviaMenu.jsx";
-import { uploadImageAndGetURL } from "../../../service/almacenamiento.service.js";
-import { crearProducto } from "../../../service/producto.service.js";
+import React, { useCallback, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useDropzone } from 'react-dropzone';
+import Swal from 'sweetalert2';
+import { Form, Button, Container, Row, Col, Card, Spinner } from 'react-bootstrap';
+import PreviewMenu from './VistaPreviaMenu.jsx';
+import { uploadImageAndGetURL } from '@/service/almacenamiento.service.js';
+import { crearProducto } from '@/service/producto.service.js';
 
 const FormularioCrearMenu = ({ onMenuCreated }) => {
   const {
@@ -23,12 +15,12 @@ const FormularioCrearMenu = ({ onMenuCreated }) => {
     reset,
     formState: { errors, isValid },
   } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      nombre: "",
-      descripcion: "",
-      precio: "",
-      categoria: "",
+      nombre: '',
+      descripcion: '',
+      precio: '',
+      categoria: '',
     },
   });
 
@@ -46,17 +38,17 @@ const FormularioCrearMenu = ({ onMenuCreated }) => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: { "image/*": [] },
+    accept: { 'image/*': [] },
     multiple: false,
   });
 
   const onSubmit = async (data) => {
     if (!imagen) {
       Swal.fire({
-        icon: "warning",
-        title: "Falta la imagen",
-        text: "Debe seleccionar una imagen antes de continuar",
-        confirmButtonColor: "#e6ad00",
+        icon: 'warning',
+        title: 'Falta la imagen',
+        text: 'Debe seleccionar una imagen antes de continuar',
+        confirmButtonColor: '#e6ad00',
       });
       return;
     }
@@ -64,23 +56,23 @@ const FormularioCrearMenu = ({ onMenuCreated }) => {
     setLoading(true);
 
     try {
-      const downloadURL = await uploadImageAndGetURL(imagen, "productos");
+      const downloadURL = await uploadImageAndGetURL(imagen, 'productos');
 
       const nuevoMenu = {
-        nombre: data?.nombre || "",
-        descripcion: data?.descripcion || "",
+        nombre: data?.nombre || '',
+        descripcion: data?.descripcion || '',
         precio: parseFloat(data?.precio) || 0,
-        categoria: data?.categoria || "sin categoría",
-        imagen: downloadURL || "",
+        categoria: data?.categoria || 'sin categoría',
+        imagen: downloadURL || '',
       };
 
       await crearProducto(nuevoMenu);
 
       Swal.fire({
-        icon: "success",
-        title: "¡Menú Creado!",
-        text: "El producto se ha guardado correctamente.",
-        confirmButtonColor: "#1aaf4b",
+        icon: 'success',
+        title: '¡Menú Creado!',
+        text: 'El producto se ha guardado correctamente.',
+        confirmButtonColor: '#1aaf4b',
         timer: 3000,
       });
 
@@ -90,31 +82,30 @@ const FormularioCrearMenu = ({ onMenuCreated }) => {
       if (onMenuCreated) onMenuCreated();
     } catch (error) {
       console.error(error);
-      // 🔹 Alerta de error
       Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Hubo un error al crear el menú. Inténtalo de nuevo.",
-        confirmButtonColor: "#d33",
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un error al crear el menú. Inténtalo de nuevo.',
+        confirmButtonColor: '#d33',
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const nombre = watch("nombre");
-  const descripcion = watch("descripcion");
-  const precio = watch("precio");
-  const categoria = watch("categoria");
+  const nombre = watch('nombre');
+  const descripcion = watch('descripcion');
+  const precio = watch('precio');
+  const categoria = watch('categoria');
 
   return (
     <Container className="mt-5 mb-5">
       <Card
         style={{
-          backgroundColor: "#122117",
-          color: "#ffffff",
-          border: "none",
-          borderRadius: "16px",
+          backgroundColor: '#122117',
+          color: '#ffffff',
+          border: 'none',
+          borderRadius: '16px',
         }}
       >
         <Card.Body>
@@ -128,19 +119,19 @@ const FormularioCrearMenu = ({ onMenuCreated }) => {
                     type="text"
                     placeholder="Ej: Pizza Napolitana"
                     isInvalid={!!errors.nombre}
-                    {...register("nombre", {
-                      required: "El nombre es obligatorio",
+                    {...register('nombre', {
+                      required: 'El nombre es obligatorio',
                       minLength: {
                         value: 2,
-                        message: "El nombre debe tener entre 2 y 50 caracteres",
+                        message: 'El nombre debe tener entre 2 y 50 caracteres',
                       },
                       maxLength: {
                         value: 50,
-                        message: "El nombre debe tener entre 2 y 50 caracteres",
+                        message: 'El nombre debe tener entre 2 y 50 caracteres',
                       },
                       pattern: {
                         value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ0-9\s]+$/,
-                        message: "Caracteres no permitidos",
+                        message: 'Caracteres no permitidos',
                       },
                     })}
                   />
@@ -156,15 +147,15 @@ const FormularioCrearMenu = ({ onMenuCreated }) => {
                     rows={3}
                     placeholder="Describe el menú..."
                     isInvalid={!!errors.descripcion}
-                    {...register("descripcion", {
-                      required: "La descripción es obligatoria",
+                    {...register('descripcion', {
+                      required: 'La descripción es obligatoria',
                       minLength: {
                         value: 10,
-                        message: "Mínimo 10 caracteres",
+                        message: 'Mínimo 10 caracteres',
                       },
                       maxLength: {
                         value: 100,
-                        message: "Máximo 100 caracteres",
+                        message: 'Máximo 100 caracteres',
                       },
                     })}
                   />
@@ -181,15 +172,15 @@ const FormularioCrearMenu = ({ onMenuCreated }) => {
                     min="0"
                     placeholder="Ej: 1200"
                     isInvalid={!!errors.precio}
-                    {...register("precio", {
-                      required: "El precio es obligatorio",
+                    {...register('precio', {
+                      required: 'El precio es obligatorio',
                       validate: (value) => {
                         const num = parseFloat(value);
                         if (isNaN(num) || num < 0) {
-                          return "Precio inválido";
+                          return 'Precio inválido';
                         }
                         if (num > 1000000) {
-                          return "El precio no puede ser mayor a $1.000.000";
+                          return 'El precio no puede ser mayor a $1.000.000';
                         }
                         return true;
                       },
@@ -204,12 +195,11 @@ const FormularioCrearMenu = ({ onMenuCreated }) => {
                   <Form.Label>Categoría</Form.Label>
                   <Form.Select
                     isInvalid={!!errors.categoria}
-                    {...register("categoria", {
-                      required: "La categoría es obligatoria",
+                    {...register('categoria', {
+                      required: 'La categoría es obligatoria',
                       validate: (value) =>
-                        ["entrada", "principal", "bebida", "postre"].includes(
-                          value
-                        ) || "Categoría inválida",
+                        ['entrada', 'principal', 'bebida', 'postre'].includes(value) ||
+                        'Categoría inválida',
                     })}
                   >
                     <option value="">Seleccionar categoría</option>
@@ -228,13 +218,13 @@ const FormularioCrearMenu = ({ onMenuCreated }) => {
                   <div
                     {...getRootProps()}
                     style={{
-                      border: "2px dashed #1aaf4b",
-                      borderRadius: "12px",
-                      padding: "30px",
-                      textAlign: "center",
-                      backgroundColor: isDragActive ? "#254630" : "transparent",
-                      cursor: "pointer",
-                      transition: "background-color 0.3s ease",
+                      border: '2px dashed #1aaf4b',
+                      borderRadius: '12px',
+                      padding: '30px',
+                      textAlign: 'center',
+                      backgroundColor: isDragActive ? '#254630' : 'transparent',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.3s ease',
                     }}
                   >
                     <input {...getInputProps()} accept="image/*" />
@@ -243,17 +233,17 @@ const FormularioCrearMenu = ({ onMenuCreated }) => {
                         src={preview}
                         alt="Preview"
                         style={{
-                          maxWidth: "100%",
-                          height: "200px",
-                          objectFit: "cover",
-                          borderRadius: "12px",
+                          maxWidth: '100%',
+                          height: '200px',
+                          objectFit: 'cover',
+                          borderRadius: '12px',
                         }}
                       />
                     ) : (
-                      <p style={{ color: "#ffffff" }}>
+                      <p style={{ color: '#ffffff' }}>
                         {isDragActive
-                          ? "Suelta la imagen aquí..."
-                          : "Arrastra o haz clic para seleccionar"}
+                          ? 'Suelta la imagen aquí...'
+                          : 'Arrastra o haz clic para seleccionar'}
                       </p>
                     )}
                   </div>
@@ -264,15 +254,15 @@ const FormularioCrearMenu = ({ onMenuCreated }) => {
                     type="submit"
                     disabled={!isValid || loading}
                     style={{
-                      backgroundColor: isValid ? "#1aaf4b" : "#5a5a5a",
-                      border: "none",
-                      padding: "10px 40px",
-                      fontSize: "1.1rem",
-                      borderRadius: "8px",
-                      transition: "all 0.3s ease",
+                      backgroundColor: isValid ? '#1aaf4b' : '#5a5a5a',
+                      border: 'none',
+                      padding: '10px 40px',
+                      fontSize: '1.1rem',
+                      borderRadius: '8px',
+                      transition: 'all 0.3s ease',
                     }}
                   >
-                    {loading ? <Spinner size="sm" /> : "Guardar Menú"}
+                    {loading ? <Spinner size="sm" /> : 'Guardar Menú'}
                   </Button>
                 </div>
               </Col>

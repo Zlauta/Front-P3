@@ -14,7 +14,7 @@
   padding: 20px;
   overflow: hidden;
   /* Sombra suave */
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5); 
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
 }
 
 .resenia-comentario {
@@ -22,7 +22,7 @@
   font-style: italic;
   margin-bottom: 10px;
   flex: 1; /* Ocupa el espacio disponible */
-  
+
   /* MAGIA DEL LINE CLAMP (Corta el texto con ...) */
   display: -webkit-box;
   -webkit-line-clamp: 5; /* Máximo 5 líneas */

@@ -1,24 +1,16 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import {
-  Form,
-  Button,
-  Container,
-  Row,
-  Col,
-  Card,
-  Spinner,
-} from "react-bootstrap";
-import { useReservaLogica } from "../../hook/useReservaLogica.js";
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { Form, Button, Container, Row, Col, Card, Spinner } from 'react-bootstrap';
+import { useReservaLogica } from '@/hook/useReservaLogica.js';
 
-const FormularioReserva = () => {
+const FormularioReserva = ({ onReservaCreada }) => {
   const {
     register,
     handleSubmit,
     watch,
     reset,
     formState: { errors, isValid },
-  } = useForm({ mode: "onChange" });
+  } = useForm({ mode: 'onChange' });
 
   const {
     loading,
@@ -31,7 +23,18 @@ const FormularioReserva = () => {
     verificarDisponibilidad,
     handleReservaSubmit,
     validarHorarioAtencion,
+    obtenerMesasDisponibles,
   } = useReservaLogica(watch, reset);
+
+  const personas = watch('cantidadPersonas');
+  const mesasDisponibles = obtenerMesasDisponibles(personas);
+
+  const onSubmit = async (data) => {
+    await handleReservaSubmit(data);
+    if (onReservaCreada) {
+      onReservaCreada();
+    }
+  };
 
   return (
     <Container className="mt-5 mb-5">
@@ -39,20 +42,26 @@ const FormularioReserva = () => {
         <Col xs={12} md={8} lg={6}>
           <Card
             style={{
-              backgroundColor: "#254630",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: "16px",
-              boxShadow: "0 4px 30px rgba(0,0,0,0.5)",
+              backgroundColor: '#254630',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '16px',
+              boxShadow: '0 4px 30px rgba(0,0,0,0.5)',
             }}
           >
             <Card.Body className="p-4">
               <h3 className="text-center mb-4">Nueva Reserva</h3>
-              <p className="text-center text-light small mb-4 opacity-75">
-                Mesas 1-10 (2p) | 11-20 (4p) | 21-25 (6p) | 26-30 (10p)
+              <p className="text-center text-light mb-3">
+                Para reservas hasta <strong>10 personas</strong>, completa este formulario.
+                <br />
+                Si son más de 10 personas, hacenos tu pedido en el{' '}
+                <a href="/contacto" style={{ color: '#ffc107', textDecoration: 'underline' }}>
+                  formulario de contactos
+                </a>
+                .
               </p>
 
-              <Form noValidate onSubmit={handleSubmit(handleReservaSubmit)}>
+              <Form noValidate onSubmit={handleSubmit(onSubmit)}>
                 <Row>
                   <Col xs={6}>
                     <Form.Group className="mb-3" controlId="cantidadPersonas">
@@ -61,12 +70,11 @@ const FormularioReserva = () => {
                         type="number"
                         placeholder="Cant."
                         isInvalid={!!errors.cantidadPersonas}
-                        {...register("cantidadPersonas", {
-                          required: "Requerido",
+                        {...register('cantidadPersonas', {
+                          required: 'Requerido',
                           valueAsNumber: true,
-                          min: { value: 1, message: "Mín 1" },
-                          validate: (val) =>
-                            validarCapacidadMesa(mesaSeleccionada, val),
+                          min: { value: 1, message: 'Mín 1' },
+                          validate: (val) => validarCapacidadMesa(mesaSeleccionada, val),
                         })}
                       />
                       <Form.Control.Feedback type="invalid">
@@ -78,19 +86,22 @@ const FormularioReserva = () => {
                   <Col xs={6}>
                     <Form.Group className="mb-3" controlId="mesa">
                       <Form.Label>Mesa</Form.Label>
-                      <Form.Control
-                        type="number"
-                        placeholder="#"
+                      <Form.Select
                         isInvalid={!!errors.mesa}
-                        {...register("mesa", {
-                          required: "Requerido",
-                          valueAsNumber: true,
-                          min: { value: 1, message: "Mín 1" },
-                          max: { value: 30, message: "Máx 30" },
+                        {...register('mesa', {
+                          required: 'Requerido',
                           validate: (val) =>
+                            validarCapacidadMesa(val, personasSeleccionadas) === true ||
                             validarCapacidadMesa(val, personasSeleccionadas),
                         })}
-                      />
+                      >
+                        <option value="">Seleccione una mesa</option>
+                        {mesasDisponibles.map((m) => (
+                          <option key={m} value={m}>
+                            Mesa {m}
+                          </option>
+                        ))}
+                      </Form.Select>
                       <Form.Control.Feedback type="invalid">
                         {errors.mesa?.message}
                       </Form.Control.Feedback>
@@ -106,10 +117,9 @@ const FormularioReserva = () => {
                         type="date"
                         min={minDate}
                         isInvalid={!!errors.fecha}
-                        {...register("fecha", {
-                          required: "Requerido",
-                          validate: (val) =>
-                            val >= minDate || "No puede ser pasada",
+                        {...register('fecha', {
+                          required: 'Requerido',
+                          validate: (val) => val >= minDate || 'No puede ser pasada',
                         })}
                       />
                       <Form.Control.Feedback type="invalid">
@@ -125,23 +135,22 @@ const FormularioReserva = () => {
                         type="time"
                         min={minTime}
                         isInvalid={!!errors.hora}
-                        {...register("hora", {
-                          required: "Requerido",
+                        {...register('hora', {
+                          required: 'Requerido',
                           pattern: {
                             value: /^([01]\d|2[0-3]):([0-5]\d)$/,
-                            message: "Hora inválida",
+                            message: 'Hora inválida',
                           },
                           validate: {
                             checkHorario: (val) =>
                               validarHorarioAtencion(val) ||
-                              "Horarios de atencion 10hs a 16hs y 21hs a 02hs",
+                              'Horarios de atencion 10hs a 16hs y 21hs a 02hs',
                             checkPasado: (val) =>
                               fechaSeleccionada === minDate && val < minTime
-                                ? "Hora inválida hoy"
+                                ? 'Hora inválida hoy'
                                 : true,
                             checkDisponibilidad: (val) =>
-                              verificarDisponibilidad(val) ||
-                              "Mesa ocupada (margen 2hs)",
+                              verificarDisponibilidad(val) || 'Mesa ocupada (margen 2hs)',
                           },
                         })}
                       />
@@ -159,8 +168,8 @@ const FormularioReserva = () => {
                     rows={3}
                     placeholder="Preferencias..."
                     isInvalid={!!errors.notas}
-                    {...register("notas", {
-                      maxLength: { value: 200, message: "Máx 200 caracteres" },
+                    {...register('notas', {
+                      maxLength: { value: 200, message: 'Máx 200 caracteres' },
                     })}
                   />
                   <Form.Control.Feedback type="invalid">
@@ -174,15 +183,11 @@ const FormularioReserva = () => {
                     disabled={!isValid || loading}
                     className="w-100"
                     style={{
-                      backgroundColor: isValid ? "#1aaf4b" : "#5a5a5a",
-                      border: "none",
+                      backgroundColor: isValid ? '#1aaf4b' : '#5a5a5a',
+                      border: 'none',
                     }}
                   >
-                    {loading ? (
-                      <Spinner animation="border" size="sm" />
-                    ) : (
-                      "Confirmar Reserva"
-                    )}
+                    {loading ? <Spinner animation="border" size="sm" /> : 'Confirmar Reserva'}
                   </Button>
                 </div>
               </Form>

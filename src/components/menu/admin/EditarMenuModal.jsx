@@ -1,13 +1,10 @@
-import React, { useCallback, useState } from "react";
-import { Modal, Button, Form, Spinner } from "react-bootstrap";
-import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import { actualizarProducto } from "../../../service/producto.service.js";
-import { useDropzone } from "react-dropzone";
-import {
-  deleteImageByURL,
-  uploadImageAndGetURL,
-} from "../../../service/almacenamiento.service.js";
+import React, { useCallback, useState } from 'react';
+import { Modal, Button, Form, Spinner } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import { actualizarProducto } from '@/service/producto.service.js';
+import { useDropzone } from 'react-dropzone';
+import { deleteImageByURL, uploadImageAndGetURL } from '@/service/almacenamiento.service.js';
 
 const EditarMenuModal = ({ show, onHide, menu, onUpdated }) => {
   const {
@@ -16,12 +13,12 @@ const EditarMenuModal = ({ show, onHide, menu, onUpdated }) => {
     formState: { errors, isSubmitting },
     reset,
   } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      nombre: menu?.nombre ?? "",
-      descripcion: menu?.descripcion ?? "",
+      nombre: menu?.nombre ?? '',
+      descripcion: menu?.descripcion ?? '',
       precio: menu?.precio ?? 0,
-      categoria: menu?.categoria ?? "",
+      categoria: menu?.categoria ?? '',
     },
   });
 
@@ -38,7 +35,7 @@ const EditarMenuModal = ({ show, onHide, menu, onUpdated }) => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: { "image/*": [] },
+    accept: { 'image/*': [] },
     multiple: false,
   });
 
@@ -48,7 +45,7 @@ const EditarMenuModal = ({ show, onHide, menu, onUpdated }) => {
 
       if (newImage) {
         if (menu?.imagen) await deleteImageByURL(menu.imagen);
-        imageURL = await uploadImageAndGetURL(newImage, "productos");
+        imageURL = await uploadImageAndGetURL(newImage, 'productos');
       }
 
       const updatedMenu = {
@@ -59,26 +56,22 @@ const EditarMenuModal = ({ show, onHide, menu, onUpdated }) => {
       };
 
       const result = await actualizarProducto(menu._id, updatedMenu);
-      toast.success("Menú actualizado correctamente");
+      toast.success('Menú actualizado correctamente');
 
       onUpdated(result);
       onHide();
       reset();
     } catch (error) {
       console.error(error);
-      toast.error("No se pudo actualizar el menú");
+      toast.error('No se pudo actualizar el menú');
     }
   };
 
   return (
     <Modal show={show} onHide={onHide} centered backdrop="static">
-      <Form
-        noValidate
-        onSubmit={handleSubmit(onSubmit)}
-        style={{ background: "#254630" }}
-      >
+      <Form noValidate onSubmit={handleSubmit(onSubmit)} style={{ background: '#254630' }}>
         <Modal.Header closeButton>
-          <Modal.Title style={{ color: "#fff" }}>Editar Menú</Modal.Title>
+          <Modal.Title style={{ color: '#fff' }}>Editar Menú</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="mb-3" controlId="nombre">
@@ -87,26 +80,24 @@ const EditarMenuModal = ({ show, onHide, menu, onUpdated }) => {
               type="text"
               placeholder="Ej: Pizza Napolitana"
               isInvalid={!!errors.nombre}
-              {...register("nombre", {
-                required: "El nombre es obligatorio",
+              {...register('nombre', {
+                required: 'El nombre es obligatorio',
                 minLength: {
                   value: 2,
-                  message: "El nombre debe tener entre 2 y 50 caracteres",
+                  message: 'El nombre debe tener entre 2 y 50 caracteres',
                 },
                 maxLength: {
                   value: 50,
-                  message: "El nombre debe tener entre 2 y 50 caracteres",
+                  message: 'El nombre debe tener entre 2 y 50 caracteres',
                 },
                 pattern: {
                   value: /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ0-9\s]+$/,
                   message:
-                    "El nombre solo puede contener letras, números, espacios y caracteres en español",
+                    'El nombre solo puede contener letras, números, espacios y caracteres en español',
                 },
               })}
             />
-            <Form.Control.Feedback type="invalid">
-              {errors.nombre?.message}
-            </Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">{errors.nombre?.message}</Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="descripcion">
@@ -116,22 +107,19 @@ const EditarMenuModal = ({ show, onHide, menu, onUpdated }) => {
               rows={3}
               placeholder="Describe el menú..."
               isInvalid={!!errors.descripcion}
-              {...register("descripcion", {
-                required: "La descripción es obligatoria",
+              {...register('descripcion', {
+                required: 'La descripción es obligatoria',
                 minLength: {
                   value: 10,
-                  message:
-                    "Debe ingresar una descripción entre 10 y 100 caracteres",
+                  message: 'Debe ingresar una descripción entre 10 y 100 caracteres',
                 },
                 maxLength: {
                   value: 100,
-                  message:
-                    "Debe ingresar una descripción entre 10 y 100 caracteres",
+                  message: 'Debe ingresar una descripción entre 10 y 100 caracteres',
                 },
                 pattern: {
                   value: /^[a-zA-ZÀ-ÿ0-9.,;:¡!¿?\-()'"%°\s]{10,100}$/u,
-                  message:
-                    "La descripción solo puede contener letras, números y espacios",
+                  message: 'La descripción solo puede contener letras, números y espacios',
                 },
               })}
             />
@@ -148,40 +136,35 @@ const EditarMenuModal = ({ show, onHide, menu, onUpdated }) => {
               min="0"
               placeholder="Ej: 1200"
               isInvalid={!!errors.precio}
-              {...register("precio", {
-                required: "El precio es obligatorio",
+              {...register('precio', {
+                required: 'El precio es obligatorio',
                 pattern: {
                   value: /^\d+(\.\d{1,2})?$/,
-                  message:
-                    "El precio debe ser un número válido con hasta 2 decimales",
+                  message: 'El precio debe ser un número válido con hasta 2 decimales',
                 },
                 validate: (value) => {
                   const num = parseFloat(value);
                   if (isNaN(num) || num < 0) {
-                    return "Debe ingresar un número válido para el precio";
+                    return 'Debe ingresar un número válido para el precio';
                   }
                   if (num > 1000000) {
-                    return "El precio no puede ser mayor a $1.000.000";
+                    return 'El precio no puede ser mayor a $1.000.000';
                   }
                   return true;
                 },
               })}
             />
-            <Form.Control.Feedback type="invalid">
-              {errors.precio?.message}
-            </Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">{errors.precio?.message}</Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="categoria">
             <Form.Label className=" text-light">Categoría</Form.Label>
             <Form.Select
               isInvalid={!!errors.categoria}
-              {...register("categoria", {
-                required: "La categoría es obligatoria",
+              {...register('categoria', {
+                required: 'La categoría es obligatoria',
                 validate: (value) =>
-                  ["entrada", "principal", "bebida", "postre"].includes(
-                    value
-                  ) ||
+                  ['entrada', 'principal', 'bebida', 'postre'].includes(value) ||
                   "La categoría debe ser 'entrada','principal', 'bebida' o 'postre'",
               })}
             >
@@ -201,13 +184,13 @@ const EditarMenuModal = ({ show, onHide, menu, onUpdated }) => {
             <div
               {...getRootProps()}
               style={{
-                border: "2px dashed #1aaf4b",
-                borderRadius: "12px",
-                padding: "30px",
-                textAlign: "center",
-                backgroundColor: isDragActive ? "#254630" : "transparent",
-                cursor: "pointer",
-                transition: "background-color 0.3s ease",
+                border: '2px dashed #1aaf4b',
+                borderRadius: '12px',
+                padding: '30px',
+                textAlign: 'center',
+                backgroundColor: isDragActive ? '#254630' : 'transparent',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s ease',
               }}
             >
               <input {...getInputProps()} accept="image/*" />
@@ -216,24 +199,22 @@ const EditarMenuModal = ({ show, onHide, menu, onUpdated }) => {
                   src={preview}
                   alt="Preview"
                   style={{
-                    maxWidth: "100%",
-                    height: "200px",
-                    objectFit: "cover",
-                    borderRadius: "12px",
+                    maxWidth: '100%',
+                    height: '200px',
+                    objectFit: 'cover',
+                    borderRadius: '12px',
                   }}
                 />
               ) : (
-                <p style={{ color: "#ffffff" }}>
+                <p style={{ color: '#ffffff' }}>
                   {isDragActive
-                    ? "Suelta la imagen aquí..."
-                    : "Arrastra o haz clic para seleccionar una imagen"}
+                    ? 'Suelta la imagen aquí...'
+                    : 'Arrastra o haz clic para seleccionar una imagen'}
                 </p>
               )}
             </div>
             {errors.imagen && (
-              <div className="invalid-feedback d-block">
-                {errors.imagen.message}
-              </div>
+              <div className="invalid-feedback d-block">{errors.imagen.message}</div>
             )}
           </Form.Group>
         </Modal.Body>
@@ -245,14 +226,14 @@ const EditarMenuModal = ({ show, onHide, menu, onUpdated }) => {
             type="submit"
             variant="success"
             disabled={isSubmitting}
-            style={{ backgroundColor: "#1aaf4b", border: "none" }}
+            style={{ backgroundColor: '#1aaf4b', border: 'none' }}
           >
             {isSubmitting ? (
               <>
                 <Spinner animation="border" size="sm" /> Guardando...
               </>
             ) : (
-              "Guardar cambios"
+              'Guardar cambios'
             )}
           </Button>
         </Modal.Footer>

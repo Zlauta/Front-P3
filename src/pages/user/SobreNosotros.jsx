@@ -1,74 +1,45 @@
-import React, { useEffect } from "react";
-import AOS from "aos";
-import "aos/dist/aos.css";
-import { Card, Container, Image } from "react-bootstrap";
-import "../../style/sobreNosotros.css";
+import React, { useEffect } from 'react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+import { Card, Container, Image } from 'react-bootstrap';
+import '@/style/sobreNosotros.css';
 
 export const SobreNosotros = () => {
   useEffect(() => {
-    AOS.init({ duration: 800, once: true, easing: "ease-out-cubic" });
+    AOS.init({ duration: 800, once: true, easing: 'ease-out-cubic' });
   }, []);
 
   const miembros = [
     {
       id: 1,
-      nombre: "Nadia Medina",
-      rol: "Scrum Master",
-      img: "/images/personaMujer.svg",
-      social: {
-        instagram: "https://instagram.com/alguien",
-        facebook: "https://facebook.com/in/alguien",
-        github: "https://github.com/alguien",
-        whatsapp: "https://wa.me/1234567890",
-      },
+      nombre: 'Nadia Medina',
+      rol: 'Scrum Master',
+      img: '/images/personaMujer.svg',
     },
+
     {
       id: 2,
-      nombre: "Lautaro Zarate",
-      rol: "Desarrollador Full Stack",
-      img: "/images/personaHombre.svg",
-      social: {
-        instagram: "https://instagram.com/alguien",
-        facebook: "https://facebook.com/in/alguien",
-        github: "https://github.com/alguien",
-        whatsapp: "https://wa.me/1234567890",
-      },
+      nombre: 'Lautaro Zarate',
+      rol: 'Desarrollador Full Stack',
+      img: '/images/personaHombre.svg',
     },
     {
       id: 3,
-      nombre: "Amelia Antoni",
-      rol: "Desarrolladora Full Stack",
-      img: "/images/personaMujer.svg",
-      social: {
-        instagram: "https://instagram.com/alguien",
-        facebook: "https://facebook.com/in/alguien",
-        github: "https://github.com/alguien",
-        whatsapp: "https://wa.me/1234567890",
-      },
+      nombre: 'Amelia Antoni',
+      rol: 'Desarrolladora Full Stack',
+      img: '/images/personaMujer.svg',
     },
     {
       id: 4,
-      nombre: "Felipe Marrone",
-      rol: "Desarrollador Full Stack",
-      img: "/images/personaHombre.svg",
-      social: {
-        instagram: "https://instagram.com/alguien",
-        facebook: "https://facebook.com/in/alguien",
-        github: "https://github.com/alguien",
-        whatsapp: "https://wa.me/1234567890",
-      },
+      nombre: 'Felipe Marrone',
+      rol: 'Desarrollador Full Stack',
+      img: '/images/personaHombre.svg',
     },
     {
       id: 5,
-      nombre: "Matias Soria",
-      rol: "Desarrollador Full Stack",
-      img: "/images/personaHombre.svg",
-      social: {
-        instagram: "https://instagram.com/alguien",
-        facebook: "https://facebook.com/in/alguien",
-        github: "https://github.com/alguien",
-        whatsapp: "https://wa.me/1234567890",
-      },
+      nombre: 'Matias Soria',
+      rol: 'Desarrollador Full Stack',
+      img: '/images/personaHombre.svg',
     },
   ];
 
@@ -76,12 +47,8 @@ export const SobreNosotros = () => {
     <Container fluid className="sobre-container">
       <div data-aos="fade-up" className="text-center mb-5">
         <h1 className="text-light">DevFusion</h1>
-        <h3 className="text-light">
-          Conoce al equipo detrás de nuestro proyecto
-        </h3>
-        <h5 className="text-light">
-          Unidos por la pasión de crear soluciones innovadoras
-        </h5>
+        <h3 className="text-light">Conoce al equipo detrás de nuestro proyecto</h3>
+        <h5 className="text-light">Unidos por la pasión de crear soluciones innovadoras</h5>
       </div>
       {miembros.map((miembro, i) => (
         <Card
@@ -90,20 +57,15 @@ export const SobreNosotros = () => {
           data-aos=""
           data-aos-delay={i * 120}
           style={{
-            ["--initX"]: i % 2 === 0 ? `-130%` : `130%`,
-            ["--initY"]: `120%`,
-            ["--rot"]: `${i % 2 === 0 ? -8 : 8}deg`,
-            alignSelf: i % 2 === 0 ? "flex-start" : "flex-end",
+            ['--initX']: i % 2 === 0 ? `-130%` : `130%`,
+            ['--initY']: `120%`,
+            ['--rot']: `${i % 2 === 0 ? -8 : 8}deg`,
+            alignSelf: i % 2 === 0 ? 'flex-start' : 'flex-end',
           }}
         >
           <Card.Body>
             <div className="card-head">
-              <Image
-                src={miembro.img}
-                alt={miembro.nombre}
-                className="member-img"
-                roundedCircle
-              />
+              <Image src={miembro.img} alt={miembro.nombre} className="member-img" roundedCircle />
               <div>
                 <div className="name text-center">{miembro.nombre}</div>
                 <div className="role text-center">{miembro.rol}</div>
@@ -113,14 +75,14 @@ export const SobreNosotros = () => {
             <div>
               <div
                 className="social-links"
-                style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}
+                style={{ marginTop: '1rem', display: 'flex', gap: '1rem' }}
               >
                 {miembro.social?.instagram && (
                   <a
                     href={miembro.social.instagram}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ color: "white" }}
+                    style={{ color: 'white' }}
                   >
                     <img
                       width="48"
@@ -135,7 +97,7 @@ export const SobreNosotros = () => {
                     href={miembro.social.facebook}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ color: "white" }}
+                    style={{ color: 'white' }}
                   >
                     <img
                       width="48"
@@ -150,7 +112,7 @@ export const SobreNosotros = () => {
                     href={miembro.social.github}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ color: "white" }}
+                    style={{ color: 'white' }}
                   >
                     <img
                       width="48"
@@ -165,7 +127,7 @@ export const SobreNosotros = () => {
                     href={miembro.social.whatsapp}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ color: "white" }}
+                    style={{ color: 'white' }}
                   >
                     <img
                       width="48"
