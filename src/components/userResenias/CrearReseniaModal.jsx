@@ -23,16 +23,15 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
     if (nombreUsuario) {
       setValue('nombre', nombreUsuario);
     }
-  }, [nombreUsuario, setValue]);
+  }, [nombrePredefinido, setValue]);
 
-  // Estilos (Tus colores)
   const styles = {
     modalContent: {
       backgroundColor: '#254630',
       color: '#fff',
       border: '1px solid #1aaf4b',
     },
-    // Nota: El borde se sobrescribe automáticamente a rojo si hay error gracias a 'isInvalid'
+
     input: {
       backgroundColor: '#122117',
       color: '#fff',
@@ -49,9 +48,7 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
   };
 
   const onSubmit = async (data) => {
-    // Validación manual para las estrellas (visual)
     if (rating === 0) {
-      // Opcional: Podrías usar trigger() aquí, pero el Swal es más efectivo para este campo custom
       return;
     }
 
@@ -59,6 +56,11 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
       await crearResenia({ ...data, calificacion: rating });
 
       Swal.fire({
+        icon: 'success',
+        title: '¡Gracias! Tu reseña ha sido enviada!',
+        background: '#254630',
+        color: '#fff',
+        confirmButtonColor: '#1aaf4b',
         icon: 'success',
         title: '¡Gracias! Tu reseña ha sido enviada!',
         background: '#254630',
@@ -90,6 +92,7 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
               placeholder="Ej: Juan Perez"
               style={styles.input}
               isInvalid={!!errors.nombre}
+              disabled={!!nombrePredefinido}
               {...register('nombre', {
                 required: 'El nombre es obligatorio',
                 minLength: { value: 2, message: 'Mínimo 2 caracteres' },
@@ -100,7 +103,7 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
                 },
               })}
             />
-            {/* FEEDBACK VISUAL: Mensaje rojo nativo de Bootstrap */}
+
             <Form.Control.Feedback type="invalid">{errors.nombre?.message}</Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-3 text-center">
@@ -145,7 +148,6 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
               rows={4}
               placeholder="Escribe tu opinión..."
               style={styles.input}
-              // 👇 Activa el borde rojo
               isInvalid={!!errors.comentario}
               {...register('comentario', {
                 required: 'El comentario es obligatorio',
@@ -157,7 +159,7 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
                 },
               })}
             />
-            {/* 👇 Mensaje de error */}
+
             <Form.Control.Feedback type="invalid">
               {errors.comentario?.message}
             </Form.Control.Feedback>
