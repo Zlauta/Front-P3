@@ -11,11 +11,13 @@ export default function ContactoTabla({
 }) {
   const formatearFecha = (iso) => {
     try {
+      if (!iso) return '';
       return new Date(iso).toLocaleString();
     } catch {
       return iso ?? '';
     }
   };
+  const listaContactos = contactos || [];
 
   return (
     <Table striped bordered hover responsive variant="dark" style={{ verticalAlign: 'middle' }}>
@@ -32,69 +34,77 @@ export default function ContactoTabla({
         </tr>
       </thead>
       <tbody>
-        {contactos.map((contacto, idx) => {
-          const tieneCambios = !!ediciones[contacto._id];
+        {listaContactos.length > 0 ? (
+          listaContactos.map((contacto, idx) => {
+            const tieneCambios = !!ediciones[contacto._id];
 
-          return (
-            <tr key={contacto._id}>
-              <td>{idx + 1}</td>
-              <td className="fw-bold">{contacto.nombre}</td>
-              <td>{contacto.email}</td>
-              <td>{contacto.telefono}</td>
-              <td style={{ maxWidth: '300px' }}>
-                <div className="d-flex align-items-start gap-2">
-                  <FaCommentDots className="text-success mt-1 flex-shrink-0" />
-                  <span className="text-break small">{contacto.mensaje}</span>
-                </div>
-              </td>
-              <td style={{ minWidth: '130px' }}>
-                <Form.Select
-                  size="sm"
-                  className="bg-secondary text-white border-secondary"
-                  value={ediciones[contacto._id]?.estado ?? contacto.estado}
-                  onChange={(e) => onEstadoChange(contacto._id, e.target.value)}
-                >
-                  <option value="pendiente">Pendiente</option>
-                  <option value="resuelto">Resuelto</option>
-                </Form.Select>
-              </td>
-              <td className="small">{formatearFecha(contacto.createdAt)}</td>
-              <td className="text-center">
-                <div className="d-flex flex-column gap-2">
-                  <div className="d-flex gap-2 justify-content-center">
+            return (
+              <tr key={contacto._id}>
+                <td>{idx + 1}</td>
+                <td className="fw-bold">{contacto.nombre}</td>
+                <td>{contacto.email}</td>
+                <td>{contacto.telefono}</td>
+                <td style={{ maxWidth: '300px' }}>
+                  <div className="d-flex align-items-start gap-2">
+                    <FaCommentDots className="text-success mt-1 flex-shrink-0" />
+                    <span className="text-break small">{contacto.mensaje}</span>
+                  </div>
+                </td>
+                <td style={{ minWidth: '130px' }}>
+                  <Form.Select
+                    size="sm"
+                    className="bg-secondary text-white border-secondary"
+                    value={ediciones[contacto._id]?.estado ?? contacto.estado}
+                    onChange={(e) => onEstadoChange(contacto._id, e.target.value)}
+                  >
+                    <option value="pendiente">Pendiente</option>
+                    <option value="resuelto">Resuelto</option>
+                  </Form.Select>
+                </td>
+                <td className="small">{formatearFecha(contacto.createdAt)}</td>
+                <td className="text-center">
+                  <div className="d-flex flex-column gap-2">
+                    <div className="d-flex gap-2 justify-content-center">
+                      <Button
+                        variant="info"
+                        size="sm"
+                        onClick={() => onResponder(contacto)}
+                        title="Responder por email"
+                        className="text-white"
+                      >
+                        <FaReply />
+                      </Button>
+                      <Button
+                        variant="success"
+                        size="sm"
+                        onClick={() => onGuardar(contacto._id)}
+                        disabled={!tieneCambios}
+                        style={{ opacity: tieneCambios ? 1 : 0.5 }}
+                        title="Guardar estado"
+                      >
+                        <FaCheck />
+                      </Button>
+                    </div>
                     <Button
-                      variant="info"
+                      variant="danger"
                       size="sm"
-                      onClick={() => onResponder(contacto)}
-                      title="Responder por email"
-                      className="text-white"
+                      onClick={() => onEliminar(contacto._id)}
+                      title="Eliminar contacto"
                     >
-                      <FaReply />
-                    </Button>
-                    <Button
-                      variant="success"
-                      size="sm"
-                      onClick={() => onGuardar(contacto._id)}
-                      disabled={!tieneCambios}
-                      style={{ opacity: tieneCambios ? 1 : 0.5 }}
-                      title="Guardar estado"
-                    >
-                      <FaCheck />
+                      <FaTrash />
                     </Button>
                   </div>
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => onEliminar(contacto._id)}
-                    title="Eliminar contacto"
-                  >
-                    <FaTrash />
-                  </Button>
-                </div>
-              </td>
-            </tr>
-          );
-        })}
+                </td>
+              </tr>
+            );
+          })
+        ) : (
+          <tr>
+            <td colSpan="8" className="text-center py-4 text-white-50">
+              No hay mensajes de contacto.
+            </td>
+          </tr>
+        )}
       </tbody>
     </Table>
   );
