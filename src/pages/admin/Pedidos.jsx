@@ -4,11 +4,14 @@ import { FaList, FaTable } from 'react-icons/fa'; // Iconos para el Switch
 import Swal from 'sweetalert2';
 import '@/index.css';
 import ConfirmModal from '@/components/ui/ConfirmModal.jsx';
-import { obtenerPedidos, actualizarEstadoPedido, eliminarPedido } from '@/service/pedidos.service.js';
+import {
+  obtenerPedidos,
+  actualizarEstadoPedido,
+  eliminarPedido,
+} from '@/service/pedidos.service.js';
 import PedidosGrid from '@/components/adminPedido/PedidosGrid.jsx';
 import PedidosTabla from '@/components/adminPedido/PedidosTabla.jsx';
 import { FiGrid } from 'react-icons/fi';
-
 
 export default function Pedidos() {
   const [pedidos, setPedidos] = useState([]);
@@ -99,7 +102,7 @@ export default function Pedidos() {
     ediciones,
     onEstadoChange: manejarEstado,
     onGuardar: guardarCambios,
-    onEliminar: confirmarEliminacion
+    onEliminar: confirmarEliminacion,
   };
 
   return (
@@ -107,18 +110,18 @@ export default function Pedidos() {
       {/* Header con Titulo y Switch */}
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 mt-4">
         <h3 className="text-light fs-1 m-0">Gestión de Pedidos</h3>
-        
+
         <div className="d-flex gap-3 align-items-center mt-3 mt-md-0">
           <ButtonGroup>
-            <Button 
-              variant={vista === 'grid' ? 'success' : 'outline-secondary'} 
+            <Button
+              variant={vista === 'grid' ? 'success' : 'outline-secondary'}
               onClick={() => setVista('grid')}
               title="Vista de Tarjetas"
             >
               <FiGrid />
             </Button>
-            <Button 
-              variant={vista === 'table' ? 'success' : 'outline-secondary'} 
+            <Button
+              variant={vista === 'table' ? 'success' : 'outline-secondary'}
               onClick={() => setVista('table')}
               title="Vista de Lista"
             >

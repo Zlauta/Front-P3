@@ -17,15 +17,11 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
 
-  const usuarioLogueado =
-    JSON.parse(localStorage.getItem('usuarios') || '[]')?.[0] ||
-    JSON.parse(sessionStorage.getItem('usuario') || 'null');
-
-  const nombrePredefinido = usuarioLogueado?.nombreUsuario || usuarioLogueado?.nombre || '';
+  const nombreUsuario = JSON.parse(sessionStorage.getItem('usuario') || '{}')?.nombre || '';
 
   React.useEffect(() => {
-    if (nombrePredefinido) {
-      setValue('nombre', nombrePredefinido);
+    if (nombreUsuario) {
+      setValue('nombre', nombreUsuario);
     }
   }, [nombrePredefinido, setValue]);
 
@@ -60,6 +56,11 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
       await crearResenia({ ...data, calificacion: rating });
 
       Swal.fire({
+        icon: 'success',
+        title: '¡Gracias! Tu reseña ha sido enviada!',
+        background: '#254630',
+        color: '#fff',
+        confirmButtonColor: '#1aaf4b',
         icon: 'success',
         title: '¡Gracias! Tu reseña ha sido enviada!',
         background: '#254630',

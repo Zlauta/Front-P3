@@ -1,3 +1,4 @@
+import { formatearDinero } from '@/utils/FormatearPrecio.js';
 import React, { useState } from 'react';
 import { Card, Row, Col, Spinner, Button } from 'react-bootstrap';
 import Swal from 'sweetalert2';
@@ -99,7 +100,7 @@ const TarjetaMenu = ({
               </Button>
             )}
             <div className="d-flex justify-content-between align-items-center mt-3">
-              <h5 className="text-success m-0 fw-bold">${precio}</h5>
+              <h5 className="text-success m-0 fw-bold">{formatearDinero(precio)}</h5>
 
               <Button
                 onClick={handlePedido}

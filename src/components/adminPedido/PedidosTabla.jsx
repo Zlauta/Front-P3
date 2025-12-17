@@ -1,12 +1,19 @@
 import { Table, Button, Form } from 'react-bootstrap';
 import { FaCheck, FaTrash, FaBoxOpen } from 'react-icons/fa';
 
-export default function PedidosTabla({ pedidos, ediciones, onEstadoChange, onGuardar, onEliminar }) {
-  
+export default function PedidosTabla({
+  pedidos,
+  ediciones,
+  onEstadoChange,
+  onGuardar,
+  onEliminar,
+}) {
   const formatearFecha = (iso) => {
     try {
       return new Date(iso).toLocaleString();
-    } catch { return iso ?? ''; }
+    } catch {
+      return iso ?? '';
+    }
   };
 
   return (
@@ -27,7 +34,7 @@ export default function PedidosTabla({ pedidos, ediciones, onEstadoChange, onGua
       <tbody>
         {pedidos.map((pedido, idx) => {
           const tieneCambios = !!ediciones[pedido._id];
-          
+
           return (
             <tr key={pedido._id}>
               <td>{idx + 1}</td>
@@ -39,8 +46,9 @@ export default function PedidosTabla({ pedidos, ediciones, onEstadoChange, onGua
                 <ul className="list-unstyled m-0 small">
                   {pedido.items?.map((item, i) => (
                     <li key={i}>
-                      <FaBoxOpen className="me-1 text-success"/> 
-                      {item.producto?.nombre} <span className="text-white-50">× {item.cantidad}</span>
+                      <FaBoxOpen className="me-1 text-success" />
+                      {item.producto?.nombre}{' '}
+                      <span className="text-white-50">× {item.cantidad}</span>
                     </li>
                   ))}
                 </ul>

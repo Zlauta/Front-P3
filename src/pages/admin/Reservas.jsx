@@ -28,7 +28,7 @@ export default function ReservasAdmin() {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [reservaEditada, setReservaEditada] = useState(null);
   const [horaMinima, setHoraMinima] = useState('');
-  const [vista, setVista] = useState('table'); // Switch table/grid
+  const [vista, setVista] = useState('grid'); // Switch table/grid
 
   const cargarDatos = async () => {
     try {

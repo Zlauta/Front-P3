@@ -1,7 +1,15 @@
 import { Row, Col, Card, Badge, Form, Button } from 'react-bootstrap';
 import { FiTrash } from 'react-icons/fi';
 
-export default function UsuariosGrid({ usuarios, ediciones, usuarioLogueado, onRolChange, onEstadoChange, onGuardar, onEliminar }) {
+export default function UsuariosGrid({
+  usuarios,
+  ediciones,
+  usuarioLogueado,
+  onRolChange,
+  onEstadoChange,
+  onGuardar,
+  onEliminar,
+}) {
   return (
     <Row xs={1} md={2} xl={3} xxl={4} className="g-4">
       {usuarios.map((usuario) => {
@@ -62,7 +70,10 @@ export default function UsuariosGrid({ usuarios, ediciones, usuarioLogueado, onR
                   <hr className="border-secondary" />
 
                   <div className="d-flex justify-content-between text-white-50 small mb-1">
-                    <span><i className="bi bi-telephone me-1"></i>{usuario.telefono || 'N/A'}</span>
+                    <span>
+                      <i className="bi bi-telephone me-1"></i>
+                      {usuario.telefono || 'N/A'}
+                    </span>
                     <span>Creado: {new Date(usuario.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
@@ -70,12 +81,24 @@ export default function UsuariosGrid({ usuarios, ediciones, usuarioLogueado, onR
 
               <Card.Footer className="border-top-0 bg-transparent pb-3 pt-0 d-flex justify-content-between">
                 {tieneCambios ? (
-                  <Button variant="success" size="sm" className="w-100 me-2" onClick={() => onGuardar(usuario._id)}>
+                  <Button
+                    variant="success"
+                    size="sm"
+                    className="w-100 me-2"
+                    onClick={() => onGuardar(usuario._id)}
+                  >
                     Guardar
                   </Button>
-                ) : <div className="w-100 me-2"></div>}
+                ) : (
+                  <div className="w-100 me-2"></div>
+                )}
 
-                <Button variant="outline-danger" size="sm" onClick={() => onEliminar(usuario._id)} disabled={esMismoUsuario}>
+                <Button
+                  variant="outline-danger"
+                  size="sm"
+                  onClick={() => onEliminar(usuario._id)}
+                  disabled={esMismoUsuario}
+                >
                   <FiTrash />
                 </Button>
               </Card.Footer>

@@ -4,6 +4,7 @@ import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 import Swal from 'sweetalert2';
 import { crearPreferenciaPago } from '@/service/pagos.service.js';
 import { FaTrashAlt } from 'react-icons/fa';
+import { formatearDinero } from '@/utils/FormatearPrecio.js';
 
 initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, { locale: 'es-AR' });
 
@@ -87,7 +88,7 @@ const CarritoDeCompras = ({
               >
                 <div style={{ width: '40%' }}>
                   <span className="fw-bold d-block text-dark">{producto.nombre}</span>
-                  <small className="text-muted">Unitario: ${producto.precio}</small>
+                  <small className="text-muted">Unitario: {formatearDinero(producto.precio)}</small>
                 </div>
 
                 <div className="d-flex align-items-center gap-2">
@@ -117,7 +118,7 @@ const CarritoDeCompras = ({
 
                 <div className="text-end">
                   <div className="fw-bold text-success mb-1">
-                    ${producto.precio * producto.quantity}
+                    {formatearDinero(producto.precio * producto.quantity)}
                   </div>
                   <Button
                     variant="outline-danger"
@@ -175,7 +176,7 @@ const CarritoDeCompras = ({
       >
         <div className="d-flex justify-content-between align-items-center mb-3">
           <span className="h5 mb-0 text-muted">Total:</span>
-          <span className="h4 mb-0 fw-bold text-success">${totalAPagar}</span>
+          <span className="h4 mb-0 fw-bold text-success">{formatearDinero(totalAPagar)}</span>
         </div>
 
         {estaCargandoPago ? (

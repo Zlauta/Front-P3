@@ -140,7 +140,7 @@ const SidebarAdmin = () => {
               </nav>
               <div>
                 <Button variant="outline-danger" className="mt-5 w-100" onClick={logout}>
-                 <FaWindowClose className="me-2 mb-1" />
+                  <FaWindowClose className="me-2 mb-1" />
                   Cerrar sesión
                 </Button>
               </div>

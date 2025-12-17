@@ -4,19 +4,23 @@ import { FaTable } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import '@/index.css';
 import '@/api/clientAxios.js';
-import { actualizarContacto, obtenerContactos, eliminarContacto, responderContacto } from '@/service/contacto.service.js';
+import {
+  actualizarContacto,
+  obtenerContactos,
+  eliminarContacto,
+  responderContacto,
+} from '@/service/contacto.service.js';
 import ConfirmModal from '@/components/ui/ConfirmModal.jsx';
 import { FiGrid } from 'react-icons/fi';
 import ContactoGrid from '@/components/adminContacto/ContactoGrid.jsx';
 import ContactoTabla from '@/components/adminContacto/ContactoTabla.jsx';
 import ResponderModal from '@/components/adminContacto/ResponderModal.jsx';
 
-
 export default function Contactos() {
   const [contactos, setContactos] = useState([]);
   const [ediciones, setEdiciones] = useState({});
   const [vista, setVista] = useState('grid');
-  
+
   // Estados para Eliminar
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmTarget, setConfirmTarget] = useState({ id: null });
@@ -50,7 +54,11 @@ export default function Contactos() {
     try {
       await actualizarContacto(id, cambios);
       await cargar();
-      setEdiciones((prev) => { const copia = { ...prev }; delete copia[id]; return copia; });
+      setEdiciones((prev) => {
+        const copia = { ...prev };
+        delete copia[id];
+        return copia;
+      });
       Swal.fire({
         title: 'Contacto actualizado!',
         icon: 'success',
@@ -101,13 +109,12 @@ export default function Contactos() {
       const datosCompletos = {
         ...datosEmail,
         nombre: replyTarget.nombre,
-
-      }
+      };
       await responderContacto(replyTarget.email, datosCompletos);
 
-      if(replyTarget.estado === 'pendiente'){
-         await actualizarContacto(replyTarget._id, { estado: 'resuelto' });
-         await cargar(); 
+      if (replyTarget.estado === 'pendiente') {
+        await actualizarContacto(replyTarget._id, { estado: 'resuelto' });
+        await cargar();
       }
 
       Swal.fire({
@@ -133,7 +140,7 @@ export default function Contactos() {
     onEstadoChange: manejarEstado,
     onGuardar: guardarCambios,
     onEliminar: confirmarEliminacion,
-    onResponder: abrirModalRespuesta // Pasamos la nueva función
+    onResponder: abrirModalRespuesta, // Pasamos la nueva función
   };
 
   return (
@@ -142,14 +149,14 @@ export default function Contactos() {
         <h3 className="text-light fs-1 m-0">Contactos recibidos</h3>
         <div className="d-flex gap-3 align-items-center mt-3 mt-md-0">
           <ButtonGroup>
-            <Button 
-              variant={vista === 'grid' ? 'success' : 'outline-secondary'} 
+            <Button
+              variant={vista === 'grid' ? 'success' : 'outline-secondary'}
               onClick={() => setVista('grid')}
             >
               <FiGrid />
             </Button>
-            <Button 
-              variant={vista === 'table' ? 'success' : 'outline-secondary'} 
+            <Button
+              variant={vista === 'table' ? 'success' : 'outline-secondary'}
               onClick={() => setVista('table')}
             >
               <FaTable />
@@ -184,9 +191,9 @@ export default function Contactos() {
       />
 
       {/* MODAL DE RESPONDER EMAIL (NUEVO) */}
-      <ResponderModal 
-        show={showReply} 
-        onHide={() => setShowReply(false)} 
+      <ResponderModal
+        show={showReply}
+        onHide={() => setShowReply(false)}
         destinatario={replyTarget}
         onSend={enviarRespuesta}
       />

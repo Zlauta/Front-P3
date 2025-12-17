@@ -13,7 +13,6 @@ import UsuariosGrid from '@/components/adminUsuarios/UsuariosGrid.jsx';
 import UsuariosTable from '@/components/adminUsuarios/UsuariosTabla.jsx';
 import UsuariosTabla from '@/components/adminUsuarios/UsuariosTabla.jsx';
 
-
 export default function Usuarios() {
   const [usuarios, setUsuarios] = useState([]);
   const [ediciones, setEdiciones] = useState({});
@@ -74,7 +73,11 @@ export default function Usuarios() {
         customClass: { popup: 'small-alert' },
       });
     } catch (error) {
-      Swal.fire({ title: error.response?.data?.msg || 'Error', icon: 'error', confirmButtonColor: '#1aaf4b' });
+      Swal.fire({
+        title: error.response?.data?.msg || 'Error',
+        icon: 'error',
+        confirmButtonColor: '#1aaf4b',
+      });
     }
   };
 
@@ -99,7 +102,11 @@ export default function Usuarios() {
         customClass: { popup: 'small-alert' },
       });
     } catch (error) {
-      Swal.fire({ title: error.response?.data?.msg || 'Error', icon: 'error', confirmButtonColor: '#1aaf4b' });
+      Swal.fire({
+        title: error.response?.data?.msg || 'Error',
+        icon: 'error',
+        confirmButtonColor: '#1aaf4b',
+      });
     }
   };
 
@@ -111,7 +118,7 @@ export default function Usuarios() {
     onRolChange: manejarCambioRol,
     onEstadoChange: manejarCambioEstado,
     onGuardar: guardarCambios,
-    onEliminar: confirmarEliminacion
+    onEliminar: confirmarEliminacion,
   };
 
   return (
@@ -138,7 +145,8 @@ export default function Usuarios() {
           </ButtonGroup>
 
           <Button variant="success" onClick={() => setMostrarForm(true)}>
-            <FiPlusCircle className="mb-1 me-2" />Nuevo
+            <FiPlusCircle className="mb-1 me-2" />
+            Nuevo
           </Button>
         </div>
       </div>
@@ -150,7 +158,9 @@ export default function Usuarios() {
             <h2 className="text-center mb-4">Nuevo Usuario</h2>
             <FormRegister fromAdmin={true} />
             <div className="mt-4 text-center">
-              <Button variant="outline-light" onClick={() => setMostrarForm(false)}>Cancelar</Button>
+              <Button variant="outline-light" onClick={() => setMostrarForm(false)}>
+                Cancelar
+              </Button>
             </div>
           </Container>
         </div>
