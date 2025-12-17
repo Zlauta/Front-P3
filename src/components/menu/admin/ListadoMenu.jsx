@@ -167,7 +167,7 @@ const ListadoMenu = () => {
                   variant={vista === 'table' ? 'success' : 'outline-secondary'}
                   onClick={() => setVista('table')}
                 >
-                <FaTable />
+                  <FaTable />
                 </Button>
               </ButtonGroup>
             </Col>

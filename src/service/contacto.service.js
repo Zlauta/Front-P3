@@ -41,9 +41,9 @@ export const eliminarContacto = async (id) => {
 };
 
 export const responderContacto = async (email, datos) => {
-  const response = await clientAxios.post(`/contacto/responder`, { 
-    emailDestino: email, 
-    ...datos 
+  const response = await clientAxios.post(`/contacto/responder`, {
+    emailDestino: email,
+    ...datos,
   });
   return response.data;
 };

@@ -26,7 +26,7 @@ const FormularioReserva = ({ onReservaCreada }) => {
     obtenerMesasDisponibles,
   } = useReservaLogica(watch, reset);
 
-  const personas = watch("cantidadPersonas");
+  const personas = watch('cantidadPersonas');
   const mesasDisponibles = obtenerMesasDisponibles(personas);
 
   const onSubmit = async (data) => {
@@ -52,14 +52,10 @@ const FormularioReserva = ({ onReservaCreada }) => {
             <Card.Body className="p-4">
               <h3 className="text-center mb-4">Nueva Reserva</h3>
               <p className="text-center text-light mb-3">
-                Para reservas hasta <strong>10 personas</strong>, completa este
-                formulario.
+                Para reservas hasta <strong>10 personas</strong>, completa este formulario.
                 <br />
-                Si son más de 10 personas, hacenos tu pedido en el{" "}
-                <a
-                  href="/contacto"
-                  style={{ color: "#ffc107", textDecoration: "underline" }}
-                >
+                Si son más de 10 personas, hacenos tu pedido en el{' '}
+                <a href="/contacto" style={{ color: '#ffc107', textDecoration: 'underline' }}>
                   formulario de contactos
                 </a>
                 .
@@ -92,11 +88,10 @@ const FormularioReserva = ({ onReservaCreada }) => {
                       <Form.Label>Mesa</Form.Label>
                       <Form.Select
                         isInvalid={!!errors.mesa}
-                        {...register("mesa", {
-                          required: "Requerido",
+                        {...register('mesa', {
+                          required: 'Requerido',
                           validate: (val) =>
-                            validarCapacidadMesa(val, personasSeleccionadas) ===
-                              true ||
+                            validarCapacidadMesa(val, personasSeleccionadas) === true ||
                             validarCapacidadMesa(val, personasSeleccionadas),
                         })}
                       >

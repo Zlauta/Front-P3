@@ -1,5 +1,5 @@
 import React from 'react';
-import TablaResenias from '@/components/admin/TablaResenias.jsx';
+import TablaResenias from '@/components/adminResenias/TablaResenias.jsx';
 
 const Resenias = () => {
   return (

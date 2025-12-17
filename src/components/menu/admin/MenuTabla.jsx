@@ -30,20 +30,15 @@ const MenuTabla = ({ menus, onEdit, onDelete }) => {
               />
             </td>
             <td className="tabla text-white">{menu.nombre}</td>
-            <td className="tabla text-white-50" style={{maxWidth: '250px'}}>
-                <div className="text-truncate">{menu.descripcion}</div>
+            <td className="tabla text-white-50" style={{ maxWidth: '250px' }}>
+              <div className="text-truncate">{menu.descripcion}</div>
             </td>
             <td className="tabla text-success fw-bold">{formatearDinero(menu.precio)}</td>
             <td className="tabla text-white">
-                <span className="badge bg-secondary">{menu.categoria}</span>
+              <span className="badge bg-secondary">{menu.categoria}</span>
             </td>
             <td className="text-center tabla">
-              <Button
-                variant="success"
-                size="sm"
-                className="m-1"
-                onClick={() => onEdit(menu)}
-              >
+              <Button variant="success" size="sm" className="m-1" onClick={() => onEdit(menu)}>
                 Editar
               </Button>
               <Button

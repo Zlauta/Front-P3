@@ -17,10 +17,10 @@ const FormularioContacto = ({ usuario }) => {
   } = useForm({
     mode: 'onChange',
     defaultValues: {
-      nombreContacto: isLogged ? usuario?.nombre : "",
-      email: isLogged ? usuario?.email : "",
-      telefono: "",
-      mensajeContacto: "",
+      nombreContacto: isLogged ? usuario?.nombre : '',
+      email: isLogged ? usuario?.email : '',
+      telefono: '',
+      mensajeContacto: '',
     },
   });
 
@@ -97,8 +97,8 @@ const FormularioContacto = ({ usuario }) => {
           placeholder="Nombre de usuario"
           isInvalid={errors.nombreContacto}
           readOnly={isLogged}
-          {...register("nombreContacto", {
-            required: "El nombre de usuario es requerido",
+          {...register('nombreContacto', {
+            required: 'El nombre de usuario es requerido',
 
             pattern: {
               value: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s'-]+$/,

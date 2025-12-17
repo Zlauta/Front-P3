@@ -1,12 +1,25 @@
 import { Table, Button, Form } from 'react-bootstrap';
 import { FiCheck, FiTrash } from 'react-icons/fi';
 
-export default function UsuariosTabla({ usuarios, ediciones, usuarioLogueado, onRolChange, onEstadoChange, onGuardar, onEliminar }) {
-  
+export default function UsuariosTabla({
+  usuarios,
+  ediciones,
+  usuarioLogueado,
+  onRolChange,
+  onEstadoChange,
+  onGuardar,
+  onEliminar,
+}) {
   const formatearFecha = (iso) => {
     try {
-      return new Date(iso).toLocaleDateString() + ' ' + new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    } catch { return iso; }
+      return (
+        new Date(iso).toLocaleDateString() +
+        ' ' +
+        new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      );
+    } catch {
+      return iso;
+    }
   };
 
   return (

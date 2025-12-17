@@ -1,6 +1,6 @@
-import { useState } from "react";
-import FormReserva from "../../components/userReservas/FormularioReserva";
-import MisReservas from "../../pages/user/MisReservas";
+import { useState } from 'react';
+import FormReserva from '../../components/userReservas/FormularioReserva';
+import MisReservas from '../../pages/user/MisReservas';
 
 export default function Reservas() {
   const [reloadFlag, setReloadFlag] = useState(false);

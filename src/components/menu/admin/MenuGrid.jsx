@@ -8,25 +8,25 @@ const MenuGrid = ({ menus, onEdit, onDelete }) => {
         <Col key={menu._id}>
           <Card className="h-100 shadow border-0" style={{ background: '#1E2A26' }}>
             <div className="position-relative">
-                <Card.Img
+              <Card.Img
                 variant="top"
                 src={menu.imagen || '/images/placeholder.svg'}
                 style={{ height: '180px', objectFit: 'cover' }}
-                />
-                <Badge bg="warning" text="dark" className="position-absolute top-0 end-0 m-2 shadow">
-                   {formatearDinero(menu.precio)}
-                </Badge>
+              />
+              <Badge bg="warning" text="dark" className="position-absolute top-0 end-0 m-2 shadow">
+                {formatearDinero(menu.precio)}
+              </Badge>
             </div>
-            
+
             <Card.Body className="text-white d-flex flex-column">
               <Card.Title className="fw-bold">{menu.nombre}</Card.Title>
               <div className="mb-2">
                 <Badge bg="secondary">{menu.categoria}</Badge>
               </div>
               <Card.Text className="text-white-50 small flex-grow-1">
-                {menu.descripcion?.length > 60 
-                    ? menu.descripcion.substring(0, 60) + '...' 
-                    : menu.descripcion}
+                {menu.descripcion?.length > 60
+                  ? menu.descripcion.substring(0, 60) + '...'
+                  : menu.descripcion}
               </Card.Text>
             </Card.Body>
 
