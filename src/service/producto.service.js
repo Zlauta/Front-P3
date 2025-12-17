@@ -45,7 +45,6 @@ export const eliminarProducto = async (id) => {
   }
 };
 
-// Función para obtener productos con filtros y paginación
 export const obtenerProductosFiltrados = async (category = '', page = 1, limit = 10) => {
   try {
     const response = await clientAxios.get('/productos/filtrados', {

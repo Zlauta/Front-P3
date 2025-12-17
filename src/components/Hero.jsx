@@ -21,20 +21,15 @@ const Hero = () => {
 
   return (
     <section className="hero-seccion">
-      {/* Carrusel de imágenes */}
       {imagenesHero.map((urlImagen, indice) => (
         <div
           key={indice}
-          // Lógica condicional: Si es la imagen actual, agrega la clase 'hero-activa'
           className={`hero-imagen-fondo ${indice === indiceActual ? 'hero-activa' : ''}`}
           style={{ backgroundImage: `url(${urlImagen})` }}
         />
       ))}
 
-      {/* Capa oscura */}
       <div className="hero-overlay"></div>
-
-      {/* Contenido */}
       <div className="hero-contenido">
         <h1 className="hero-titulo">Arte Culinario en Cada Bocado.</h1>
         <p className="hero-subtitulo">

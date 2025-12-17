@@ -104,7 +104,7 @@ export const useReservaLogica = (watch, reset) => {
       if (String(reserva.mesa) !== String(mesaSeleccionada)) return false;
 
       const minutosReserva = convertirAMinutos(reserva.hora);
-      return Math.abs(minutosInput - minutosReserva) < 120; // 120 min = 2hs
+      return Math.abs(minutosInput - minutosReserva) < 120;
     });
 
     return !conflicto;
@@ -132,7 +132,6 @@ export const useReservaLogica = (watch, reset) => {
         fecha: fechaSegura,
       };
       const respuesta = await crearReserva(datosAEnviar);
-      console.log('RESPUESTA DEL BACK:', respuesta);
       if (respuesta.correo?.enviado) {
         Swal.fire({
           icon: 'success',

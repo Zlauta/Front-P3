@@ -1,4 +1,4 @@
-import clientAxios from '@/api/clientAxios.js'; // <--- CHEQUEA ESTA RUTA
+import clientAxios from '@/api/clientAxios.js';
 
 export const crearPreferenciaPago = async (datosPedido) => {
   try {

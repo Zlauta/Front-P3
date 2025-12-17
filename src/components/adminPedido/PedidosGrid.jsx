@@ -39,7 +39,6 @@ export default function PedidosGrid({ pedidos, ediciones, onEstadoChange, onGuar
               </Card.Header>
 
               <Card.Body className="text-white pt-0">
-                {/* Cabecera con Avatar generado y Datos del Cliente */}
                 <div className="d-flex align-items-center mb-3 pb-3 border-bottom border-secondary">
                   <img
                     src={`https://ui-avatars.com/api/?name=${pedido.cliente?.nombre || 'Client'}&background=1aaf4b&color=fff&size=64`}
@@ -54,8 +53,6 @@ export default function PedidosGrid({ pedidos, ediciones, onEstadoChange, onGuar
                     </small>
                   </div>
                 </div>
-
-                {/* Lista de Items (Resumida) */}
                 <div className="mb-3 bg-secondary bg-opacity-25 p-2 rounded">
                   <small className="text-white-50 d-block mb-1">
                     <FaShoppingBag className="me-1" /> Resumen:
@@ -72,8 +69,6 @@ export default function PedidosGrid({ pedidos, ediciones, onEstadoChange, onGuar
                     ))}
                   </ul>
                 </div>
-
-                {/* Detalles del Pedido */}
                 <div className="d-flex justify-content-between align-items-end mb-3">
                   <div className="small text-white-50">
                     <div className="mb-1">
@@ -92,8 +87,6 @@ export default function PedidosGrid({ pedidos, ediciones, onEstadoChange, onGuar
                     <div className="fs-3 fw-bold text-success">${pedido.total}</div>
                   </div>
                 </div>
-
-                {/* Selector de Estado */}
                 <Form.Group>
                   <Form.Label className="small text-white-50">Actualizar Estado</Form.Label>
                   <Form.Select
