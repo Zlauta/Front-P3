@@ -1,3 +1,4 @@
+import { formatearDinero } from '@/utils/FormatearPrecio.js';
 import React from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
 
@@ -67,7 +68,7 @@ const VistaPreviaMenu = ({ nombre, descripcion, precio, categoria, imagen }) => 
                 marginTop: '8px',
               }}
             >
-              {precio ? `$${precio}` : 'Precio pendiente'}
+              {precio ? `${formatearDinero(precio)}` : 'Precio pendiente'}
             </Card.Text>
           </Card.Body>
         </Col>
