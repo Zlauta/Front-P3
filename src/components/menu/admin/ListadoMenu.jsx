@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Spinner, ButtonGroup, Form, InputGroup, Card, Row, Col } from 'react-bootstrap';
-import { FaSearch, FaTable } from 'react-icons/fa'; // Asegúrate de tener react-icons
+import { FaSearch, FaTable } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import ConfirmModal from '@/components/ui/ConfirmModal.jsx';
 import { obtenerProductos, eliminarProducto } from '@/service/producto.service.js';
@@ -19,7 +19,6 @@ const ListadoMenu = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmTarget, setConfirmTarget] = useState({ id: null, nombre: '' });
 
-  // ESTADOS NUEVOS (Filtros y Vista)
   const [vista, setVista] = useState('grid');
   const [busqueda, setBusqueda] = useState('');
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('Todas');
@@ -40,7 +39,6 @@ const ListadoMenu = () => {
     fetchMenus();
   }, [reload]);
 
-  // --- LÓGICA DE FILTRADO (Magic happen here) ---
   const menusFiltrados = menus.filter((menu) => {
     const matchCategoria =
       categoriaSeleccionada === 'Todas' || menu.categoria === categoriaSeleccionada;
@@ -48,10 +46,7 @@ const ListadoMenu = () => {
     return matchCategoria && matchBusqueda;
   });
 
-  // Extraer categorías únicas para los botones
   const categorias = ['Todas', ...new Set(menus.map((m) => m.categoria))];
-
-  // --- HANDLERS ---
   const handleMenuCreated = () => {
     setReload((prev) => !prev);
     Swal.fire({
@@ -118,11 +113,8 @@ const ListadoMenu = () => {
         <h2 style={{ color: '#ffffff', textAlign: 'center', marginBottom: '2rem' }}>
           Listado de Menús
         </h2>
-
-        {/* BARRA DE HERRAMIENTAS (Buscador + Categorías + Switch) */}
         <Card className="bg-dark border-secondary mb-4 p-3 shadow-sm">
           <Row className="g-3 align-items-center">
-            {/* 1. Buscador */}
             <Col xs={12} md={4}>
               <InputGroup>
                 <InputGroup.Text className="bg-secondary border-secondary text-white">
@@ -136,8 +128,6 @@ const ListadoMenu = () => {
                 />
               </InputGroup>
             </Col>
-
-            {/* 2. Categorías */}
             <Col xs={12} md={6}>
               <div className="d-flex gap-2 overflow-auto pb-2" style={{ scrollbarWidth: 'thin' }}>
                 {categorias.map((cat) => (
@@ -153,8 +143,6 @@ const ListadoMenu = () => {
                 ))}
               </div>
             </Col>
-
-            {/* 3. Switch Vista */}
             <Col xs={12} md={2} className="text-md-end">
               <ButtonGroup>
                 <Button
@@ -173,8 +161,6 @@ const ListadoMenu = () => {
             </Col>
           </Row>
         </Card>
-
-        {/* CONTENIDO PRINCIPAL */}
         {menusFiltrados.length === 0 ? (
           <div className="text-center text-white-50 py-5 bg-dark rounded border border-secondary mb-4">
             <h4>No se encontraron menús con estos filtros.</h4>
@@ -188,14 +174,10 @@ const ListadoMenu = () => {
         <div className="text-white-50 mt-2 mb-5 text-end small">
           Mostrando {menusFiltrados.length} de {menus.length} menús
         </div>
-
-        {/* FORMULARIO DE CREACIÓN */}
         <div className="mb-5 pt-4 border-top border-secondary">
           <h4 className="text-white mb-4">Agregar Nuevo Menú</h4>
           <FormularioCrearMenu onMenuCreated={handleMenuCreated} />
         </div>
-
-        {/* MODALES */}
         {showModal && (
           <ModalEditMenu
             show={showModal}

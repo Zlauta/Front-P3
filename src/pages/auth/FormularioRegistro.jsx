@@ -27,7 +27,6 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
   const navegate = useNavigate();
 
   const handleCancel = () => {
-    // si viene del admin, cancelar vuelve al admin
     if (fromAdmin) {
       navegate('/admin');
     } else {

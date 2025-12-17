@@ -15,7 +15,6 @@ export default function MisReservas({ reloadFlag }) {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
 
-  // --- 1. CARGA DE DATOS ---
   const cargarDatos = async () => {
     try {
       const usuario = JSON.parse(sessionStorage.getItem('usuario'));
@@ -23,8 +22,6 @@ export default function MisReservas({ reloadFlag }) {
       const hoy = new Date().toISOString().split('T')[0];
 
       const datos = await obtenerMisReservas(correoUsuario, hoy);
-
-      // Ordenamos por fecha más próxima
       const reservasOrdenadas = datos.sort((a, b) => {
         const dateA = new Date(`${a.fecha.split('T')[0]}T${a.hora}`);
         const dateB = new Date(`${b.fecha.split('T')[0]}T${b.hora}`);
@@ -46,7 +43,6 @@ export default function MisReservas({ reloadFlag }) {
     cargarDatos();
   }, [reloadFlag]);
 
-  // --- 2. ACCIONES DEL MODAL ---
   const abrirModal = (reserva) => {
     setReservaSeleccionada(reserva);
     setMostrarModal(true);
@@ -54,8 +50,6 @@ export default function MisReservas({ reloadFlag }) {
 
   const guardarCambios = async (datosEditados) => {
     const { fecha, hora, mesa, cantidadPersonas, _id } = datosEditados;
-
-    // Validaciones Centralizadas
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
     if (new Date(fecha + 'T00:00:00') < hoy) {
@@ -92,8 +86,6 @@ export default function MisReservas({ reloadFlag }) {
       });
     }
   };
-
-  // --- 3. ACCIÓN ELIMINAR ---
   const eliminar = async (id) => {
     const result = await Swal.fire({
       title: '¿Cancelar Reserva?',
@@ -121,7 +113,6 @@ export default function MisReservas({ reloadFlag }) {
     }
   };
 
-  // --- RENDERIZADO ---
   return (
     <div className="p-4">
       <h3 className="text-light fs-1 mt-5 mb-5 text-center">Mis Reservas</h3>
@@ -137,8 +128,6 @@ export default function MisReservas({ reloadFlag }) {
       ) : (
         <ReservasClienteGrid reservas={reservas} onEditar={abrirModal} onEliminar={eliminar} />
       )}
-
-      {/* MODAL (Ahora es un componente aparte) */}
       <EditarReservaModal
         show={mostrarModal}
         onHide={() => setMostrarModal(false)}

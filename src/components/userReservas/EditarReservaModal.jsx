@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-// Importamos el helper
 import { obtenerMesasDisponibles } from '@/utils/reservasUtil.js';
 
 export default function EditarReservaModal({ show, onHide, reserva, onGuardar }) {
@@ -8,7 +7,6 @@ export default function EditarReservaModal({ show, onHide, reserva, onGuardar })
   const [horaMinima, setHoraMinima] = useState('');
   const [mesasDisponibles, setMesasDisponibles] = useState([]);
 
-  // Cargar datos iniciales
   useEffect(() => {
     if (reserva) {
       const fechaInput = new Date(reserva.fecha).toISOString().split('T')[0];
@@ -16,7 +14,6 @@ export default function EditarReservaModal({ show, onHide, reserva, onGuardar })
     }
   }, [reserva]);
 
-  // Calcular hora mínima si es HOY
   useEffect(() => {
     if (!datos.fecha) return;
     const fechaInput = new Date(datos.fecha + 'T00:00:00');
@@ -24,7 +21,6 @@ export default function EditarReservaModal({ show, onHide, reserva, onGuardar })
     setHoraMinima(esHoy ? new Date().toTimeString().slice(0, 5) : '');
   }, [datos.fecha]);
 
-  // Actualizar lista de mesas cuando cambian las personas
   useEffect(() => {
     if (datos.cantidadPersonas) {
       const mesas = obtenerMesasDisponibles(datos.cantidadPersonas);
@@ -38,7 +34,6 @@ export default function EditarReservaModal({ show, onHide, reserva, onGuardar })
     const { name, value } = e.target;
     setDatos((prev) => {
       const nuevosDatos = { ...prev, [name]: value };
-      // Si cambia personas, reseteamos mesa para forzar nueva selección válida
       if (name === 'cantidadPersonas') {
         nuevosDatos.mesa = '';
       }
@@ -68,8 +63,6 @@ export default function EditarReservaModal({ show, onHide, reserva, onGuardar })
               onChange={handleChange}
             />
           </Form.Group>
-
-          {/* SELECT DINÁMICO */}
           <Form.Group className="mb-3">
             <Form.Label>Mesa</Form.Label>
             <Form.Select

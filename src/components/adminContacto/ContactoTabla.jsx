@@ -1,7 +1,6 @@
 import { Table, Button, Form } from 'react-bootstrap';
 import { FaCheck, FaTrash, FaCommentDots, FaReply } from 'react-icons/fa';
 
-// Recibimos una nueva prop: onResponder
 export default function ContactoTabla({
   contactos,
   ediciones,
@@ -22,7 +21,6 @@ export default function ContactoTabla({
     <Table striped bordered hover responsive variant="dark" style={{ verticalAlign: 'middle' }}>
       <thead>
         <tr>
-          {/* ... encabezados iguales ... */}
           <th className="bg-success text-white">#</th>
           <th className="bg-success text-white">Nombre</th>
           <th className="bg-success text-white">Email</th>
@@ -39,7 +37,6 @@ export default function ContactoTabla({
 
           return (
             <tr key={contacto._id}>
-              {/* ... columnas de datos iguales ... */}
               <td>{idx + 1}</td>
               <td className="fw-bold">{contacto.nombre}</td>
               <td>{contacto.email}</td>
@@ -62,8 +59,6 @@ export default function ContactoTabla({
                 </Form.Select>
               </td>
               <td className="small">{formatearFecha(contacto.createdAt)}</td>
-
-              {/* COLUMNA DE ACCIONES ACTUALIZADA */}
               <td className="text-center">
                 <div className="d-flex flex-column gap-2">
                   <div className="d-flex gap-2 justify-content-center">

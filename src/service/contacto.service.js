@@ -3,7 +3,7 @@ import clientAxios from '@/api/clientAxios.js';
 export const obtenerContactos = async () => {
   try {
     const response = await clientAxios.get('/contacto');
-    return response.data.data; /// response.data.contacto  ??
+    return response.data.data;
   } catch (error) {
     console.error('Error al recuperar los contactos de la base de datos:', error);
     throw error;
@@ -13,7 +13,7 @@ export const obtenerContactos = async () => {
 export const actualizarContacto = async (id, contactoActualizado) => {
   try {
     const response = await clientAxios.put(`/contacto/${id}`, contactoActualizado);
-    return response.data.data; //   response.data;
+    return response.data.data;
   } catch (error) {
     console.error('Error al actualizar contacto:', error);
     throw error;

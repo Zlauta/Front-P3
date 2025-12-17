@@ -28,7 +28,6 @@ export const Galeria = () => {
   return (
     <Container className="py-5">
       <div data-aos="fade-up" className="text-center mb-5">
-        {/* <h1 className="text-light">Galería</h1> */}
         <h3 className="text-light">Nuestros Platos Estrellas</h3>
       </div>
       <div className="masonry">

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
-import Swal from 'sweetalert2'; // 🔹 Importamos SweetAlert2
+import Swal from 'sweetalert2';
 import { Form, Button, Container, Row, Col, Card, Spinner } from 'react-bootstrap';
 import PreviewMenu from './VistaPreviaMenu.jsx';
 import { uploadImageAndGetURL } from '@/service/almacenamiento.service.js';
@@ -82,7 +82,6 @@ const FormularioCrearMenu = ({ onMenuCreated }) => {
       if (onMenuCreated) onMenuCreated();
     } catch (error) {
       console.error(error);
-      // 🔹 Alerta de error
       Swal.fire({
         icon: 'error',
         title: 'Error',

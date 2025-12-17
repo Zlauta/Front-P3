@@ -6,7 +6,6 @@ export default function Temporizador({ fecha, hora }) {
 
   useEffect(() => {
     const calcularTiempo = () => {
-      // Asumimos fecha YYYY-MM-DD y hora HH:mm
       const fechaISO = new Date(fecha).toISOString().split('T')[0];
       const objetivo = new Date(`${fechaISO}T${hora}:00`);
       const ahora = new Date();
@@ -28,8 +27,6 @@ export default function Temporizador({ fecha, hora }) {
       texto += `${horas}h ${minutos}m ${segundos}s`;
 
       setTiempo(texto);
-
-      // Cambiar a amarillo si faltan menos de 2 horas
       if (dias === 0 && horas < 2) {
         setColor('text-warning fw-bold');
       } else {

@@ -9,7 +9,6 @@ import {
   FaReply,
 } from 'react-icons/fa';
 
-// Recibimos nueva prop: onResponder
 export default function ContactoGrid({
   contactos,
   ediciones,
@@ -28,7 +27,6 @@ export default function ContactoGrid({
           <Col key={contacto._id}>
             <Card className="h-100 shadow border-0" style={{ background: '#25332f' }}>
               <Card.Body className="text-white d-flex flex-column">
-                {/* ... (Cabecera y datos igual que antes) ... */}
                 <div className="d-flex align-items-center mb-3 border-bottom border-secondary pb-3">
                   <img
                     src={`https://ui-avatars.com/api/?name=${contacto.nombre}&background=1aaf4b&color=fff&size=64`}
@@ -51,10 +49,7 @@ export default function ContactoGrid({
                   >
                     <FaEnvelope className="me-2 text-success" /> {contacto.email}
                   </div>
-                  {/* ... (tel y fecha igual) ... */}
                 </div>
-
-                {/* ... (Mensaje y Select igual) ... */}
                 <div className="bg-secondary bg-opacity-25 p-3 rounded mb-3 flex-grow-1">
                   <p
                     className="small mb-0 fst-italic text-light"
@@ -77,8 +72,6 @@ export default function ContactoGrid({
                   </Form.Select>
                 </Form.Group>
               </Card.Body>
-
-              {/* FOOTER ACTUALIZADO CON BOTON RESPONDER */}
               <Card.Footer className="border-top-0 bg-transparent pb-3 pt-0">
                 <div className="d-flex gap-2 mb-2">
                   <Button

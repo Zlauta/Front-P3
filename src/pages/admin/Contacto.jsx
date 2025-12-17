@@ -21,15 +21,12 @@ export default function Contactos() {
   const [ediciones, setEdiciones] = useState({});
   const [vista, setVista] = useState('grid');
 
-  // Estados para Eliminar
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmTarget, setConfirmTarget] = useState({ id: null });
 
-  // Estados para Responder Email
   const [showReply, setShowReply] = useState(false);
-  const [replyTarget, setReplyTarget] = useState(null); // Guarda el objeto contacto seleccionado
+  const [replyTarget, setReplyTarget] = useState(null);
 
-  // --- 1. CARGA DE DATOS ---
   const cargar = async () => {
     try {
       const data = await obtenerContactos();
@@ -43,7 +40,6 @@ export default function Contactos() {
     cargar();
   }, []);
 
-  // --- 2. LOGICA EDICION ESTADO ---
   const manejarEstado = (id, valor) => {
     setEdiciones((prev) => ({ ...prev, [id]: { ...prev[id], estado: valor } }));
   };
@@ -73,7 +69,6 @@ export default function Contactos() {
     }
   };
 
-  // --- 3. LOGICA ELIMINAR ---
   const confirmarEliminacion = (id) => {
     setConfirmTarget({ id });
     setShowConfirm(true);
@@ -97,7 +92,6 @@ export default function Contactos() {
     }
   };
 
-  // --- 4. LOGICA RESPONDER EMAIL (NUEVA) ---
   const abrirModalRespuesta = (contacto) => {
     setReplyTarget(contacto);
     setShowReply(true);
@@ -105,7 +99,6 @@ export default function Contactos() {
 
   const enviarRespuesta = async (datosEmail) => {
     try {
-      // Llamamos al servicio
       const datosCompletos = {
         ...datosEmail,
         nombre: replyTarget.nombre,
@@ -140,7 +133,7 @@ export default function Contactos() {
     onEstadoChange: manejarEstado,
     onGuardar: guardarCambios,
     onEliminar: confirmarEliminacion,
-    onResponder: abrirModalRespuesta, // Pasamos la nueva función
+    onResponder: abrirModalRespuesta,
   };
 
   return (
@@ -178,8 +171,6 @@ export default function Contactos() {
       <div className="text-light fs-5 mt-4 text-end">
         Total: {contactos.length} contacto{contactos.length === 1 ? '' : 's'}
       </div>
-
-      {/* MODAL DE ELIMINAR */}
       <ConfirmModal
         show={showConfirm}
         title={`¿Eliminar contacto?`}
@@ -189,8 +180,6 @@ export default function Contactos() {
         confirmText="Sí, eliminar"
         cancelText="Cancelar"
       />
-
-      {/* MODAL DE RESPONDER EMAIL (NUEVO) */}
       <ResponderModal
         show={showReply}
         onHide={() => setShowReply(false)}

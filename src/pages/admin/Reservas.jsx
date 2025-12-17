@@ -28,7 +28,7 @@ export default function ReservasAdmin() {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [reservaEditada, setReservaEditada] = useState(null);
   const [horaMinima, setHoraMinima] = useState('');
-  const [vista, setVista] = useState('grid'); // Switch table/grid
+  const [vista, setVista] = useState('grid');
 
   const cargarDatos = async () => {
     try {
@@ -105,8 +105,6 @@ export default function ReservasAdmin() {
   };
 
   const commonProps = { reservas, onEditar: abrirModal, onEliminar: eliminar };
-
-  // Lógica del Select: Calcular mesas disponibles
   const mesasOpciones = reservaEditada?.cantidadPersonas
     ? obtenerMesasDisponibles(reservaEditada.cantidadPersonas)
     : [];
@@ -142,8 +140,6 @@ export default function ReservasAdmin() {
       )}
 
       <div className="text-light fs-5 mt-3 text-end">Total: {reservas.length} reservas</div>
-
-      {/* MODAL DE EDICIÓN */}
       <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} centered>
         <Modal.Header closeButton className="bg-dark text-white border-success">
           <Modal.Title>Editar Reserva</Modal.Title>
@@ -151,7 +147,6 @@ export default function ReservasAdmin() {
         <Modal.Body className="bg-dark text-white">
           {reservaEditada && (
             <Form>
-              {/* PERSONAS */}
               <Form.Group className="mb-3">
                 <Form.Label>Cantidad Personas</Form.Label>
                 <Form.Control
@@ -168,8 +163,6 @@ export default function ReservasAdmin() {
                   }
                 />
               </Form.Group>
-
-              {/* MESA (Select Inteligente) */}
               <Form.Group className="mb-3">
                 <Form.Label>Mesa</Form.Label>
                 <Form.Select

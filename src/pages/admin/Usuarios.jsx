@@ -22,8 +22,6 @@ export default function Usuarios() {
   const [confirmTarget, setConfirmTarget] = useState({ id: null });
 
   const usuarioLogueado = JSON.parse(sessionStorage.getItem('usuario'));
-
-  // --- LOGICA DE DATOS ---
   const cargar = async () => {
     try {
       const data = await obtenerUsuarios();
@@ -42,7 +40,6 @@ export default function Usuarios() {
     return () => window.removeEventListener('storage', enAlmacenamiento);
   }, []);
 
-  // --- LOGICA DE EDICION ---
   const manejarCambioRol = (id, valor) => {
     setEdiciones((prev) => ({ ...prev, [id]: { ...prev[id], rol: valor } }));
   };
@@ -81,7 +78,6 @@ export default function Usuarios() {
     }
   };
 
-  // --- LOGICA DE ELIMINACION ---
   const confirmarEliminacion = (id) => {
     setConfirmTarget({ id });
     setShowConfirm(true);
@@ -110,7 +106,6 @@ export default function Usuarios() {
     }
   };
 
-  // Props comunes para pasar a los hijos
   const commonProps = {
     usuarios,
     ediciones,
@@ -123,7 +118,6 @@ export default function Usuarios() {
 
   return (
     <div className="p-4">
-      {/* HEADER Y BOTONES */}
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 mt-4">
         <h3 className="text-light fs-1 m-0">Usuarios registrados</h3>
         <div className="d-flex gap-3 align-items-center mt-3 mt-md-0">
@@ -150,8 +144,6 @@ export default function Usuarios() {
           </Button>
         </div>
       </div>
-
-      {/* MODAL DE REGISTRO */}
       {mostrarForm && (
         <div className="page-wrapper mb-5">
           <Container className="custom-form border rounded p-4 w-100 mw-75 bg-dark text-white">
@@ -165,8 +157,6 @@ export default function Usuarios() {
           </Container>
         </div>
       )}
-
-      {/* RENDERIZADO CONDICIONAL DE HIJOS */}
       {usuarios.length === 0 ? (
         <div className="text-center text-light py-5 border rounded bg-dark">
           <h4>No hay usuarios registrados aún.</h4>

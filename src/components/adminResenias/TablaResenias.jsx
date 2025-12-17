@@ -90,7 +90,6 @@ const TablaResenias = () => {
             {Array.isArray(resenias) && resenias.length > 0 ? (
               resenias.map((resenia) => (
                 <tr key={resenia._id}>
-                  {/* Nombre */}
                   <td className="align-middle fw-bold tabla">{resenia.nombre || 'Anónimo'}</td>
 
                   <td className="align-middle tabla">

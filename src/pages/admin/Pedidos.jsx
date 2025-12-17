@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, ButtonGroup } from 'react-bootstrap';
-import { FaList, FaTable } from 'react-icons/fa'; // Iconos para el Switch
+import { FaTable } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import '@/index.css';
 import ConfirmModal from '@/components/ui/ConfirmModal.jsx';
@@ -16,11 +16,10 @@ import { FiGrid } from 'react-icons/fi';
 export default function Pedidos() {
   const [pedidos, setPedidos] = useState([]);
   const [ediciones, setEdiciones] = useState({});
-  const [vista, setVista] = useState('grid'); // Estado del Switch: 'grid' o 'table'
+  const [vista, setVista] = useState('grid');
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmTarget, setConfirmTarget] = useState({ id: null });
 
-  // --- LOGICA DE DATOS ---
   const cargar = async () => {
     try {
       const data = await obtenerPedidos();
@@ -34,7 +33,6 @@ export default function Pedidos() {
     cargar();
   }, []);
 
-  // --- LOGICA DE EDICION ---
   const manejarEstado = (id, valor) => {
     setEdiciones((prev) => ({
       ...prev,
@@ -71,7 +69,6 @@ export default function Pedidos() {
     }
   };
 
-  // --- LOGICA DE ELIMINACION ---
   const confirmarEliminacion = (id) => {
     setConfirmTarget({ id });
     setShowConfirm(true);
@@ -96,7 +93,6 @@ export default function Pedidos() {
     }
   };
 
-  // Props comunes para pasar a los hijos
   const commonProps = {
     pedidos,
     ediciones,
@@ -107,7 +103,6 @@ export default function Pedidos() {
 
   return (
     <div className="p-4">
-      {/* Header con Titulo y Switch */}
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 mt-4">
         <h3 className="text-light fs-1 m-0">Gestión de Pedidos</h3>
 
@@ -130,8 +125,6 @@ export default function Pedidos() {
           </ButtonGroup>
         </div>
       </div>
-
-      {/* Renderizado Condicional */}
       {pedidos.length === 0 ? (
         <div className="text-center text-light py-5 border rounded bg-dark">
           <h4>No hay pedidos registrados.</h4>

@@ -22,7 +22,6 @@ const CarritoDeCompras = ({
   });
 
   const iniciarProcesoDePago = async () => {
-    // Validaciones
     const telefonoValido = /^[\d\s-]{8,}$/.test(datosDelCliente.telefono);
     const direccionValida = datosDelCliente.direccion.length >= 10;
 
