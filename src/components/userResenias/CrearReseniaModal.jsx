@@ -65,11 +65,6 @@ const CrearReseniaModal = ({ show, handleClose, updateList,  }) => {
         background: '#254630',
         color: '#fff',
         confirmButtonColor: '#1aaf4b',
-        icon: 'success',
-        title: '¡Gracias! Tu reseña ha sido enviada!',
-        background: '#254630',
-        color: '#fff',
-        confirmButtonColor: '#1aaf4b',
       });
 
       reset();
