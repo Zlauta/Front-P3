@@ -5,7 +5,7 @@ import { FaStar } from 'react-icons/fa';
 import { crearResenia } from '@/service/resenias.service.js';
 import Swal from 'sweetalert2';
 
-const CrearReseniaModal = ({ show, handleClose, updateList }) => {
+const CrearReseniaModal = ({ show, handleClose, updateList,  }) => {
   const {
     register,
     handleSubmit,
@@ -17,11 +17,15 @@ const CrearReseniaModal = ({ show, handleClose, updateList }) => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
 
-  const nombreUsuario = JSON.parse(sessionStorage.getItem('usuario') || '{}')?.nombre || '';
+ const usuarioLogueado =
+    JSON.parse(localStorage.getItem('usuarios') || '[]')?.[0] ||
+    JSON.parse(sessionStorage.getItem('usuario') || 'null');
+
+  const nombrePredefinido = usuarioLogueado?.nombreUsuario || usuarioLogueado?.nombre || '';
 
   React.useEffect(() => {
-    if (nombreUsuario) {
-      setValue('nombre', nombreUsuario);
+    if (nombrePredefinido) {
+      setValue('nombre', nombrePredefinido);
     }
   }, [nombrePredefinido, setValue]);
 

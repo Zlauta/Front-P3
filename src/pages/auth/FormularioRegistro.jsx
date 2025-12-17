@@ -40,7 +40,6 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
     try {
       const usuariosDeLaDb = await obtenerUsuarios();
       const usuarioExistente = usuariosDeLaDb.find((usuario) => usuario.email === data.email);
-      console.log(usuarioExistente);
 
       if (usuarioExistente) {
         Swal.fire({
@@ -96,9 +95,6 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
           },
           import.meta.env.VITE_EMAILJS_PUBLIC_KEY
         )
-        .then((response) => {
-          console.log('Correo enviado con éxito', response.status, response.text);
-        })
         .catch((err) => {
           console.error('Error al enviar el correo', err);
         });
@@ -130,7 +126,7 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
         cancelButtonColor: '#254630',
         customClass: { popup: 'small-alert' },
       });
-      console.log(error);
+      console.error(error);
     }
   }
 

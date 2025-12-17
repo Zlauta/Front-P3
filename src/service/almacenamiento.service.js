@@ -30,7 +30,6 @@ export const deleteImageByURL = async (imageURL) => {
   try {
     const storageRef = ref(storage, imageURL);
     await deleteObject(storageRef);
-    console.log('Imagen eliminada correctamente');
   } catch (error) {
     console.error('Error al eliminar la imagen:', error);
   }

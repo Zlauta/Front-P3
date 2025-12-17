@@ -132,7 +132,6 @@ export const useReservaLogica = (watch, reset) => {
         fecha: fechaSegura,
       };
       const respuesta = await crearReserva(datosAEnviar);
-      console.log('RESPUESTA DEL BACK:', respuesta);
       if (respuesta.correo?.enviado) {
         Swal.fire({
           icon: 'success',

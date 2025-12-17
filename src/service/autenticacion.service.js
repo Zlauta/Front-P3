@@ -20,7 +20,7 @@ export const loginUser = async ({ email, password }) => {
 
     return response.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error.response?.data || { msg: 'Error desconocido' };
   }
 };
