@@ -2,10 +2,7 @@ import { Row, Col, Card, Badge, Form, Button } from 'react-bootstrap';
 import {
   FaCheck,
   FaTrash,
-  FaPhone,
   FaEnvelope,
-  FaCalendarAlt,
-  FaCommentDots,
   FaReply,
 } from 'react-icons/fa';
 
@@ -17,9 +14,17 @@ export default function ContactoGrid({
   onEliminar,
   onResponder,
 }) {
+  
+  const listaContactos = contactos || [];
+  if (listaContactos.length === 0) {
+    return <div className="text-white text-center mt-5 p-4">No hay mensajes de contacto.</div>;
+  }
+
   return (
     <Row xs={1} md={2} xl={3} xxl={4} className="g-4">
-      {contactos.map((contacto) => {
+      {listaContactos.map((contacto) => {
+        if (!contacto || !contacto._id) return null;
+
         const tieneCambios = !!ediciones[contacto._id];
         const estadoActual = ediciones[contacto._id]?.estado ?? contacto.estado;
 
@@ -29,15 +34,15 @@ export default function ContactoGrid({
               <Card.Body className="text-white d-flex flex-column">
                 <div className="d-flex align-items-center mb-3 border-bottom border-secondary pb-3">
                   <img
-                    src={`https://ui-avatars.com/api/?name=${contacto.nombre}&background=1aaf4b&color=fff&size=64`}
+                    src={`https://ui-avatars.com/api/?name=${contacto.nombre || 'User'}&background=1aaf4b&color=fff&size=64`}
                     alt="avatar"
                     className="rounded-circle me-3 border border-2 border-success"
                     style={{ width: '50px', height: '50px' }}
                   />
                   <div style={{ overflow: 'hidden' }}>
-                    <h5 className="mb-0 text-truncate">{contacto.nombre}</h5>
+                    <h5 className="mb-0 text-truncate">{contacto.nombre || 'Sin nombre'}</h5>
                     <Badge bg={estadoActual === 'resuelto' ? 'success' : 'warning'} text="dark">
-                      {estadoActual.toUpperCase()}
+                      {estadoActual ? estadoActual.toUpperCase() : 'PENDIENTE'}
                     </Badge>
                   </div>
                 </div>
