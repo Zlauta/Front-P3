@@ -110,6 +110,7 @@ export const useReservaLogica = (watch, reset) => {
     return !conflicto;
   };
 
+
   const handleReservaSubmit = async (data) => {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     if (!token) {
@@ -131,23 +132,18 @@ export const useReservaLogica = (watch, reset) => {
         ...data,
         fecha: fechaSegura,
       };
-      const respuesta = await crearReserva(datosAEnviar);
-      if (respuesta.correo?.enviado) {
-        Swal.fire({
-          icon: 'success',
-          title: '¡Reserva creada!',
-          text: 'La reserva fue creada y el correo fue enviado correctamente.',
-          confirmButtonColor: '#1aaf4b',
-          timer: 3000,
-        });
-      } else {
-        Swal.fire({
-          icon: 'warning',
-          title: 'Reserva creada',
-          text: 'La reserva se creó, pero no se pudo enviar el correo.',
-          confirmButtonColor: '#e6ad00',
-        });
-      }
+
+      
+      await crearReserva(datosAEnviar);
+
+      
+      Swal.fire({
+        icon: 'success',
+        title: '¡Reserva Registrada!',
+        text: 'En breve recibirás la confirmación en tu correo.',
+        confirmButtonColor: '#1aaf4b',
+        timer: 4000,
+      });
 
       reset();
 
