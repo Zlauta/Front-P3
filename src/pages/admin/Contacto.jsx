@@ -111,8 +111,8 @@ export default function Contactos() {
       }
 
       Swal.fire({
-        title: 'Correo enviado',
-        text: `Se envió la respuesta a ${replyTarget.email}`,
+        title: '¡Respuesta enviada!',
+        text: `Se procesó el envío para ${replyTarget.email} correctamente.`,
         icon: 'success',
         confirmButtonColor: '#1aaf4b',
       });
