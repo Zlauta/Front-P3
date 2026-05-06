@@ -99,7 +99,10 @@ export const useReservaLogica = (watch, reset) => {
     const minutosInput = convertirAMinutos(horaInput);
 
     const conflicto = reservasOcupadas.find((reserva) => {
-      const fechaReserva = new Date(reserva.fecha).toISOString().split('T')[0];
+      const fechaReserva =
+        typeof reserva.fecha === 'string'
+          ? reserva.fecha.split('T')[0]
+          : new Date(reserva.fecha).toISOString().split('T')[0];
       if (fechaReserva !== fechaSeleccionada) return false;
       if (String(reserva.mesa) !== String(mesaSeleccionada)) return false;
 
@@ -109,7 +112,6 @@ export const useReservaLogica = (watch, reset) => {
 
     return !conflicto;
   };
-
 
   const handleReservaSubmit = async (data) => {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -133,10 +135,8 @@ export const useReservaLogica = (watch, reset) => {
         fecha: fechaSegura,
       };
 
-      
       await crearReserva(datosAEnviar);
 
-      
       Swal.fire({
         icon: 'success',
         title: '¡Reserva Registrada!',
