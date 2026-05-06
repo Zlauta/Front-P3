@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
-import { obtenerUsuarios, registrarUsuario } from '@/service/usuario.service.js';
+import { registrarUsuario } from '@/service/usuario.service.js';
 import emailjs from '@emailjs/browser';
 
 const FormularioRegistro = ({ fromAdmin = false }) => {
@@ -12,7 +12,7 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors },
   } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -34,32 +34,8 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
     }
   };
 
-  const navegacion = useNavigate();
-
   async function onSubmit(data) {
     try {
-      const usuariosDeLaDb = await obtenerUsuarios();
-      const usuarioExistente = usuariosDeLaDb.find((usuario) => usuario.email === data.email);
-
-      if (usuarioExistente) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Ingresá otro correo electrónico...',
-          text: 'El usuario ya existe en la base de datos',
-          iconColor: '#1aaf4b',
-          confirmButtonColor: '#1aaf4b',
-          cancelButtonColor: '#254630',
-          customClass: { popup: 'small-alert' },
-        });
-        reset();
-        if (fromAdmin) {
-          navegate('/admin');
-        } else {
-          navegate('/');
-        }
-        return;
-      }
-
       if (data.password !== data.confirmPassword) {
         Swal.fire({
           icon: 'error',
