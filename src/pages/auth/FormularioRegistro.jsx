@@ -94,14 +94,16 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
         navegate('/');
       }
     } catch (error) {
+      const backendMsg = error.response?.data?.errors?.[0]?.message || 'Error al registrar usuario';
       Swal.fire({
-        title: 'Error al registrar usuario',
+        title: backendMsg,
         icon: 'error',
         iconColor: '#1aaf4b',
         confirmButtonColor: '#1aaf4b',
         cancelButtonColor: '#254630',
         customClass: { popup: 'small-alert' },
       });
+      console.error('Mensaje del backend:', backendMsg);
       console.error(error);
     }
   }
