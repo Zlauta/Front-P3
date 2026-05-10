@@ -103,7 +103,6 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
         cancelButtonColor: '#254630',
         customClass: { popup: 'small-alert' },
       });
-      console.error('Mensaje del backend:', backendMsg);
       console.error(error);
     }
   }
