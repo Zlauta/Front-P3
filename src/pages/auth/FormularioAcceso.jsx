@@ -11,7 +11,7 @@ const FormularioAcceso = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors },
   } = useForm({
     mode: 'onChange',
     defaultValues: {
