@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '@/service/autenticacion.service.js';
+import { reglasEmail, reglasContrasenia } from '@/utils/validaciones.js';
 
 const FormularioAcceso = () => {
   const {
@@ -19,6 +20,7 @@ const FormularioAcceso = () => {
       password: '',
     },
   });
+
   const navigate = useNavigate();
 
   const handleGoRegister = () => {
@@ -67,37 +69,25 @@ const FormularioAcceso = () => {
           type="email"
           placeholder="Ingrese su email"
           isInvalid={errors.email}
-          {...register('email', {
-            required: 'El email es requerido',
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: 'Debe ingresar un email válido',
-            },
-          })}
+          {...register('email', reglasEmail)}
         />
         <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
       </Form.Group>
+
       <Form.Group className="label mb-3" controlId="formBasicPassword">
         <Form.Label>Contraseña</Form.Label>
         <Form.Control
           type="password"
           placeholder="Ingrese su contraseña"
           isInvalid={errors.password}
-          {...register('password', {
-            required: 'El password es requerido',
-            pattern: {
-              value:
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?]).{8,}$/,
-              message:
-                'La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula, un número y un carácter especial.',
-            },
-          })}
+          {...register('password', reglasContrasenia)}
         />
         <Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>
       </Form.Group>
+
       <div className="text-center mt-5 d-flex flex-column justify-content-center gap-2 flex-md-row">
         <Button className="forms-boton mt-3" type="submit">
-          Iniciar Sesion
+          Iniciar Sesión
         </Button>
 
         <Button className="forms-boton mt-3" onClick={handleGoRegister}>

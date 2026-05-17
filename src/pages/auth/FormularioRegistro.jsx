@@ -6,6 +6,12 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { registrarUsuario } from '@/service/usuario.service.js';
 import emailjs from '@emailjs/browser';
+import {
+  reglasEmail,
+  reglasContrasenia,
+  reglasNombre,
+  reglasTelefono,
+} from '@/utils/validaciones.js';
 
 const FormularioRegistro = ({ fromAdmin = false }) => {
   const {
@@ -115,24 +121,7 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
           type="text"
           placeholder="Nombre de usuario"
           isInvalid={errors.userName}
-          {...register('userName', {
-            required: 'El nombre de usuario es requerido',
-
-            pattern: {
-              value: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s'-]+$/,
-              message: 'Solo se permiten letras',
-            },
-            maxLength: {
-              value: 50,
-              message: 'El nombre no puede tener más de 50 caracteres',
-            },
-
-            minLength: {
-              value: 2,
-              message:
-                'El nombre debe tener al menos 2 caracteres message. Solo se permiten letras.',
-            },
-          })}
+          {...register('userName', reglasNombre)}
         />
         <Form.Control.Feedback type="invalid">{errors.userName?.message}</Form.Control.Feedback>
       </Form.Group>
@@ -143,14 +132,7 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
           type="email"
           placeholder="Ingrese su correo electronico"
           isInvalid={errors.email}
-          {...register('email', {
-            required: 'El correo electronico es requerido',
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message:
-                'El correo electronico debe tener texto antes de la @ y, despues de  @,  debe tener texto y . seguido de texto',
-            },
-          })}
+          {...register('email', reglasEmail)}
         />
         <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
       </Form.Group>
@@ -161,15 +143,7 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
           type="password"
           placeholder="Ingrese su contraseña"
           isInvalid={errors.password}
-          {...register('password', {
-            required: 'La contraseñia es un campo requerido',
-            pattern: {
-              value:
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?]).{8,}$/,
-              message:
-                'La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula, un número y un carácter especial.',
-            },
-          })}
+          {...register('password', reglasContrasenia)}
         />
         <Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>
       </Form.Group>
@@ -180,15 +154,7 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
           type="password"
           placeholder="Confirme su contraseña"
           isInvalid={errors.confirmPassword}
-          {...register('confirmPassword', {
-            required: 'Confirmar la contraseña es requerido',
-            pattern: {
-              value:
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?]).{8,}$/,
-              message:
-                'La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula, un número y un carácter especial.',
-            },
-          })}
+          {...register('confirmPassword', reglasContrasenia)}
         />
         <Form.Control.Feedback type="invalid">
           {errors.confirmPassword?.message}
@@ -200,15 +166,7 @@ const FormularioRegistro = ({ fromAdmin = false }) => {
           type="tel"
           placeholder="Ingrese su número de teléfono: ej +5493811234567"
           isInvalid={errors.telefono}
-          {...register('telefono', {
-            required: 'El teléfono es un campo requerido',
-            pattern: {
-              value: /^\+?[1-9]\d{7,14}$/,
-
-              message:
-                'El número de teléfono debe tener entre 8 y 15 dígitos, puede comenzar con “+” y no debe iniciar con 0.',
-            },
-          })}
+          {...register('telefono', reglasTelefono)}
         />
         <Form.Control.Feedback type="invalid">{errors.telefono?.message}</Form.Control.Feedback>
       </Form.Group>

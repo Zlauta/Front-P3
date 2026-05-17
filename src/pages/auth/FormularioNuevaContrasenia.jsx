@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { obtenerUsuarios } from '@/service/usuario.service';
+import { reglasEmail } from '@/utils/validaciones.js';
 
 const FormularioNuevaContrasenia = () => {
   const {
@@ -70,14 +71,7 @@ const FormularioNuevaContrasenia = () => {
           type="email"
           placeholder="Ingrese su correo electrónico"
           isInvalid={errors.email}
-          {...register('email', {
-            required: 'El correo electrónico es requerido',
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message:
-                'El correo electrónico debe tener texto antes de la @ y, después de @, debe tener texto y . seguido de texto',
-            },
-          })}
+          {...register('email', reglasEmail)}
         />
         <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
       </Form.Group>

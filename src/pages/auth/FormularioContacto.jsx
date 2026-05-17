@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { crearContacto } from '@/service/contacto.service.js';
 import emailjs from '@emailjs/browser';
+import { reglasEmail, reglasNombre, reglasMensaje, reglasTelefono } from '@/utils/validaciones.js';
 
 const FormularioContacto = ({ usuario }) => {
   const isLogged = !!usuario;
@@ -97,24 +98,7 @@ const FormularioContacto = ({ usuario }) => {
           placeholder="Nombre de usuario"
           isInvalid={errors.nombreContacto}
           readOnly={isLogged}
-          {...register('nombreContacto', {
-            required: 'El nombre de usuario es requerido',
-
-            pattern: {
-              value: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s'-]+$/,
-              message: 'Solo se permiten letras',
-            },
-            maxLength: {
-              value: 50,
-              message: 'El nombre no puede tener más de 50 caracteres',
-            },
-
-            minLength: {
-              value: 2,
-              message:
-                'El nombre debe tener al menos 2 caracteres message. Solo se permiten letras',
-            },
-          })}
+          {...register('nombreContacto', reglasNombre)}
         />
         <Form.Control.Feedback type="invalid">
           {errors.nombreContacto?.message}
@@ -128,14 +112,7 @@ const FormularioContacto = ({ usuario }) => {
           placeholder="Ingrese su correo electronico"
           isInvalid={errors.email}
           readOnly={isLogged}
-          {...register('email', {
-            required: 'El correo electronico es requerido',
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message:
-                'El correo electronico debe tener texto antes de la @ y, despues de  @,  debe tener texto y . seguido de texto',
-            },
-          })}
+          {...register('email', reglasEmail)}
         />
         <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
       </Form.Group>
@@ -147,21 +124,7 @@ const FormularioContacto = ({ usuario }) => {
           rows={4}
           placeholder="Ingrese su mensaje"
           isInvalid={errors.mensajeContacto}
-          {...register('mensajeContacto', {
-            required: 'El mensaje es obligatorio',
-            minLength: {
-              value: 5,
-              message: 'El mensaje debe tener al menos 5 caracteres',
-            },
-            maxLength: {
-              value: 500,
-              message: 'El mensaje no puede superar los 500 caracteres',
-            },
-            pattern: {
-              value: /^[a-zA-ZÀ-ÿ0-9.,;:¡!¿?\-()'"%°\s]{5,500}$/u,
-              message: 'El mensaje contiene caracteres no permitidos',
-            },
-          })}
+          {...register('mensajeContacto', reglasMensaje)}
         />
         <Form.Control.Feedback type="invalid">
           {errors.mensajeContacto?.message}
@@ -174,14 +137,7 @@ const FormularioContacto = ({ usuario }) => {
           type="tel"
           placeholder="Ingrese su número de teléfono"
           isInvalid={errors.telefono}
-          {...register('telefono', {
-            required: 'El teléfono es un campo requerido',
-            pattern: {
-              value: /^\+?[1-9]\d{7,14}$/,
-              message:
-                'El número de teléfono debe tener entre 8 y 15 dígitos, puede comenzar con “+” y no debe iniciar con 0.',
-            },
-          })}
+          {...register('telefono', reglasTelefono)}
         />
         <Form.Control.Feedback type="invalid">{errors.telefono?.message}</Form.Control.Feedback>
       </Form.Group>
