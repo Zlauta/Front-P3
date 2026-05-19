@@ -1,10 +1,9 @@
-/* CarruselResenia.css */
 
 .resenia-card {
-  background-color: #254630; /* Verde transparente */
+  background-color: #254630; 
   color: #ffffff;
-  border: 1px solid #1aaf4b; /* Borde verde claro */
-  height: 350px; /* Altura fija importante para el diseño */
+  border: 1px solid #1aaf4b; 
+  height: 350px; 
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -13,7 +12,6 @@
   margin: 0 10px;
   padding: 20px;
   overflow: hidden;
-  /* Sombra suave */
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
 }
 
@@ -21,11 +19,11 @@
   font-size: 1rem;
   font-style: italic;
   margin-bottom: 10px;
-  flex: 1; /* Ocupa el espacio disponible */
+  flex: 1; 
 
-  /* MAGIA DEL LINE CLAMP (Corta el texto con ...) */
+
   display: -webkit-box;
-  -webkit-line-clamp: 5; /* Máximo 5 líneas */
+  -webkit-line-clamp: 5; 
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -34,6 +32,6 @@
 .resenia-user {
   color: #1aaf4b;
   font-weight: bold;
-  margin-top: auto; /* Empuja el nombre siempre al fondo */
+  margin-top: auto; 
   font-size: 1.2rem;
 }
