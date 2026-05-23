@@ -95,9 +95,9 @@ const FormularioReserva = ({ onReservaCreada }) => {
                         })}
                       >
                         <option value="">Seleccione una mesa</option>
-                        {mesasDisponibles.map((mesa) => (
-                          <option key={mesa.id} value={mesa.id}>
-                            Mesa {mesa.id}
+                        {mesasDisponibles.map((numeroMesa) => (
+                          <option key={numeroMesa} value={numeroMesa}>
+                            {numeroMesa}
                           </option>
                         ))}
                       </Form.Select>
