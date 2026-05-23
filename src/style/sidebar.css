@@ -1,9 +1,8 @@
-/* Sidebar styles matching header palette */
 :root {
-  --green-dark: #122117; /* rgb(18,33,23) */
-  --green-light: #1aaf4b; /* rgb(26,175,75) */
+  --green-dark: #122117; 
+  --green-light: #1aaf4b; 
   --white: #ffffff;
-  --green-transparent: #254630; /* rgb(37,70,48) */
+  --green-transparent: #254630;
 }
 
 .sidebar-admin {
@@ -14,7 +13,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  padding-top: 8px; /* smaller top padding so logo and links sit higher */
+  padding-top: 8px; 
   z-index: 50;
 }
 
@@ -39,7 +38,6 @@
   display: block;
 }
 
-/* overlay for mobile drawer */
 .sidebar-overlay {
   position: fixed;
   inset: 0;
@@ -141,7 +139,6 @@
   }
 }
 
-/* Mini collapsed vertical sidebar visible on mobile when Offcanvas is closed */
 .sidebar-mini {
   position: fixed;
   left: 0;

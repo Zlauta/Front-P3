@@ -1,11 +1,9 @@
 :root {
   --green-dark: #122117;
-  /* rgb(18,33,23) */
   --green-light: #1aaf4b;
-  /* rgb(26,175,75) */
   --white: #ffffff;
   --green-transparent: #254630;
-  /* rgb(37,70,48) */
+
 }
 
 body {
@@ -63,12 +61,12 @@ body {
 @media (max-width: 991px) {
   body {
     padding-top: 0;
-    /* en móviles el header es fluido, no hace falta compensar */
+  
   }
 
   .header-navbar {
     position: static;
-    /* deja de ser fijo en pantallas pequeñas */
+
   }
 
   .brand-text {
@@ -82,7 +80,7 @@ body {
 
   .navbar-nav {
     background: var(--green-dark);
-    /* fondo para el collapse */
+
     padding: 1rem;
   }
 

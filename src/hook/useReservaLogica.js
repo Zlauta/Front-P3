@@ -48,27 +48,30 @@ export const useReservaLogica = (watch, reset) => {
 
   const validarCapacidadMesa = (mesa, personas) => {
     if (!mesa || !personas) return true;
-    const m = parseInt(mesa);
-    const p = parseInt(personas);
+    const numeroMesa = parseInt(mesa);
+    const cantidadPersonas = parseInt(personas);
 
-    if (p > 10) return 'Para más de 10 personas, contáctenos por teléfono.';
-    if (m >= 1 && m <= 10 && p > 2) return `Mesa ${m} es chica (máx 2p). Elija mayor a 10.`;
-    if (m >= 11 && m <= 20 && p > 4) return `Mesa ${m} es estándar (máx 4p). Elija mayor a 20.`;
-    if (m >= 21 && m <= 25 && p > 6) return `Mesa ${m} es mediana (máx 6p). Elija mayor 25.`;
-    if (m > 30) return 'Número de mesa inválido.';
+    if (cantidadPersonas > 10) return 'Para más de 10 personas, contáctenos por teléfono.';
+    if (numeroMesa >= 1 && numeroMesa <= 10 && cantidadPersonas > 2)
+      return `Mesa ${numeroMesa} es chica (máx 2p). Elija mayor a 10.`;
+    if (numeroMesa >= 11 && numeroMesa <= 20 && cantidadPersonas > 4)
+      return `Mesa ${numeroMesa} es estándar (máx 4p). Elija mayor a 20.`;
+    if (numeroMesa >= 21 && numeroMesa <= 25 && cantidadPersonas > 6)
+      return `Mesa ${numeroMesa} es mediana (máx 6p). Elija mayor a 25.`;
+    if (numeroMesa > 30) return 'Número de mesa inválido.';
 
     return true;
   };
 
   const obtenerMesasDisponibles = (personas) => {
     if (!personas) return [];
-    const p = parseInt(personas);
+    const cantidadPersonas = parseInt(personas);
     const mesas = [];
 
-    for (let m = 1; m <= 30; m++) {
-      const validacion = validarCapacidadMesa(m, p);
-      if (validacion === true) {
-        mesas.push(m);
+    for (let numeroMesa = 1; numeroMesa <= 30; numeroMesa++) {
+      const resultadoValidacion = validarCapacidadMesa(numeroMesa, cantidadPersonas);
+      if (typeof resultadoValidacion !== 'string') {
+        mesas.push(numeroMesa);
       }
     }
 

@@ -17,7 +17,7 @@ const TarjetaMenu = ({
   const [showFull, setShowFull] = useState(false);
 
   const handlePedido = () => {
-    if (isLogged === true) {
+    if (isLogged) {
       agregarProductoAlCarrito({ _id, nombre, precio, imagen });
       Swal.fire({
         position: 'top-end',

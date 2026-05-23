@@ -91,14 +91,13 @@ const FormularioReserva = ({ onReservaCreada }) => {
                         {...register('mesa', {
                           required: 'Requerido',
                           validate: (val) =>
-                            validarCapacidadMesa(val, personasSeleccionadas) === true ||
                             validarCapacidadMesa(val, personasSeleccionadas),
                         })}
                       >
                         <option value="">Seleccione una mesa</option>
-                        {mesasDisponibles.map((m) => (
-                          <option key={m} value={m}>
-                            Mesa {m}
+                        {mesasDisponibles.map((mesa) => (
+                          <option key={mesa.id} value={mesa.id}>
+                            Mesa {mesa.id}
                           </option>
                         ))}
                       </Form.Select>

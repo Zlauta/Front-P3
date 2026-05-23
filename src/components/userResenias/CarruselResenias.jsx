@@ -10,7 +10,7 @@ const CarruselResenia = ({ resenias = [], updateList }) => {
   const [showModal, setShowModal] = useState(false);
 
   const reseniasActivas = Array.isArray(resenias)
-    ? resenias.filter((resenia) => resenia.activo === true)
+    ? resenias.filter((resenia) => resenia.activo)
     : [];
 
   const responsive = {
